@@ -78,7 +78,16 @@ const IntegrationSettings: React.FC = () => {
       ...settings,
       [service]: {
         ...settings[service],
-        service: selectedService as any,
+        service: selectedService as
+          | "jira"
+          | "trello"
+          | "asana"
+          | "slack"
+          | "discord"
+          | "teams"
+          | "google"
+          | "outlook"
+          | null,
       },
     });
   };
@@ -92,46 +101,6 @@ const IntegrationSettings: React.FC = () => {
       [service]: {
         ...settings[service],
         apiKey,
-      },
-    });
-  };
-
-  const handleProjectIdChange = (projectId: string) => {
-    setSettings({
-      ...settings,
-      projectManagement: {
-        ...settings.projectManagement,
-        projectId,
-      },
-    });
-  };
-
-  const handleWebhookUrlChange = (webhookUrl: string) => {
-    setSettings({
-      ...settings,
-      chat: {
-        ...settings.chat,
-        webhookUrl,
-      },
-    });
-  };
-
-  const handleChannelChange = (channel: string) => {
-    setSettings({
-      ...settings,
-      chat: {
-        ...settings.chat,
-        channel,
-      },
-    });
-  };
-
-  const handleCalendarIdChange = (calendarId: string) => {
-    setSettings({
-      ...settings,
-      calendar: {
-        ...settings.calendar,
-        calendarId,
       },
     });
   };
@@ -390,7 +359,9 @@ const IntegrationSettings: React.FC = () => {
                       type="password"
                       id="chat-api-key"
                       value={settings.chat.webhookUrl}
-                      onChange={(e) => handleWebhookUrlChange(e.target.value)}
+                      onChange={(e) =>
+                        handleApiKeyChange("chat", e.target.value)
+                      }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       placeholder="APIキーを入力"
                     />

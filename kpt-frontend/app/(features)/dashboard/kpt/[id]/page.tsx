@@ -11,7 +11,6 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface KptDetailPageProps {
@@ -21,7 +20,6 @@ interface KptDetailPageProps {
 }
 
 const KptDetailPage = ({ params }: KptDetailPageProps) => {
-  const router = useRouter();
   const { id } = params;
 
   // TODO: APIからデータを取得
