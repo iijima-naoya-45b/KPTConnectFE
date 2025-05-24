@@ -70,6 +70,7 @@ const ContactPage: React.FC = () => {
         phone: "",
       });
     } catch (error) {
+      console.error("お問い合わせ送信エラー:", error);
       setSubmitResult({
         success: false,
         message: "お問い合わせの送信に失敗しました。もう一度お試しください。",

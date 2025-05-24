@@ -80,6 +80,7 @@ const FeedbackForm: React.FC = () => {
         attachments: [],
       });
     } catch (error) {
+      console.error("フィードバック送信エラー:", error);
       setSubmitResult({
         success: false,
         message: "フィードバックの送信に失敗しました。もう一度お試しください。",

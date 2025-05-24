@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
-const LoginPage = () => {
+// このページは動的レンダリングが必要
+export const dynamic = "force-dynamic";
+
+const LoginPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -17,39 +21,43 @@ const LoginPage = () => {
   };
 
   // Googleログインコールバック処理
+  const handleGoogleCallback = useCallback(
+    async (sessionId: string) => {
+      try {
+        const response = await fetch(
+          "http://localhost:3001/api/v1/sessions/verify",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ session_id: sessionId }),
+          }
+        );
+
+        if (response.ok) {
+          router.push("/dashboard");
+        } else {
+          const data = await response.json();
+          setError(data.error || "Googleログインに失敗しました");
+        }
+      } catch (err) {
+        console.error("Googleログインエラー:", err);
+        setError("Googleログイン処理中にエラーが発生しました");
+      }
+    },
+    [router]
+  );
+
+  // Googleログインコールバック処理
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
 
     if (sessionId) {
       handleGoogleCallback(sessionId);
     }
-  }, [searchParams]);
-
-  // Googleログインコールバック処理
-  const handleGoogleCallback = async (sessionId: string) => {
-    try {
-      const response = await fetch(
-        "http://localhost:3001/api/v1/sessions/verify",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ session_id: sessionId }),
-        }
-      );
-
-      if (response.ok) {
-        router.push("/dashboard");
-      } else {
-        const data = await response.json();
-        setError(data.error || "Googleログインに失敗しました");
-      }
-    } catch (err) {
-      setError("Googleログイン処理中にエラーが発生しました");
-    }
-  };
+  }, [searchParams, handleGoogleCallback]);
 
   // メールアドレス/パスワードログイン処理
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,6 +81,7 @@ const LoginPage = () => {
         setError(data.error || "ログインに失敗しました");
       }
     } catch (err) {
+      console.error("ログインエラー:", err);
       setError("ログイン処理中にエラーが発生しました");
     }
   };
@@ -151,10 +160,12 @@ const LoginPage = () => {
               onClick={handleGoogleLogin}
               className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              <img
+              <Image
                 className="h-5 w-5 mr-2"
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                 alt="Google logo"
+                width={20}
+                height={20}
               />
               Googleでログイン
             </button>
@@ -162,6 +173,14 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 };
 

@@ -11,11 +11,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const SettingsPage = () => {
-  const router = useRouter();
   const [email, setEmail] = useState("user@example.com");
   const [name, setName] = useState("ユーザー名");
   const [isEditing, setIsEditing] = useState(false);
