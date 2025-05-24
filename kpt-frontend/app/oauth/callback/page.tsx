@@ -2,43 +2,41 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Input, Button, Label } from "@/components/ui";
 
 const LoginPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const [formObject, setFormObject] = useState({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
 
-  // Googleログイン処理
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+
   const handleGoogleLogin = () => {
-    window.location.href =
-      "http://localhost:3001/api/v1/oauth/google?provider=google";
+    window.location.href = `${BACKEND_URL}/api/v1/oauth/google?provider=google`;
   };
 
-  // Googleログインコールバック処理
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
-
     if (sessionId) {
       handleGoogleCallback(sessionId);
     }
   }, [searchParams]);
 
-  // Googleログインコールバック処理
   const handleGoogleCallback = async (sessionId: string) => {
     try {
-      const response = await fetch(
-        "http://localhost:3001/api/v1/sessions/verify",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ session_id: sessionId }),
-        }
-      );
+      const response = await fetch(`${BACKEND_URL}/api/v1/sessions/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ session_id: sessionId }),
+      });
 
       if (response.ok) {
         router.push("/dashboard");
@@ -51,19 +49,18 @@ const LoginPage = () => {
     }
   };
 
-  // メールアドレス/パスワードログイン処理
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch("http://localhost:3001/api/v1/sessions", {
+      const response = await fetch(`${BACKEND_URL}/api/v1/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(formObject),
       });
 
       if (response.ok) {
@@ -75,6 +72,15 @@ const LoginPage = () => {
     } catch (err) {
       setError("ログイン処理中にエラーが発生しました");
     }
+  };
+
+  // formObjectの更新用
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormObject((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -95,44 +101,42 @@ const LoginPage = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email" className="sr-only">
+              <Label htmlFor="email" className="sr-only">
                 メールアドレス
-              </label>
-              <input
+              </Label>
+              <Input
                 id="email"
                 name="email"
                 type="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="メールアドレス"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formObject.email}
+                onChange={handleChange}
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
+              <Label htmlFor="password" className="sr-only">
                 パスワード
-              </label>
-              <input
+              </Label>
+              <Input
                 id="password"
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="パスワード"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formObject.password}
+                onChange={handleChange}
               />
             </div>
           </div>
 
           <div>
-            <button
+            <Button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center py-2 px-4"
             >
               ログイン
-            </button>
+            </Button>
           </div>
         </form>
 
@@ -147,9 +151,9 @@ const LoginPage = () => {
           </div>
 
           <div className="mt-6">
-            <button
+            <Button
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full flex items-center justify-center px-4 py-2 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2"
             >
               <img
                 className="h-5 w-5 mr-2"
@@ -157,7 +161,7 @@ const LoginPage = () => {
                 alt="Google logo"
               />
               Googleでログイン
-            </button>
+            </Button>
           </div>
         </div>
       </div>
