@@ -1,5 +1,5 @@
 import React from "react";
-import FeatureCard from "@/components/ui/FeatureCard";
+import FeatureCard from "@/components/ui/FeatureCard/FeatureCard";
 import {
   EasyReflectionIcon,
   RealTimeSyncIcon,
