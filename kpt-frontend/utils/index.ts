@@ -190,7 +190,7 @@ export function calculatePercentage(value: number, total: number, decimals: numb
  * @returns シャッフルされた新しい配列
  */
 export function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array];
+  const shuffled = Array.from(array);
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -287,7 +287,7 @@ export function omit<T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
   keys: K[]
 ): Omit<T, K> {
-  const result = { ...obj };
+  const result = Object.assign({}, obj) as T;
   keys.forEach(key => {
     delete result[key];
   });
