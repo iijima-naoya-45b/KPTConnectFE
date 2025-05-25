@@ -13,7 +13,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import KPTCalendar from './KPTCalendar';
+import KPTCalendar from './components/KPTCalendar';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 

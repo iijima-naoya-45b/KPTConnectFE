@@ -29,8 +29,8 @@ const Home = () => {
 
               <div className='flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center'>
                 <Link href='/onboarding'>
-                  <Button className='bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 text-lg'>
-                    今すぐ始める
+                  <Button className='bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200'>
+                    🚀 チュートリアルを見る
                   </Button>
                 </Link>
                 <Link href='/dashboard'>
@@ -78,6 +78,63 @@ const Home = () => {
                 title='成長の可視化'
                 description='個人の開発スキルと成果を可視化し、継続的なスキルアップをサポートします。'
               />
+            </div>
+          </div>
+        </section>
+
+        {/* チュートリアルセクション */}
+        <section className='bg-gradient-to-r from-indigo-500 to-purple-600 py-20'>
+          <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+            <div className='text-center mb-12'>
+              <h3 className='text-3xl font-extrabold text-white mb-4'>
+                📖 3分で始められるチュートリアル
+              </h3>
+              <p className='text-xl text-indigo-100 mb-8'>
+                初めての方でも安心！ステップバイステップでKPT Connectの使い方をご案内します
+              </p>
+            </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12'>
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
+                <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4'>
+                  <span className='text-2xl'>1️⃣</span>
+                </div>
+                <h4 className='text-lg font-semibold text-white mb-2'>アカウント作成</h4>
+                <p className='text-indigo-100 text-sm'>
+                  簡単な情報入力で、すぐにKPT Connectを始められます
+                </p>
+              </div>
+
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
+                <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4'>
+                  <span className='text-2xl'>2️⃣</span>
+                </div>
+                <h4 className='text-lg font-semibold text-white mb-2'>初回KPT作成</h4>
+                <p className='text-indigo-100 text-sm'>
+                  ガイドに従って、最初のKPT振り返りを作成してみましょう
+                </p>
+              </div>
+
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
+                <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4'>
+                  <span className='text-2xl'>3️⃣</span>
+                </div>
+                <h4 className='text-lg font-semibold text-white mb-2'>継続的改善</h4>
+                <p className='text-indigo-100 text-sm'>
+                  定期的な振り返りで、開発スキルを継続的に向上させます
+                </p>
+              </div>
+            </div>
+
+            <div className='text-center'>
+              <Link href='/onboarding'>
+                <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-10 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200'>
+                  🚀 チュートリアルを始める
+                </Button>
+              </Link>
+              <p className='text-indigo-100 text-sm mt-4'>
+                所要時間: 約3分 | 無料でご利用いただけます
+              </p>
             </div>
           </div>
         </section>
@@ -249,11 +306,68 @@ const Home = () => {
                   <p className='text-gray-600 text-sm'>よくある質問とフィードバック送信</p>
                 </div>
               </Link>
+
+              <Link href='/pricing' className='group'>
+                <div className='bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6'>
+                  <div className='flex items-center mb-4'>
+                    <div className='w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4'>
+                      <svg
+                        className='w-6 h-6 text-indigo-600'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'
+                        />
+                      </svg>
+                    </div>
+                    <h4 className='text-lg font-semibold text-gray-900 group-hover:text-indigo-600'>
+                      料金プラン
+                    </h4>
+                  </div>
+                  <p className='text-gray-600 text-sm'>プラン比較と詳細レポート機能のご案内</p>
+                </div>
+              </Link>
+
+              <Link href='/reports' className='group'>
+                <div className='bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6'>
+                  <div className='flex items-center mb-4'>
+                    <div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4'>
+                      <svg
+                        className='w-6 h-6 text-purple-600'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
+                        />
+                      </svg>
+                    </div>
+                    <h4 className='text-lg font-semibold text-gray-900 group-hover:text-purple-600'>
+                      詳細レポート
+                    </h4>
+                  </div>
+                  <p className='text-gray-600 text-sm'>高度な分析とインサイト（プロプラン限定）</p>
+                </div>
+              </Link>
             </div>
 
             <div className='mt-12 text-center'>
               <h4 className='text-lg font-semibold text-gray-900 mb-6'>その他のページ</h4>
               <div className='flex flex-wrap justify-center gap-4'>
+                <Link href='/onboarding'>
+                  <Button className='bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-sm font-semibold border border-indigo-300'>
+                    🚀 チュートリアル
+                  </Button>
+                </Link>
                 <Link href='/login'>
                   <Button variant='outline' className='text-sm'>
                     ログイン
@@ -267,11 +381,6 @@ const Home = () => {
                 <Link href='/legal'>
                   <Button variant='outline' className='text-sm'>
                     利用規約
-                  </Button>
-                </Link>
-                <Link href='/onboarding'>
-                  <Button variant='outline' className='text-sm'>
-                    チュートリアル
                   </Button>
                 </Link>
                 <Link href='/feedback'>
@@ -294,8 +403,8 @@ const Home = () => {
             </p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
               <Link href='/onboarding'>
-                <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-8 py-3 text-lg'>
-                  無料で始める
+                <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold shadow-lg'>
+                  🚀 チュートリアルを始める
                 </Button>
               </Link>
               <Link href='/dashboard'>

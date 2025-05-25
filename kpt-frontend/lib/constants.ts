@@ -328,3 +328,101 @@ export const INTEGRATION_SERVICES = {
   TRELLO: 'trello',
   NOTION: 'notion',
 } as const;
+
+// ===== 課金・プラン関連定数 =====
+
+/**
+ * 課金プラン設定
+ */
+export const PRICING_PLANS = {
+  FREE: {
+    id: 'free',
+    name: 'フリープラン',
+    type: 'free' as const,
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    description: '個人利用に最適な基本機能',
+    features: [
+      { name: 'KPT作成', description: '基本的なKPT振り返り機能', included: true, limit: 10 },
+      { name: '基本レポート', description: 'シンプルな統計表示', included: true },
+      { name: 'データエクスポート', description: 'CSV形式でのデータ出力', included: true },
+      { name: '詳細レポート', description: '高度な分析とインサイト', included: false },
+      { name: '無制限KPT', description: '制限なしでKPT作成', included: false },
+      { name: 'API連携', description: '外部サービスとの連携', included: false },
+      { name: '優先サポート', description: '24時間以内の回答保証', included: false },
+    ],
+    isPopular: false,
+    isRecommended: false,
+  },
+  PRO: {
+    id: 'pro',
+    name: 'プロプラン',
+    type: 'pro' as const,
+    monthlyPrice: 980,
+    yearlyPrice: 9800,
+    description: '本格的な振り返りと成長分析',
+    features: [
+      { name: 'KPT作成', description: '基本的なKPT振り返り機能', included: true },
+      { name: '基本レポート', description: 'シンプルな統計表示', included: true },
+      { name: 'データエクスポート', description: 'CSV/JSON形式でのデータ出力', included: true },
+      { name: '詳細レポート', description: '高度な分析とインサイト', included: true },
+      { name: '無制限KPT', description: '制限なしでKPT作成', included: true },
+      { name: 'API連携', description: '外部サービスとの連携', included: true, limit: 3 },
+      { name: '優先サポート', description: '24時間以内の回答保証', included: false },
+    ],
+    isPopular: true,
+    isRecommended: false,
+  },
+  ENTERPRISE: {
+    id: 'enterprise',
+    name: 'エンタープライズ',
+    type: 'enterprise' as const,
+    monthlyPrice: 2980,
+    yearlyPrice: 29800,
+    description: 'チーム・組織向けの包括的ソリューション',
+    features: [
+      { name: 'KPT作成', description: '基本的なKPT振り返り機能', included: true },
+      { name: '基本レポート', description: 'シンプルな統計表示', included: true },
+      { name: 'データエクスポート', description: '全形式でのデータ出力', included: true },
+      { name: '詳細レポート', description: '高度な分析とインサイト', included: true },
+      { name: '無制限KPT', description: '制限なしでKPT作成', included: true },
+      { name: 'API連携', description: '外部サービスとの連携', included: true },
+      { name: '優先サポート', description: '24時間以内の回答保証', included: true },
+    ],
+    isRecommended: true,
+  },
+} as const;
+
+/**
+ * 機能制限設定
+ */
+export const FEATURE_LIMITS = {
+  FREE: {
+    maxKpts: 10,
+    maxIntegrations: 0,
+    detailedReports: false,
+    apiAccess: false,
+  },
+  PRO: {
+    maxKpts: -1, // 無制限
+    maxIntegrations: 3,
+    detailedReports: true,
+    apiAccess: true,
+  },
+  ENTERPRISE: {
+    maxKpts: -1, // 無制限
+    maxIntegrations: -1, // 無制限
+    detailedReports: true,
+    apiAccess: true,
+  },
+} as const;
+
+/**
+ * 課金関連メッセージ
+ */
+export const BILLING_MESSAGES = {
+  UPGRADE_REQUIRED: 'この機能を利用するにはプランのアップグレードが必要です',
+  LIMIT_REACHED: '現在のプランの利用上限に達しました',
+  TRIAL_EXPIRED: '無料トライアル期間が終了しました',
+  PAYMENT_FAILED: '決済に失敗しました。お支払い方法をご確認ください',
+} as const;

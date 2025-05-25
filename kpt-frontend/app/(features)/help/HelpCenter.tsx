@@ -19,13 +19,6 @@ interface FAQ {
   category: 'general' | 'kpt' | 'integration' | 'notification';
 }
 
-interface Tutorial {
-  title: string;
-  description: string;
-  videoUrl: string;
-  duration: string;
-}
-
 const faqs: FAQ[] = [
   {
     question: 'KPTとは何ですか？',
@@ -53,27 +46,6 @@ const faqs: FAQ[] = [
   },
 ];
 
-const tutorials: Tutorial[] = [
-  {
-    title: 'KPTの基本',
-    description: 'KPTの基本的な使い方と効果的な活用方法を学びます。',
-    videoUrl: 'https://example.com/tutorials/kpt-basics',
-    duration: '5分',
-  },
-  {
-    title: 'テンプレートの作成と管理',
-    description: '効率的なKPT実施のためのテンプレート作成方法を解説します。',
-    videoUrl: 'https://example.com/tutorials/template-management',
-    duration: '8分',
-  },
-  {
-    title: '外部サービスとの連携',
-    description: '各種外部サービスとの連携設定方法を説明します。',
-    videoUrl: 'https://example.com/tutorials/integrations',
-    duration: '10分',
-  },
-];
-
 const HelpCenter: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<FAQ['category'] | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -93,7 +65,7 @@ const HelpCenter: React.FC = () => {
       <div className='text-center mb-12'>
         <h1 className='text-3xl font-bold text-gray-900 mb-4'>ヘルプセンター</h1>
         <p className='text-lg text-gray-600'>
-          よくある質問やチュートリアルを確認して、KPTをより効果的に活用しましょう。
+          よくある質問を確認して、KPTをより効果的に活用しましょう。
         </p>
       </div>
 
@@ -187,46 +159,6 @@ const HelpCenter: React.FC = () => {
             <div key={index} className='bg-white shadow rounded-lg p-6'>
               <h3 className='text-lg font-medium text-gray-900 mb-2'>{faq.question}</h3>
               <p className='text-gray-600'>{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* チュートリアルセクション */}
-      <div className='max-w-3xl mx-auto mb-12'>
-        <h2 className='text-2xl font-bold text-gray-900 mb-6'>チュートリアル</h2>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          {tutorials.map((tutorial, index) => (
-            <div key={index} className='bg-white shadow rounded-lg overflow-hidden'>
-              <div className='aspect-w-16 aspect-h-9'>
-                <iframe
-                  src={tutorial.videoUrl}
-                  title={tutorial.title}
-                  allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                  allowFullScreen
-                  className='w-full h-full'
-                />
-              </div>
-              <div className='p-6'>
-                <h3 className='text-lg font-medium text-gray-900 mb-2'>{tutorial.title}</h3>
-                <p className='text-gray-600 mb-4'>{tutorial.description}</p>
-                <div className='flex items-center text-sm text-gray-500'>
-                  <svg
-                    className='h-5 w-5 mr-2'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
-                    />
-                  </svg>
-                  {tutorial.duration}
-                </div>
-              </div>
             </div>
           ))}
         </div>

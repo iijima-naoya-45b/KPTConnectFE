@@ -341,3 +341,212 @@ export type DeepPartial<T> = {
  * @template T - 元の型
  */
 export type NonNullable<T> = T extends null | undefined ? never : T;
+
+// ===== 課金・プラン関連型定義 =====
+
+/**
+ * プランタイプ
+ */
+export type PlanType = 'free' | 'pro' | 'enterprise';
+
+/**
+ * 課金プラン
+ */
+export interface Plan {
+  /** プランID */
+  id: string;
+  /** プラン名 */
+  name: string;
+  /** プランタイプ */
+  type: PlanType;
+  /** 月額料金（円） */
+  monthlyPrice: number;
+  /** 年額料金（円） */
+  yearlyPrice: number;
+  /** 説明 */
+  description: string;
+  /** 機能一覧 */
+  features: readonly PlanFeature[];
+  /** 人気プランフラグ */
+  isPopular?: boolean;
+  /** 推奨プランフラグ */
+  isRecommended?: boolean;
+}
+
+/**
+ * プラン機能
+ */
+export interface PlanFeature {
+  /** 機能名 */
+  name: string;
+  /** 説明 */
+  description: string;
+  /** 利用可能フラグ */
+  included: boolean;
+  /** 制限値（数値制限がある場合） */
+  limit?: number;
+}
+
+/**
+ * ユーザーサブスクリプション
+ */
+export interface UserSubscription {
+  /** サブスクリプションID */
+  id: string;
+  /** ユーザーID */
+  userId: string;
+  /** プランID */
+  planId: string;
+  /** プラン情報 */
+  plan: Plan;
+  /** ステータス */
+  status: SubscriptionStatus;
+  /** 開始日 */
+  startDate: string;
+  /** 終了日 */
+  endDate?: string;
+  /** 次回請求日 */
+  nextBillingDate?: string;
+  /** 請求サイクル */
+  billingCycle: BillingCycle;
+  /** 作成日時 */
+  createdAt: string;
+  /** 更新日時 */
+  updatedAt: string;
+}
+
+/**
+ * サブスクリプションステータス
+ */
+export type SubscriptionStatus = 
+  | 'active' 
+  | 'canceled' 
+  | 'past_due' 
+  | 'unpaid' 
+  | 'trialing';
+
+/**
+ * 請求サイクル
+ */
+export type BillingCycle = 'monthly' | 'yearly';
+
+/**
+ * 詳細レポートデータ
+ */
+export interface DetailedReport {
+  /** レポートID */
+  id: string;
+  /** ユーザーID */
+  userId: string;
+  /** レポート期間 */
+  period: ReportPeriod;
+  /** 開始日 */
+  startDate: string;
+  /** 終了日 */
+  endDate: string;
+  /** KPT統計 */
+  kptStats: KptStatistics;
+  /** 成長分析 */
+  growthAnalysis: GrowthAnalysis;
+  /** 推奨アクション */
+  recommendations: Recommendation[];
+  /** 生成日時 */
+  generatedAt: string;
+}
+
+/**
+ * レポート期間
+ */
+export type ReportPeriod = 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+
+/**
+ * KPT統計
+ */
+export interface KptStatistics {
+  /** 総KPT数 */
+  totalKpts: number;
+  /** Keep項目数 */
+  keepCount: number;
+  /** Problem項目数 */
+  problemCount: number;
+  /** Try項目数 */
+  tryCount: number;
+  /** 完了したTry項目数 */
+  completedTryCount: number;
+  /** Try完了率 */
+  tryCompletionRate: number;
+  /** 平均KPT作成間隔（日） */
+  averageKptInterval: number;
+  /** 最も多いカテゴリ */
+  mostFrequentCategory: KptItemType;
+}
+
+/**
+ * 成長分析
+ */
+export interface GrowthAnalysis {
+  /** 成長スコア（0-100） */
+  growthScore: number;
+  /** 前期比較 */
+  previousPeriodComparison: PeriodComparison;
+  /** 強み */
+  strengths: string[];
+  /** 改善点 */
+  improvementAreas: string[];
+  /** トレンド */
+  trends: Trend[];
+}
+
+/**
+ * 期間比較
+ */
+export interface PeriodComparison {
+  /** KPT数の変化 */
+  kptCountChange: number;
+  /** Try完了率の変化 */
+  tryCompletionRateChange: number;
+  /** 成長スコアの変化 */
+  growthScoreChange: number;
+}
+
+/**
+ * トレンド
+ */
+export interface Trend {
+  /** トレンド名 */
+  name: string;
+  /** 方向（上昇/下降/横ばい） */
+  direction: 'up' | 'down' | 'stable';
+  /** 変化率 */
+  changeRate: number;
+  /** 説明 */
+  description: string;
+}
+
+/**
+ * 推奨アクション
+ */
+export interface Recommendation {
+  /** 推奨ID */
+  id: string;
+  /** タイトル */
+  title: string;
+  /** 説明 */
+  description: string;
+  /** 優先度 */
+  priority: Priority;
+  /** カテゴリ */
+  category: RecommendationCategory;
+  /** 実行可能フラグ */
+  actionable: boolean;
+}
+
+/**
+ * 推奨カテゴリ
+ */
+export type RecommendationCategory = 
+  | 'frequency' 
+  | 'quality' 
+  | 'follow_up' 
+  | 'goal_setting' 
+  | 'reflection_depth';
