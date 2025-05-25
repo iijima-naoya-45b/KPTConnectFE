@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import { Input, Button, Label } from "@/components/ui";
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+import { Input, Button, Label } from '@/components/ui';
 
 // このページは動的レンダリングが必要
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 const LoginPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [formObject, setFormObject] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
@@ -28,30 +28,30 @@ const LoginPageContent = () => {
     async (sessionId: string) => {
       try {
         const response = await fetch(`${BACKEND_URL}/api/v1/sessions/verify`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-          credentials: "include",
+          credentials: 'include',
           body: JSON.stringify({ session_id: sessionId }),
         });
 
         if (response.ok) {
-          router.push("/dashboard");
+          router.push('/dashboard');
         } else {
           const data = await response.json();
-          setError(data.error || "Googleログインに失敗しました");
+          setError(data.error || 'Googleログインに失敗しました');
         }
       } catch (err) {
-        console.error("Googleログインエラー:", err);
-        setError("Googleログイン処理中にエラーが発生しました");
+        console.error('Googleログインエラー:', err);
+        setError('Googleログイン処理中にエラーが発生しました');
       }
     },
     [BACKEND_URL, router]
   );
 
   useEffect(() => {
-    const sessionId = searchParams.get("session_id");
+    const sessionId = searchParams.get('session_id');
     if (sessionId) {
       handleGoogleCallback(sessionId);
     }
@@ -59,80 +59,78 @@ const LoginPageContent = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/v1/sessions`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify(formObject),
       });
 
       if (response.ok) {
-        router.push("/dashboard");
+        router.push('/dashboard');
       } else {
         const data = await response.json();
-        setError(data.error || "ログインに失敗しました");
+        setError(data.error || 'ログインに失敗しました');
       }
     } catch (err) {
-      console.error("ログインエラー:", err);
-      setError("ログイン処理中にエラーが発生しました");
+      console.error('ログインエラー:', err);
+      setError('ログイン処理中にエラーが発生しました');
     }
   };
 
   // formObjectの更新用
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormObject((prev) => ({
+    setFormObject(prev => ({
       ...prev,
       [name]: value,
     }));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
+    <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+      <div className='max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow'>
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            ログイン
-          </h2>
+          <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>ログイン</h2>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded'>
             {error}
           </div>
         )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+        <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
+          <div className='rounded-md shadow-sm -space-y-px'>
             <div>
-              <Label htmlFor="email" className="sr-only">
+              <Label htmlFor='email' className='sr-only'>
                 メールアドレス
               </Label>
               <Input
-                id="email"
-                name="email"
-                type="email"
+                id='email'
+                name='email'
+                type='email'
                 required
-                placeholder="メールアドレス"
+                placeholder='メールアドレス'
                 value={formObject.email}
                 onChange={handleChange}
               />
             </div>
             <div>
-              <Label htmlFor="password" className="sr-only">
+              <Label htmlFor='password' className='sr-only'>
                 パスワード
               </Label>
               <Input
-                id="password"
-                name="password"
-                type="password"
+                id='password'
+                name='password'
+                type='password'
                 required
-                placeholder="パスワード"
+                placeholder='パスワード'
                 value={formObject.password}
                 onChange={handleChange}
               />
@@ -140,34 +138,31 @@ const LoginPageContent = () => {
           </div>
 
           <div>
-            <Button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4"
-            >
+            <Button type='submit' className='group relative w-full flex justify-center py-2 px-4'>
               ログイン
             </Button>
           </div>
         </form>
 
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+        <div className='mt-6'>
+          <div className='relative'>
+            <div className='absolute inset-0 flex items-center'>
+              <div className='w-full border-t border-gray-300' />
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">または</span>
+            <div className='relative flex justify-center text-sm'>
+              <span className='px-2 bg-white text-gray-500'>または</span>
             </div>
           </div>
 
-          <div className="mt-6">
+          <div className='mt-6'>
             <Button
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center px-4 py-2 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2"
+              className='w-full flex items-center justify-center px-4 py-2 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2'
             >
               <Image
-                className="h-5 w-5 mr-2"
-                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                alt="Google logo"
+                className='h-5 w-5 mr-2'
+                src='https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg'
+                alt='Google logo'
                 width={20}
                 height={20}
               />

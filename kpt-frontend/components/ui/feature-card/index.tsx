@@ -12,7 +12,7 @@
  * ```
  */
 
-import React from "react";
+import React from 'react';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -20,18 +20,14 @@ interface FeatureCardProps {
   description: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({
-  icon,
-  title,
-  description,
-}) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => {
   return (
-    <div className="text-center">
-      <div className="bg-indigo-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+    <div className='text-center'>
+      <div className='bg-indigo-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center'>
         {icon}
       </div>
-      <h4 className="text-xl font-bold text-gray-900 mb-2">{title}</h4>
-      <p className="text-gray-600">{description}</p>
+      <h4 className='text-xl font-bold text-gray-900 mb-2'>{title}</h4>
+      <p className='text-gray-600'>{description}</p>
     </div>
   );
 };

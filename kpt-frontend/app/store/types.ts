@@ -1,12 +1,12 @@
 // 状態
 interface SampleState {
-    count: number;
+  count: number;
 }
-  
-  // アクション
+
+// アクション
 interface SampleActions {
-    increment: () => void;
-    decrement: () => void;
+  increment: () => void;
+  decrement: () => void;
 }
-  
+
 export type StoreState = SampleState & SampleActions;

@@ -3,8 +3,8 @@
  * @description SheetコンポーネントのStorybookストーリー
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from "../button/button";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '../button/button';
 import {
   Sheet,
   SheetContent,
@@ -13,15 +13,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./sheet";
+} from './sheet';
 
 const meta: Meta<typeof Sheet> = {
-  title: "UI/Sheet",
+  title: 'UI/Sheet',
   component: Sheet,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -39,11 +39,11 @@ export const Default: Story = {
           <SheetTitle>シートのタイトル</SheetTitle>
           <SheetDescription>シートの説明文がここに入ります。</SheetDescription>
         </SheetHeader>
-        <div className="py-4">
+        <div className='py-4'>
           <p>シートの内容がここに入ります。</p>
         </div>
         <SheetFooter>
-          <Button variant="outline">キャンセル</Button>
+          <Button variant='outline'>キャンセル</Button>
           <Button>保存</Button>
         </SheetFooter>
       </SheetContent>
@@ -58,14 +58,12 @@ export const LeftSide: Story = {
       <SheetTrigger asChild>
         <Button>左側から開く</Button>
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent side='left'>
         <SheetHeader>
           <SheetTitle>左側のシート</SheetTitle>
-          <SheetDescription>
-            左側から表示されるシートの例です。
-          </SheetDescription>
+          <SheetDescription>左側から表示されるシートの例です。</SheetDescription>
         </SheetHeader>
-        <div className="py-4">
+        <div className='py-4'>
           <p>シートの内容がここに入ります。</p>
         </div>
       </SheetContent>
@@ -80,14 +78,12 @@ export const TopSide: Story = {
       <SheetTrigger asChild>
         <Button>上側から開く</Button>
       </SheetTrigger>
-      <SheetContent side="top">
+      <SheetContent side='top'>
         <SheetHeader>
           <SheetTitle>上側のシート</SheetTitle>
-          <SheetDescription>
-            上側から表示されるシートの例です。
-          </SheetDescription>
+          <SheetDescription>上側から表示されるシートの例です。</SheetDescription>
         </SheetHeader>
-        <div className="py-4">
+        <div className='py-4'>
           <p>シートの内容がここに入ります。</p>
         </div>
       </SheetContent>
@@ -102,14 +98,12 @@ export const BottomSide: Story = {
       <SheetTrigger asChild>
         <Button>下側から開く</Button>
       </SheetTrigger>
-      <SheetContent side="bottom">
+      <SheetContent side='bottom'>
         <SheetHeader>
           <SheetTitle>下側のシート</SheetTitle>
-          <SheetDescription>
-            下側から表示されるシートの例です。
-          </SheetDescription>
+          <SheetDescription>下側から表示されるシートの例です。</SheetDescription>
         </SheetHeader>
-        <div className="py-4">
+        <div className='py-4'>
           <p>シートの内容がここに入ります。</p>
         </div>
       </SheetContent>

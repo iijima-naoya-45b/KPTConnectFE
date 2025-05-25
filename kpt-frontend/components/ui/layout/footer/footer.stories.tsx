@@ -3,16 +3,16 @@
  * @description FooterコンポーネントのStorybookストーリー
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
-import Footer from "./footer";
+import type { Meta, StoryObj } from '@storybook/react';
+import Footer from './footer';
 
 const meta: Meta<typeof Footer> = {
-  title: "Components/Footer",
+  title: 'Components/Footer',
   component: Footer,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -26,7 +26,7 @@ export const Default: Story = {
 // ダークモードの例
 export const DarkMode: Story = {
   render: () => (
-    <div className="dark">
+    <div className='dark'>
       <Footer />
     </div>
   ),

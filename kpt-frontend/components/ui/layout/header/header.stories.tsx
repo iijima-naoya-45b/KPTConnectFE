@@ -3,16 +3,16 @@
  * @description HeaderコンポーネントのStorybookストーリー
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
-import Header from "./header";
+import type { Meta, StoryObj } from '@storybook/react';
+import Header from './header';
 
 const meta: Meta<typeof Header> = {
-  title: "UI/Header",
+  title: 'UI/Header',
   component: Header,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -26,7 +26,7 @@ export const Default: Story = {
 // ダークモードの例
 export const DarkMode: Story = {
   render: () => (
-    <div className="dark">
+    <div className='dark'>
       <Header />
     </div>
   ),
@@ -35,12 +35,10 @@ export const DarkMode: Story = {
 // スクロール時の例
 export const Scrolled: Story = {
   render: () => (
-    <div className="h-[200vh]">
+    <div className='h-[200vh]'>
       <Header />
-      <div className="h-screen flex items-center justify-center">
-        <p className="text-gray-500">
-          スクロールしてヘッダーの動作を確認してください
-        </p>
+      <div className='h-screen flex items-center justify-center'>
+        <p className='text-gray-500'>スクロールしてヘッダーの動作を確認してください</p>
       </div>
     </div>
   ),
