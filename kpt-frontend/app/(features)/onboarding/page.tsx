@@ -4,6 +4,7 @@
  *
  * 初回ユーザー向けのチュートリアルとセットアップガイドを提供するページです。
  * KPTの基本概念、使い方、初期設定を段階的に案内します。
+ * 高さの固定化により、ステップ切り替え時のちらつきを防止します。
  *
  * @example
  * ```tsx
@@ -44,22 +45,24 @@ const OnboardingPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50'>
-      <div className='container mx-auto px-4 py-8'>
-        <OnboardingStep
-          step={onboardingSteps[currentStep]}
-          currentStep={currentStep}
-          totalSteps={onboardingSteps.length}
-        />
+    <div className='min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col'>
+      <div className='container mx-auto px-4 py-8 flex-1 flex flex-col justify-center'>
+        <div className='flex-1 flex flex-col justify-center max-w-4xl mx-auto w-full'>
+          <OnboardingStep
+            step={onboardingSteps[currentStep]}
+            currentStep={currentStep}
+            totalSteps={onboardingSteps.length}
+          />
 
-        <OnboardingNavigation
-          currentStep={currentStep}
-          totalSteps={onboardingSteps.length}
-          onNext={nextStep}
-          onPrev={prevStep}
-          onSkip={skipOnboarding}
-          onComplete={completeOnboarding}
-        />
+          <OnboardingNavigation
+            currentStep={currentStep}
+            totalSteps={onboardingSteps.length}
+            onNext={nextStep}
+            onPrev={prevStep}
+            onSkip={skipOnboarding}
+            onComplete={completeOnboarding}
+          />
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@
  *
  * オンボーディングの各ステップのコンテンツとデータを定義します。
  * ステップの内容、説明、表示コンテンツを管理します。
+ * 各ステップのコンテンツ高さを統一し、スムーズな切り替えを実現します。
  */
 
 import React from 'react';
@@ -21,7 +22,7 @@ export const onboardingSteps: OnboardingStepData[] = [
     title: 'KPT Connectへようこそ！',
     description: '個人開発者のための振り返りプラットフォームです',
     content: (
-      <div className='text-center space-y-6'>
+      <div className='text-center space-y-6 flex flex-col justify-center h-full'>
         <div className='w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto'>
           <svg
             className='w-12 h-12 text-indigo-600'
@@ -52,7 +53,7 @@ export const onboardingSteps: OnboardingStepData[] = [
     title: 'KPTとは？',
     description: '振り返りの基本フレームワークを理解しましょう',
     content: (
-      <div className='space-y-8'>
+      <div className='space-y-8 flex flex-col justify-center h-full'>
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
           <div className='text-center p-6 bg-blue-50 rounded-lg'>
             <div className='w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4'>
@@ -88,7 +89,7 @@ export const onboardingSteps: OnboardingStepData[] = [
     title: '主な機能',
     description: 'KPT Connectで利用できる機能をご紹介します',
     content: (
-      <div className='space-y-6'>
+      <div className='space-y-6 flex flex-col justify-center h-full'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex items-start space-x-4 p-4 bg-gray-50 rounded-lg'>
             <div className='w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0'>
@@ -183,7 +184,7 @@ export const onboardingSteps: OnboardingStepData[] = [
     title: 'はじめましょう！',
     description: '準備完了です。最初のKPTを作成してみましょう',
     content: (
-      <div className='text-center space-y-8'>
+      <div className='text-center space-y-8 flex flex-col justify-center h-full'>
         <div className='w-32 h-32 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
           <svg
             className='w-16 h-16 text-green-600'
