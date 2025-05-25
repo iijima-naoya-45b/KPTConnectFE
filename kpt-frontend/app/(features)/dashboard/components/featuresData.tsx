@@ -86,6 +86,21 @@ export const dashboardFeatures: DashboardFeature[] = [
     ),
   },
   {
+    title: 'KPT診断',
+    description: '技術分野別の向上ポイント分析と学習パス',
+    path: '/diagnosis',
+    icon: (
+      <svg className='h-6 w-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+        <path
+          strokeLinecap='round'
+          strokeLinejoin='round'
+          strokeWidth={2}
+          d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+        />
+      </svg>
+    ),
+  },
+  {
     title: '詳細レポート',
     description: 'KPTの詳細分析レポートとインサイト',
     path: '/reports',

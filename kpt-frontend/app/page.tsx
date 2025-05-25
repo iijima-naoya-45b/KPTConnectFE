@@ -96,8 +96,14 @@ const Home = () => {
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12'>
               <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
-                <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4'>
-                  <span className='text-2xl'>1️⃣</span>
+                <div className='w-20 h-20 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4 p-3'>
+                  <Image
+                    src='/images/step1-account.svg'
+                    alt='アカウント作成のイラスト'
+                    width={64}
+                    height={64}
+                    className='w-full h-full object-contain'
+                  />
                 </div>
                 <h4 className='text-lg font-semibold text-white mb-2'>アカウント作成</h4>
                 <p className='text-indigo-100 text-sm'>
@@ -106,8 +112,14 @@ const Home = () => {
               </div>
 
               <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
-                <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4'>
-                  <span className='text-2xl'>2️⃣</span>
+                <div className='w-20 h-20 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4 p-3'>
+                  <Image
+                    src='/images/step2-create.svg'
+                    alt='KPT作成のイラスト'
+                    width={64}
+                    height={64}
+                    className='w-full h-full object-contain'
+                  />
                 </div>
                 <h4 className='text-lg font-semibold text-white mb-2'>初回KPT作成</h4>
                 <p className='text-indigo-100 text-sm'>
@@ -116,8 +128,14 @@ const Home = () => {
               </div>
 
               <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
-                <div className='w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4'>
-                  <span className='text-2xl'>3️⃣</span>
+                <div className='w-20 h-20 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4 p-3'>
+                  <Image
+                    src='/images/step3-improve.svg'
+                    alt='継続的改善のイラスト'
+                    width={64}
+                    height={64}
+                    className='w-full h-full object-contain'
+                  />
                 </div>
                 <h4 className='text-lg font-semibold text-white mb-2'>継続的改善</h4>
                 <p className='text-indigo-100 text-sm'>
@@ -127,12 +145,19 @@ const Home = () => {
             </div>
 
             <div className='text-center'>
-              <Link href='/onboarding'>
-                <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-10 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200'>
-                  🚀 チュートリアルを始める
-                </Button>
-              </Link>
-              <p className='text-indigo-100 text-sm mt-4'>
+              <div className='flex flex-col sm:flex-row gap-4 justify-center items-center mb-4'>
+                <Link href='/onboarding'>
+                  <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-10 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200'>
+                    🚀 チュートリアルを始める
+                  </Button>
+                </Link>
+                <Link href='/dashboard'>
+                  <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-10 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200'>
+                    ダッシュボードを見る
+                  </Button>
+                </Link>
+              </div>
+              <p className='text-indigo-100 text-sm'>
                 所要時間: 約3分 | 無料でご利用いただけます
               </p>
             </div>
@@ -408,10 +433,7 @@ const Home = () => {
                 </Button>
               </Link>
               <Link href='/dashboard'>
-                <Button
-                  variant='outline'
-                  className='border-white text-white hover:bg-white hover:text-indigo-600 px-8 py-3 text-lg'
-                >
+                <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold shadow-lg'>
                   ダッシュボードを見る
                 </Button>
               </Link>
