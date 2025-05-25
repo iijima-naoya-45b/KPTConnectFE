@@ -3,4 +3,4 @@
  * @description アイコンコンポーネントのエクスポート
  */
 
-export * from "./feature-icons"; 
+export * from './feature-icons';

@@ -3,21 +3,21 @@
  * @description FeatureCardコンポーネントのStorybookストーリー
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
-import FeatureCard from "./index";
+import type { Meta, StoryObj } from '@storybook/react';
+import FeatureCard from './index';
 import {
   EasyReflectionIcon,
   RealTimeSyncIcon,
   ProgressManagementIcon,
-} from "../icons/feature-icons";
+} from '../icons/feature-icons';
 
 const meta: Meta<typeof FeatureCard> = {
-  title: "UI/FeatureCard",
+  title: 'UI/FeatureCard',
   component: FeatureCard,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -27,9 +27,8 @@ type Story = StoryObj<typeof FeatureCard>;
 export const Default: Story = {
   args: {
     icon: <EasyReflectionIcon />,
-    title: "簡単な振り返り",
-    description:
-      "直感的なインターフェースで、チームの振り返りを簡単に行えます。",
+    title: '簡単な振り返り',
+    description: '直感的なインターフェースで、チームの振り返りを簡単に行えます。',
   },
 };
 
@@ -37,9 +36,8 @@ export const Default: Story = {
 export const RealTimeSync: Story = {
   args: {
     icon: <RealTimeSyncIcon />,
-    title: "リアルタイム同期",
-    description:
-      "チームメンバーとリアルタイムで同期し、効率的な振り返りを実現します。",
+    title: 'リアルタイム同期',
+    description: 'チームメンバーとリアルタイムで同期し、効率的な振り返りを実現します。',
   },
 };
 
@@ -47,7 +45,7 @@ export const RealTimeSync: Story = {
 export const ProgressManagement: Story = {
   args: {
     icon: <ProgressManagementIcon />,
-    title: "進捗管理",
-    description: "チームの成長を可視化し、継続的な改善をサポートします。",
+    title: '進捗管理',
+    description: 'チームの成長を可視化し、継続的な改善をサポートします。',
   },
 };

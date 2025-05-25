@@ -8,51 +8,46 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState } from 'react';
+import Link from 'next/link';
 
-type LegalSection = "privacy" | "terms";
+type LegalSection = 'privacy' | 'terms';
 
 const LegalPage: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<LegalSection>("privacy");
+  const [activeSection, setActiveSection] = useState<LegalSection>('privacy');
 
   return (
-    <div className="py-6">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            プライバシーポリシー・利用規約
-          </h1>
-          <Link
-            href="/dashboard"
-            className="text-indigo-600 hover:text-indigo-900"
-          >
+    <div className='py-6'>
+      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex justify-between items-center mb-6'>
+          <h1 className='text-2xl font-semibold text-gray-900'>プライバシーポリシー・利用規約</h1>
+          <Link href='/dashboard' className='text-indigo-600 hover:text-indigo-900'>
             ダッシュボードに戻る
           </Link>
         </div>
 
-        <div className="bg-white shadow rounded-lg">
+        <div className='bg-white shadow rounded-lg'>
           {/* タブナビゲーション */}
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex" aria-label="Tabs">
+          <div className='border-b border-gray-200'>
+            <nav className='-mb-px flex' aria-label='Tabs'>
               <button
-                onClick={() => setActiveSection("privacy")}
+                onClick={() => setActiveSection('privacy')}
                 className={`${
-                  activeSection === "privacy"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  activeSection === 'privacy'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 } w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm`}
               >
                 プライバシーポリシー
               </button>
               <button
-                onClick={() => setActiveSection("terms")}
+                onClick={() => setActiveSection('terms')}
                 className={`${
-                  activeSection === "terms"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  activeSection === 'terms'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 } w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm`}
               >
                 利用規約
@@ -61,9 +56,9 @@ const LegalPage: React.FC = () => {
           </div>
 
           {/* コンテンツ */}
-          <div className="p-6">
-            {activeSection === "privacy" ? (
-              <div className="prose max-w-none">
+          <div className='p-6'>
+            {activeSection === 'privacy' ? (
+              <div className='prose max-w-none'>
                 <h2>プライバシーポリシー</h2>
                 <p>最終更新日: 2024年3月15日</p>
 
@@ -94,9 +89,7 @@ const LegalPage: React.FC = () => {
                 </ul>
 
                 <h3>4. 情報の共有</h3>
-                <p>
-                  以下の場合を除き、個人情報を第三者に提供することはありません：
-                </p>
+                <p>以下の場合を除き、個人情報を第三者に提供することはありません：</p>
                 <ul>
                   <li>ユーザーの同意がある場合</li>
                   <li>法令に基づく場合</li>
@@ -112,7 +105,7 @@ const LegalPage: React.FC = () => {
                 </ul>
               </div>
             ) : (
-              <div className="prose max-w-none">
+              <div className='prose max-w-none'>
                 <h2>利用規約</h2>
                 <p>最終更新日: 2024年3月15日</p>
 
