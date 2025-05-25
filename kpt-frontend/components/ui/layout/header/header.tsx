@@ -5,7 +5,12 @@ const Header = () => {
     <header className="fixed w-full bg-white/80 backdrop-blur-sm shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold text-indigo-600">DevReflect</h1>
+          <Link
+            href="/"
+            className="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+          >
+            DevReflect
+          </Link>
         </div>
         <div className="flex items-center space-x-4">
           <Link
