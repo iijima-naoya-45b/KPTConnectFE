@@ -9,7 +9,7 @@ import {
   EasyReflectionIcon,
   RealTimeSyncIcon,
   ProgressManagementIcon,
-} from "./icons/FeatureIcons";
+} from "../icons/FeatureIcons";
 
 const meta: Meta<typeof FeatureCard> = {
   title: "UI/FeatureCard",
