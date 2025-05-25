@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# ステージされたファイルに対してlintとフォーマットを実行
+npx lint-staged
+
+# TypeScriptの型チェックを実行
+npm run type-check
