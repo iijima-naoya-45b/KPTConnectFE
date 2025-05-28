@@ -13,7 +13,7 @@
 'use client';
 
 import React from 'react';
-import IntegrationSettings from './IntegrationSettings';
+import IntegrationSettings from './components/IntegrationSettings';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 
