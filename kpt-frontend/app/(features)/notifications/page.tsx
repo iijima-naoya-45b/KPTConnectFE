@@ -14,7 +14,7 @@
 'use client';
 
 import React from 'react';
-import NotificationSettings from './NotificationSettings';
+import NotificationSettings from './components/NotificationSettings';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 

@@ -2,26 +2,24 @@
  * @file page.tsx
  * @description お問い合わせページコンポーネント
  *
+ * ユーザーからのお問い合わせを受け付けるための専用ページです。
+ * 必須項目と任意項目を含むフォーム機能を提供します。
+ *
  * @example
  * ```tsx
- * <ContactPage />
+ * // /contact でアクセス可能
  * ```
  */
 
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { ContactForm, ContactSubmitButton, type ContactFormData, type SubmitResult } from './components';
+import { MessageDisplay, PageHeader } from '../shared/components';
 
-interface ContactFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  company?: string;
-  phone?: string;
-}
-
+/**
+ * お問い合わせページコンポーネント
+ */
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
@@ -33,11 +31,12 @@ const ContactPage: React.FC = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitResult, setSubmitResult] = useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
+  const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
 
+  /**
+   * フォーム入力値の変更ハンドラ
+   * @param e - 入力イベント
+   */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -46,9 +45,14 @@ const ContactPage: React.FC = () => {
     }));
   };
 
+  /**
+   * フォーム送信ハンドラ
+   * @param e - フォームイベント
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitResult(null);
 
     try {
       // ここでAPIを呼び出してお問い合わせを送信
@@ -58,6 +62,8 @@ const ContactPage: React.FC = () => {
         success: true,
         message: 'お問い合わせを受け付けました。担当者より折り返しご連絡いたします。',
       });
+
+      // フォームをリセット
       setFormData({
         name: '',
         email: '',
@@ -80,128 +86,34 @@ const ContactPage: React.FC = () => {
   return (
     <div className='py-6'>
       <div className='max-w-3xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='flex justify-between items-center mb-6'>
-          <h1 className='text-2xl font-semibold text-gray-900'>お問い合わせ</h1>
-          <Link href='/dashboard' className='text-indigo-600 hover:text-indigo-900'>
-            ダッシュボードに戻る
-          </Link>
-        </div>
+        {/* ヘッダー */}
+        <PageHeader
+          title='お問い合わせ'
+          backButton={{
+            href: '/dashboard',
+            label: 'ダッシュボードに戻る',
+          }}
+        />
 
         <div className='bg-white shadow rounded-lg p-6'>
+          {/* メッセージ表示 */}
           {submitResult && (
-            <div
-              className={`mb-6 p-4 rounded-md ${
-                submitResult.success ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-              }`}
-            >
-              {submitResult.message}
-            </div>
+            <MessageDisplay
+              message={submitResult.message}
+              type={submitResult.success ? 'success' : 'error'}
+            />
           )}
 
-          <form onSubmit={handleSubmit} className='space-y-6'>
-            <div>
-              <label htmlFor='name' className='block text-sm font-medium text-gray-700'>
-                お名前 <span className='text-red-500'>*</span>
-              </label>
-              <input
-                type='text'
-                id='name'
-                name='name'
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                placeholder='山田 太郎'
-              />
-            </div>
+          {/* お問い合わせフォーム */}
+          <form onSubmit={handleSubmit}>
+            <ContactForm
+              formData={formData}
+              onInputChange={handleInputChange}
+              isSubmitting={isSubmitting}
+            />
 
-            <div>
-              <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
-                メールアドレス <span className='text-red-500'>*</span>
-              </label>
-              <input
-                type='email'
-                id='email'
-                name='email'
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                placeholder='your@email.com'
-              />
-            </div>
-
-            <div>
-              <label htmlFor='company' className='block text-sm font-medium text-gray-700'>
-                会社名
-              </label>
-              <input
-                type='text'
-                id='company'
-                name='company'
-                value={formData.company}
-                onChange={handleInputChange}
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                placeholder='株式会社〇〇'
-              />
-            </div>
-
-            <div>
-              <label htmlFor='phone' className='block text-sm font-medium text-gray-700'>
-                電話番号
-              </label>
-              <input
-                type='tel'
-                id='phone'
-                name='phone'
-                value={formData.phone}
-                onChange={handleInputChange}
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                placeholder='03-1234-5678'
-              />
-            </div>
-
-            <div>
-              <label htmlFor='subject' className='block text-sm font-medium text-gray-700'>
-                件名 <span className='text-red-500'>*</span>
-              </label>
-              <input
-                type='text'
-                id='subject'
-                name='subject'
-                value={formData.subject}
-                onChange={handleInputChange}
-                required
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                placeholder='お問い合わせの件名'
-              />
-            </div>
-
-            <div>
-              <label htmlFor='message' className='block text-sm font-medium text-gray-700'>
-                お問い合わせ内容 <span className='text-red-500'>*</span>
-              </label>
-              <textarea
-                id='message'
-                name='message'
-                value={formData.message}
-                onChange={handleInputChange}
-                required
-                rows={6}
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                placeholder='お問い合わせの詳細を入力してください'
-              />
-            </div>
-
-            <div>
-              <button
-                type='submit'
-                disabled={isSubmitting}
-                className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed'
-              >
-                {isSubmitting ? '送信中...' : '送信する'}
-              </button>
-            </div>
+            {/* 送信ボタン */}
+            <ContactSubmitButton isSubmitting={isSubmitting} className='mt-6' />
           </form>
         </div>
       </div>

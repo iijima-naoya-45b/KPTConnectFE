@@ -13,8 +13,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import HelpCenter from './HelpCenter';
-import FeedbackForm from './FeedbackForm';
+import HelpCenter from './components/HelpCenter';
+import FeedbackForm from './components/FeedbackForm';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 

@@ -69,16 +69,17 @@ interface KPTChartsProps {
   dateRange: DateRange;
 }
 
+// 共通のカラーパレット（コンポーネント外で定数として定義）
+const colors = {
+  keep: '#4F46E5',
+  problem: '#DC2626',
+  try: '#059669',
+  completed: '#10B981',
+  scheduled: '#F59E0B',
+  cancelled: '#6B7280',
+} as const;
+
 const KPTCharts: React.FC<KPTChartsProps> = ({ schedules, dateRange }) => {
-  // 共通のカラーパレット
-  const colors = {
-    keep: '#4F46E5',
-    problem: '#DC2626',
-    try: '#059669',
-    completed: '#10B981',
-    scheduled: '#F59E0B',
-    cancelled: '#6B7280',
-  };
 
   // 1. KPTタイプ別分布（ドーナツチャート）
   const typeDistributionData = useMemo(() => {
