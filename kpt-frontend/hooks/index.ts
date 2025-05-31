@@ -9,6 +9,7 @@
 export { useLocalStorage } from './use-local-storage';
 export { useDebounce } from './use-debounce';
 export { useToggle } from './use-toggle';
+export { useAuth } from './use-auth';
 
 // 今後追加予定のフック
 // export { useThrottle } from './use-throttle';
@@ -25,5 +26,4 @@ export { useToggle } from './use-toggle';
 // export { useApi } from './use-api';
 // export { useFetch } from './use-fetch';
 // export { useNotifications } from './use-notifications';
-// export { useAuth } from './use-auth';
 // export { useTheme } from './use-theme';

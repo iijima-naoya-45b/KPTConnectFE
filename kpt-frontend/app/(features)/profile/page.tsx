@@ -34,7 +34,7 @@ const ProfilePage: React.FC = () => {
     id: '1',
     username: '開発太郎',
     email: 'dev.taro@example.com',
-    avatarUrl: 'https://www.gravatar.com/avatar/default?d=identicon&s=200',
+    avatarUrl: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&s=200',
     bio: '個人開発者として日々学習中です。KPTを活用して継続的な改善を心がけています。',
     timezone: 'Asia/Tokyo',
     language: 'ja',
@@ -73,7 +73,7 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen bg-gray-50 pt-16'>
       <div className='py-6'>
         <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
           {/* ヘッダー */}
@@ -115,11 +115,15 @@ const ProfilePage: React.FC = () => {
                   </Label>
                   <div className='flex items-center space-x-4'>
                     <Image
-                      src={profile.avatarUrl || '/default-avatar.png'}
+                      src={profile.avatarUrl || 'https://via.placeholder.com/80x80/9CA3AF/FFFFFF?text=Avatar'}
                       alt='プロフィール画像'
                       width={80}
                       height={80}
                       className='rounded-full'
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://via.placeholder.com/80x80/9CA3AF/FFFFFF?text=Avatar';
+                      }}
                     />
                     {isEditing && (
                       <Button variant='outline' size='sm'>
@@ -289,14 +293,6 @@ const ProfilePage: React.FC = () => {
               <h2 className='text-xl font-semibold text-gray-900 mb-6'>セキュリティ</h2>
 
               <div className='space-y-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <Label className='text-sm font-medium text-gray-700'>パスワード変更</Label>
-                    <p className='text-sm text-gray-500'>定期的なパスワード変更を推奨します</p>
-                  </div>
-                  <Button variant='outline'>パスワードを変更</Button>
-                </div>
-
                 <div className='flex items-center justify-between'>
                   <div>
                     <Label className='text-sm font-medium text-gray-700'>アカウント削除</Label>

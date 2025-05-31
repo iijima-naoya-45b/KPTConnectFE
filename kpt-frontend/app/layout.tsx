@@ -1,36 +1,25 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
+import { Inter } from 'next/font/google';
 import './globals.css';
-import { Header, Footer } from '@/components/ui';
+import { AuthenticatedHeader } from '@/components/ui/layout/header';
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'DevReflect',
-  description:
-    '個人開発者のためのKPT振り返りプラットフォーム。継続的な成長とスキル向上をサポートします。',
+  title: 'KPT Connect',
+  description: 'チーム開発を加速するKPT管理プラットフォーム',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang='ja'>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Header />
-        {children}
-        <Footer />
+      <body className={inter.className}>
+        <AuthenticatedHeader />
+        <main>{children}</main>
       </body>
     </html>
   );
