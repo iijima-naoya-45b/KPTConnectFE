@@ -170,10 +170,13 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          padding: 20,
+          usePointStyle: true,
+        },
       },
       title: {
-        display: true,
-        text: viewMode === 'weekly' ? '週次KPT推移' : '月次総合推移',
+        display: false,
       },
     },
     scales: {
@@ -181,6 +184,14 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
         beginAtZero: true,
         ticks: {
           stepSize: 1,
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+      },
+      x: {
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
         },
       },
     },
@@ -192,10 +203,13 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          padding: 20,
+          usePointStyle: true,
+        },
       },
       title: {
-        display: true,
-        text: '週次完了率',
+        display: false,
       },
     },
     scales: {
@@ -207,6 +221,14 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
             return value + '%';
           },
         },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+      },
+      x: {
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
       },
     },
   };
@@ -217,10 +239,13 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          padding: 20,
+          usePointStyle: true,
+        },
       },
       title: {
-        display: true,
-        text: '月次総合推移',
+        display: false,
       },
     },
     scales: {
@@ -232,6 +257,14 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
         title: {
           display: true,
           text: 'KPT数',
+          color: '#374151',
+          font: {
+            size: 12,
+            weight: 'bold' as const,
+          },
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
         },
       },
       y1: {
@@ -243,9 +276,20 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
         title: {
           display: true,
           text: 'スコア',
+          color: '#374151',
+          font: {
+            size: 12,
+            weight: 'bold' as const,
+          },
         },
         grid: {
           drawOnChartArea: false,
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+      },
+      x: {
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
         },
       },
     },
@@ -288,19 +332,19 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
   const stats = calculateTrendStats();
 
   return (
-    <div className='bg-white shadow rounded-lg p-6'>
-      <div className='mb-6'>
-        <div className='flex items-center justify-between mb-4'>
-          <div>
-            <h2 className='text-xl font-semibold text-gray-900 mb-2'>📈 トレンド分析</h2>
-            <p className='text-gray-600'>時系列でのKPTの変化パターンと傾向を分析します</p>
+    <div className='bg-white shadow rounded-lg p-6 lg:p-8'>
+      <div className='mb-8'>
+        <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6'>
+          <div className='mb-4 lg:mb-0'>
+            <h2 className='text-xl lg:text-2xl font-semibold text-gray-900 mb-2'>📈 トレンド分析</h2>
+            <p className='text-gray-600 text-sm lg:text-base'>時系列でのKPTの変化パターンと傾向を分析します</p>
           </div>
 
           {/* ビュー切り替え */}
-          <div className='flex space-x-1 bg-gray-100 rounded-lg p-1'>
+          <div className='flex space-x-1 bg-gray-100 rounded-lg p-1 self-start lg:self-auto'>
             <button
               onClick={() => setViewMode('weekly')}
-              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 ${
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
                 viewMode === 'weekly'
                   ? 'bg-indigo-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -310,7 +354,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
             </button>
             <button
               onClick={() => setViewMode('monthly')}
-              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 ${
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
                 viewMode === 'monthly'
                   ? 'bg-indigo-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -323,107 +367,126 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ trends, kptStats }) => {
       </div>
 
       {/* 統計サマリー */}
-      <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-6'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-10'>
         {viewMode === 'weekly' ? (
           <>
-            <div className='bg-blue-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-blue-600'>{(stats as any).totalKPTs}</div>
-              <div className='text-sm text-blue-800'>総KPT数</div>
+            <div className='bg-blue-50 p-4 lg:p-6 rounded-lg border border-blue-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-blue-600 mb-1'>{(stats as any).totalKPTs}</div>
+              <div className='text-sm lg:text-base text-blue-800'>総KPT数</div>
             </div>
-            <div className='bg-green-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-green-600'>
+            <div className='bg-green-50 p-4 lg:p-6 rounded-lg border border-green-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-green-600 mb-1'>
                 {(stats as any).avgCompletionRate}%
               </div>
-              <div className='text-sm text-green-800'>平均完了率</div>
+              <div className='text-sm lg:text-base text-green-800'>平均完了率</div>
             </div>
-            <div className='bg-purple-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-purple-600'>{(stats as any).bestWeek}</div>
-              <div className='text-sm text-purple-800'>最高週</div>
+            <div className='bg-purple-50 p-4 lg:p-6 rounded-lg border border-purple-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-purple-600 mb-1'>{(stats as any).bestWeek}</div>
+              <div className='text-sm lg:text-base text-purple-800'>最高週</div>
             </div>
-            <div className='bg-yellow-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-yellow-600'>
+            <div className='bg-yellow-50 p-4 lg:p-6 rounded-lg border border-yellow-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-yellow-600 mb-1'>
                 {(stats as any).bestWeekRate}%
               </div>
-              <div className='text-sm text-yellow-800'>最高完了率</div>
+              <div className='text-sm lg:text-base text-yellow-800'>最高完了率</div>
             </div>
           </>
         ) : (
           <>
-            <div className='bg-blue-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-blue-600'>+{(stats as any).totalGrowth}</div>
-              <div className='text-sm text-blue-800'>KPT数成長</div>
+            <div className='bg-blue-50 p-4 lg:p-6 rounded-lg border border-blue-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-blue-600 mb-1'>+{(stats as any).totalGrowth}</div>
+              <div className='text-sm lg:text-base text-blue-800'>KPT数成長</div>
             </div>
-            <div className='bg-green-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-green-600'>+{(stats as any).scoreGrowth}</div>
-              <div className='text-sm text-green-800'>スコア成長</div>
+            <div className='bg-green-50 p-4 lg:p-6 rounded-lg border border-green-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-green-600 mb-1'>+{(stats as any).scoreGrowth}</div>
+              <div className='text-sm lg:text-base text-green-800'>スコア成長</div>
             </div>
-            <div className='bg-purple-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-purple-600'>
+            <div className='bg-purple-50 p-4 lg:p-6 rounded-lg border border-purple-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-purple-600 mb-1'>
                 {(stats as any).avgMonthlyTotal}
               </div>
-              <div className='text-sm text-purple-800'>月平均KPT数</div>
+              <div className='text-sm lg:text-base text-purple-800'>月平均KPT数</div>
             </div>
-            <div className='bg-yellow-50 p-4 rounded-lg'>
-              <div className='text-2xl font-bold text-yellow-600'>
+            <div className='bg-yellow-50 p-4 lg:p-6 rounded-lg border border-yellow-100'>
+              <div className='text-2xl lg:text-3xl font-bold text-yellow-600 mb-1'>
                 {Math.round((kptStats.completed / kptStats.total) * 100)}%
               </div>
-              <div className='text-sm text-yellow-800'>総合完了率</div>
+              <div className='text-sm lg:text-base text-yellow-800'>総合完了率</div>
             </div>
           </>
         )}
       </div>
 
       {/* チャート表示 */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-        <div className='h-80'>
-          {viewMode === 'weekly' ? (
-            <Line data={weeklyChartData} options={lineChartOptions} />
-          ) : (
-            <Chart type='bar' data={monthlyChartData} options={monthlyChartOptions} />
-          )}
+      <div className='space-y-8 lg:space-y-0 lg:grid lg:grid-cols-1 xl:grid-cols-2 lg:gap-8 mb-8'>
+        <div className='bg-gray-50 rounded-lg p-4 lg:p-6 border border-gray-200'>
+          <h3 className='text-lg font-semibold text-gray-800 mb-4'>
+            {viewMode === 'weekly' ? '週次KPT推移' : '月次総合推移'}
+          </h3>
+          <div className='h-80 lg:h-96 xl:h-80'>
+            {viewMode === 'weekly' ? (
+              <Line data={weeklyChartData} options={lineChartOptions} />
+            ) : (
+              <Chart type='bar' data={monthlyChartData} options={monthlyChartOptions} />
+            )}
+          </div>
         </div>
 
-        <div className='h-80'>
-          {viewMode === 'weekly' ? (
-            <Bar data={completionRateData} options={barChartOptions} />
-          ) : (
-            <Line data={weeklyChartData} options={lineChartOptions} />
-          )}
+        <div className='bg-gray-50 rounded-lg p-4 lg:p-6 border border-gray-200'>
+          <h3 className='text-lg font-semibold text-gray-800 mb-4'>
+            {viewMode === 'weekly' ? '週次完了率' : '週次KPT推移'}
+          </h3>
+          <div className='h-80 lg:h-96 xl:h-80'>
+            {viewMode === 'weekly' ? (
+              <Bar data={completionRateData} options={barChartOptions} />
+            ) : (
+              <Line data={weeklyChartData} options={lineChartOptions} />
+            )}
+          </div>
         </div>
       </div>
 
       {/* インサイト */}
-      <div className='mt-6 p-4 bg-gray-50 rounded-lg'>
-        <h4 className='text-sm font-semibold text-gray-700 mb-2'>📊 トレンドインサイト</h4>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600'>
+      <div className='mt-8 p-4 lg:p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200'>
+        <h4 className='text-base lg:text-lg font-semibold text-gray-700 mb-4 flex items-center'>
+          <span className='mr-2'>📊</span>
+          トレンドインサイト
+        </h4>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 text-sm lg:text-base text-gray-600'>
           {viewMode === 'weekly' ? (
             <>
-              <div>
-                <strong>パフォーマンス:</strong>
-                {(stats as any).avgCompletionRate >= 90
-                  ? ' 非常に安定した完了率を維持'
-                  : (stats as any).avgCompletionRate >= 80
-                    ? ' 良好な完了率を維持'
-                    : ' 完了率の改善が必要'}
+              <div className='bg-white p-4 rounded-lg border border-gray-100'>
+                <strong className='text-gray-800'>パフォーマンス:</strong>
+                <span>
+                  {(stats as any).avgCompletionRate >= 90
+                    ? ' 非常に安定した完了率を維持'
+                    : (stats as any).avgCompletionRate >= 80
+                      ? ' 良好な完了率を維持'
+                      : ' 完了率の改善が必要'}
+                </span>
               </div>
-              <div>
-                <strong>最適な週:</strong> {(stats as any).bestWeek}が最も高い完了率(
-                {(stats as any).bestWeekRate}%)を記録
+              <div className='bg-white p-4 rounded-lg border border-gray-100'>
+                <strong className='text-gray-800'>最適な週:</strong>
+                <span> {(stats as any).bestWeek}が最も高い完了率({(stats as any).bestWeekRate}%)を記録</span>
               </div>
             </>
           ) : (
             <>
-              <div>
-                <strong>成長傾向:</strong>
-                {(stats as any).totalGrowth > 0
-                  ? ` KPT数が${(stats as any).totalGrowth}件増加`
-                  : ' KPT数は横ばい'}
+              <div className='bg-white p-4 rounded-lg border border-gray-100'>
+                <strong className='text-gray-800'>成長傾向:</strong>
+                <span>
+                  {(stats as any).totalGrowth > 0
+                    ? ` KPT数が${(stats as any).totalGrowth}件増加`
+                    : ' KPT数は横ばい'}
+                </span>
               </div>
-              <div>
-                <strong>品質向上:</strong>
-                {(stats as any).scoreGrowth > 0
-                  ? ` スコアが${(stats as any).scoreGrowth}ポイント向上`
-                  : ' スコアは安定'}
+              <div className='bg-white p-4 rounded-lg border border-gray-100'>
+                <strong className='text-gray-800'>品質向上:</strong>
+                <span>
+                  {(stats as any).scoreGrowth > 0
+                    ? ` スコアが${(stats as any).scoreGrowth}ポイント向上`
+                    : ' スコアは安定'}
+                </span>
               </div>
             </>
           )}

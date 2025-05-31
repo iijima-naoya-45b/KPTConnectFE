@@ -26,7 +26,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   className = '',
 }) => {
   const gridClasses = `
-    grid gap-4 
+    grid gap-6 lg:gap-8
     grid-cols-${columns.sm} 
     sm:grid-cols-${columns.md} 
     lg:grid-cols-${columns.lg}
@@ -35,7 +35,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
 
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
-      <div className='py-4'>
+      <div className='py-6 lg:py-8'>
         <div className={gridClasses}>
           {features.map(feature => (
             <FeatureCard key={feature.path} feature={feature} />

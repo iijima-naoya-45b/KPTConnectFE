@@ -9,7 +9,7 @@ const Header = () => {
             href='/'
             className='text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors'
           >
-            DevReflect
+            KPT Connect
           </Link>
         </div>
         <div className='flex items-center space-x-4'>
@@ -35,7 +35,7 @@ const Header = () => {
             href='/signup'
             className='bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium'
           >
-            新規登録
+            はじめる
           </Link>
         </div>
       </nav>

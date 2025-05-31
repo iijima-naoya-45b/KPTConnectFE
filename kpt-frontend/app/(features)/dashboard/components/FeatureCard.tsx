@@ -20,26 +20,28 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, className = '' }) =>
     <Link
       href={feature.path}
       className={`
-        relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm 
-        flex items-center space-x-3 hover:border-gray-400 hover:shadow-md
+        relative rounded-xl border border-gray-300 bg-white px-8 py-6 shadow-sm 
+        flex items-center space-x-4 hover:border-gray-400 hover:shadow-lg
         focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500
         transition-all duration-200 ease-in-out
         ${className}
       `}
     >
       <div className='flex-shrink-0'>
-        <div className='h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600'>
-          {feature.icon}
+        <div className='h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600'>
+          <div className='text-lg'>
+            {feature.icon}
+          </div>
         </div>
       </div>
       <div className='flex-1 min-w-0'>
         <span className='absolute inset-0' aria-hidden='true' />
-        <p className='text-sm font-medium text-gray-900'>{feature.title}</p>
-        <p className='text-sm text-gray-500 truncate'>{feature.description}</p>
+        <p className='text-base font-semibold text-gray-900 mb-1'>{feature.title}</p>
+        <p className='text-sm text-gray-500 line-clamp-2'>{feature.description}</p>
       </div>
       <div className='flex-shrink-0'>
         <svg
-          className='h-5 w-5 text-gray-400'
+          className='h-6 w-6 text-gray-400'
           fill='none'
           stroke='currentColor'
           viewBox='0 0 24 24'

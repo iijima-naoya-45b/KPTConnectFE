@@ -1,13 +1,14 @@
 /**
  * @file page.tsx
- * @description 詳細レポートページ - KPT分析レポート
+ * @description 詳細レポートサンプルページ - KPT分析レポート
  *
- * KPTの詳細分析レポートを表示するページです。
+ * KPTの詳細分析レポートのサンプル版を表示するページです。
  * 成長スコア、トレンド分析、強み・改善点の特定、期間比較などを提供します。
+ * ※このページはデモ用のサンプルデータを表示しています。
  *
  * @example
  * ```tsx
- * // /reports でアクセス可能
+ * // /reports/sample でアクセス可能
  * ```
  */
 
@@ -15,14 +16,13 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  DetailedReportHeader,
   GrowthScoreCard,
   TrendAnalysis,
   StrengthWeaknessAnalysis,
   PeriodComparison,
   ActionRecommendations,
   ExportOptions,
-} from './components';
+} from '../components';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
@@ -83,14 +83,13 @@ interface ReportData {
 
 type ReportPeriod = 'weekly' | 'monthly' | 'quarterly' | 'yearly';
 
-const ReportsPage: React.FC = () => {
+const ReportsSamplePage: React.FC = () => {
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<ReportPeriod>('monthly');
-  const [currentDate, setCurrentDate] = useState(new Date());
 
-  // ダミーデータ生成関数
-  const generateReportData = (date: Date): ReportData => {
+  // サンプルデータ生成関数
+  const generateSampleReportData = (date: Date): ReportData => {
     const periodStart = startOfMonth(date);
     const periodEnd = endOfMonth(date);
 
@@ -192,20 +191,17 @@ const ReportsPage: React.FC = () => {
   // データ取得
   useEffect(() => {
     setLoading(true);
-    // 実際のAPIコール（現在はダミーデータで代替）
+    const currentDate = new Date();
+    // サンプルデータの読み込み（短縮した待機時間）
     setTimeout(() => {
-      const data = generateReportData(currentDate);
+      const data = generateSampleReportData(currentDate);
       setReportData(data);
       setLoading(false);
-    }, 1000);
-  }, [selectedPeriod, currentDate]);
+    }, 500);
+  }, [selectedPeriod]);
 
   const handlePeriodChange = (period: ReportPeriod) => {
     setSelectedPeriod(period);
-  };
-
-  const handleDateChange = (date: Date) => {
-    setCurrentDate(date);
   };
 
   if (loading) {
@@ -213,7 +209,7 @@ const ReportsPage: React.FC = () => {
       <div className='min-h-screen flex items-center justify-center bg-gray-50'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto'></div>
-          <p className='mt-4 text-gray-600'>詳細レポートを生成中...</p>
+          <p className='mt-4 text-gray-600'>サンプルレポートを生成中...</p>
         </div>
       </div>
     );
@@ -223,7 +219,7 @@ const ReportsPage: React.FC = () => {
     return (
       <div className='min-h-screen flex items-center justify-center bg-gray-50'>
         <div className='text-center'>
-          <p className='text-gray-600'>レポートデータの読み込みに失敗しました</p>
+          <p className='text-gray-600'>サンプルデータの読み込みに失敗しました</p>
           <Button onClick={() => window.location.reload()} className='mt-4'>
             再読み込み
           </Button>
@@ -234,16 +230,72 @@ const ReportsPage: React.FC = () => {
 
   return (
     <div className='min-h-screen bg-gray-50 pt-16'>
+      {/* サンプル版であることを示すバナー */}
+      <div className='bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
+          <p className='font-semibold'>
+            📊 詳細レポート機能のサンプル版 | 
+            <span className='ml-2'>実際のデータではなく、デモ用のサンプルデータを表示しています</span>
+          </p>
+        </div>
+      </div>
+
       <div className='py-6'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
           {/* ヘッダー */}
-          <DetailedReportHeader
-            period={reportData.period}
-            selectedPeriod={selectedPeriod}
-            onPeriodChange={handlePeriodChange}
-            onDateChange={handleDateChange}
-            currentDate={currentDate}
-          />
+          <div className='mb-6'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <h1 className='text-3xl font-bold text-gray-900'>詳細レポート - サンプル</h1>
+                <p className='text-gray-600 mt-2'>
+                  KPTの詳細分析レポートのサンプル版です。プロプラン限定機能をお試しください。
+                </p>
+              </div>
+              <div className='flex space-x-3'>
+                <Link href='/pricing'>
+                  <Button className='bg-indigo-600 text-white hover:bg-indigo-700'>
+                    プロプランを確認
+                  </Button>
+                </Link>
+                <Link href='/'>
+                  <Button variant='outline'>
+                    トップページに戻る
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* 期間選択 */}
+          <div className='mb-8 bg-white rounded-lg shadow p-6'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <h2 className='text-lg font-semibold text-gray-900'>{reportData.period.label}</h2>
+                <p className='text-sm text-gray-500'>
+                  {format(reportData.period.start, 'yyyy/MM/dd', { locale: ja })} - 
+                  {format(reportData.period.end, 'yyyy/MM/dd', { locale: ja })}
+                </p>
+              </div>
+              <div className='flex space-x-2'>
+                {(['weekly', 'monthly', 'quarterly', 'yearly'] as ReportPeriod[]).map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => handlePeriodChange(period)}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      selectedPeriod === period
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {period === 'weekly' && '週次'}
+                    {period === 'monthly' && '月次'}
+                    {period === 'quarterly' && '四半期'}
+                    {period === 'yearly' && '年次'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* 成長スコアカード */}
           <div className='mb-8'>
@@ -285,14 +337,16 @@ const ReportsPage: React.FC = () => {
           {/* フッター */}
           <div className='flex justify-between items-center mt-12 pt-6 border-t border-gray-200'>
             <div className='text-sm text-gray-500'>
-              レポート生成日時: {format(new Date(), 'yyyy/MM/dd HH:mm', { locale: ja })}
+              サンプルレポート生成日時: {format(new Date(), 'yyyy/MM/dd HH:mm', { locale: ja })}
             </div>
             <div className='flex space-x-3'>
-              <Link href='/calendar'>
-                <Button variant='outline'>カレンダーに戻る</Button>
+              <Link href='/pricing'>
+                <Button className='bg-indigo-600 text-white hover:bg-indigo-700'>
+                  プロプランで実データを確認
+                </Button>
               </Link>
-              <Link href='/dashboard'>
-                <Button variant='outline'>ダッシュボードに戻る</Button>
+              <Link href='/'>
+                <Button variant='outline'>トップページに戻る</Button>
               </Link>
             </div>
           </div>
@@ -302,4 +356,4 @@ const ReportsPage: React.FC = () => {
   );
 };
 
-export default ReportsPage;
+export default ReportsSamplePage; 
