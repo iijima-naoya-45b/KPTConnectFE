@@ -1,47 +1,45 @@
 /**
- * @file page.tsx
- * @description 通知設定ページ
- *
- * ユーザーの通知設定を管理するページです。
- * KPTリマインダー、進捗通知、システム通知などの設定を行います。
- *
- * @example
- * ```tsx
- * // /notifications でアクセス可能
- * ```
+ * @fileoverview 通知機能ページ
+ * @description 通知の一覧表示と設定を行うページ
+ * @version 1.0.0
+ * @author KPT Connect Team
  */
 
 'use client';
 
-import React from 'react';
-import NotificationSettings from './components/NotificationSettings';
-import { Button } from '@/components/ui';
-import Link from 'next/link';
+import React, { useState } from 'react';
+import { NotificationsList, NotificationSettings } from '@/components/notifications';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/';
 
+/**
+ * 通知ページコンポーネント
+ */
 const NotificationsPage: React.FC = () => {
-  return (
-    <div className='min-h-screen bg-gray-50 pt-16'>
-      <div className='py-6'>
-        <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
-          {/* ヘッダー */}
-          <div className='flex justify-between items-center mb-6'>
-            <div>
-              <h1 className='text-3xl font-bold text-gray-900'>通知設定</h1>
-              <p className='mt-2 text-gray-600'>KPTリマインダーやシステム通知の設定を管理します</p>
-            </div>
-            <Link href='/dashboard'>
-              <Button variant='outline'>ダッシュボードに戻る</Button>
-            </Link>
-          </div>
+    const [activeTab, setActiveTab] = useState('list');
 
-          {/* 通知設定コンポーネント */}
-          <div className='bg-white shadow rounded-lg'>
-            <NotificationSettings />
-          </div>
+    return (
+        <div className="container mx-auto px-4 py-8">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">通知</h1>
+                <p className="text-gray-600">通知の管理と設定を行います</p>
+            </div>
+
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="list">通知一覧</TabsTrigger>
+                    <TabsTrigger value="settings">設定</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="list" className="mt-6">
+                    <NotificationsList />
+                </TabsContent>
+
+                <TabsContent value="settings" className="mt-6">
+                    <NotificationSettings />
+                </TabsContent>
+            </Tabs>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default NotificationsPage;
