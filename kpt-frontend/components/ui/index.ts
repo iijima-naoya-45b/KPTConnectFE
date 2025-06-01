@@ -14,6 +14,10 @@ export { Separator } from './separator/separator';
 export { Sheet } from './sheet/sheet';
 export { Skeleton } from './skeleton/skeleton';
 export { Tooltip } from './tooltip/tooltip';
+export { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card/card';
+export { Badge } from './badge/badge';
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs/tabs';
+export { Progress } from './progress/progress';
 
 // レイアウトコンポーネント
 export { default as Header } from './layout/header/header';
