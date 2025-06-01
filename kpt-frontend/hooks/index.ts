@@ -1,29 +1,154 @@
 /**
- * @fileoverview KPT Connect フロントエンド カスタムフック集約
- * @description アプリケーション全体で使用されるカスタムフックをエクスポート
+ * @fileoverview API hooksの統合エクスポート
+ * @description 全てのAPIフックを一元管理し、使いやすく提供
  * @version 1.0.0
  * @author KPT Connect Team
  */
 
-// 基本的なフック
-export { useLocalStorage } from './use-local-storage';
-export { useDebounce } from './use-debounce';
-export { useToggle } from './use-toggle';
-export { useAuth } from './use-auth';
+// 汎用APIフック
+export * from './use-api';
 
-// 今後追加予定のフック
-// export { useThrottle } from './use-throttle';
-// export { usePrevious } from './use-previous';
-// export { useMount } from './use-mount';
-// export { useUnmount } from './use-unmount';
-// export { useClickOutside } from './use-click-outside';
-// export { useKeyPress } from './use-key-press';
-// export { useWindowSize } from './use-window-size';
-// export { useMediaQuery } from './use-media-query';
-// export { useScrollPosition } from './use-scroll-position';
-// export { useForm } from './use-form';
-// export { useFormField } from './use-form-field';
-// export { useApi } from './use-api';
-// export { useFetch } from './use-fetch';
-// export { useNotifications } from './use-notifications';
-// export { useTheme } from './use-theme';
+// 認証関連フック
+export * from './use-auth';
+
+// 通知関連フック
+export * from './use-notifications';
+
+// 作業ログ関連フック
+export * from './use-work-logs';
+
+// ユーザー管理関連フック
+export * from './use-users';
+
+// チャート関連フック
+export * from './use-charts';
+
+// サブスクリプション関連フック
+export * from './use-subscriptions';
+
+/**
+ * よく使用されるフックのエイリアス
+ */
+export {
+    // 通知
+    useNotifications as useNotificationsList,
+    useNotificationSettings as useNotifySettings,
+} from './use-notifications';
+
+export {
+    // 作業ログ
+    useWorkLogManager as useWorkLogs,
+    useWorkLogTimer as useTimer,
+} from './use-work-logs';
+
+export {
+    // ユーザー
+    useUserManager as useProfile,
+    useCurrentUser as useUser,
+} from './use-users';
+
+export {
+    // チャート
+    useChartManager as useCharts,
+    useDashboardCharts as useDashboard,
+} from './use-charts';
+
+export {
+    // サブスクリプション
+    useSubscriptionManager as useSubscription,
+    useProFeatures as useFeatures,
+} from './use-subscriptions';
+
+/**
+ * 主要機能の統合フック
+ */
+export interface UseKptAppReturn {
+    // ユーザー関連
+    user: ReturnType<typeof import('./use-users').useUserManager>;
+
+    // 通知関連
+    notifications: ReturnType<typeof import('./use-notifications').useNotifications>;
+
+    // 作業ログ関連
+    workLogs: ReturnType<typeof import('./use-work-logs').useWorkLogManager>;
+
+    // チャート関連
+    charts: ReturnType<typeof import('./use-charts').useChartManager>;
+
+    // サブスクリプション関連
+    subscription: ReturnType<typeof import('./use-subscriptions').useSubscriptionManager>;
+
+    // 機能フラグ
+    features: ReturnType<typeof import('./use-subscriptions').useProFeatures>;
+}
+
+/**
+ * KPTアプリケーション全体の統合フック
+ * @description アプリケーション全体で使用する主要なAPIフックを統合
+ */
+export const useKptApp = (): UseKptAppReturn => {
+    const { useUserManager } = require('./use-users');
+    const { useNotifications } = require('./use-notifications');
+    const { useWorkLogManager } = require('./use-work-logs');
+    const { useChartManager } = require('./use-charts');
+    const { useSubscriptionManager, useProFeatures } = require('./use-subscriptions');
+
+    return {
+        user: useUserManager(),
+        notifications: useNotifications(),
+        workLogs: useWorkLogManager(),
+        charts: useChartManager(),
+        subscription: useSubscriptionManager(),
+        features: useProFeatures(),
+    };
+};
+
+/**
+ * 型定義のre-export
+ */
+export type {
+    // 通知（正しいimport先から）
+    Notification,
+    NotificationSettings,
+    NotificationFilters,
+} from './use-notifications';
+
+export type {
+    // 作業ログ
+    WorkLog,
+    WorkLogStats,
+    WorkLogFilters,
+    WorkLogInput,
+} from './use-work-logs';
+
+export type {
+    // ユーザー
+    User,
+    UserSettings,
+    UserStats,
+    UserProfileInput,
+} from './use-users';
+
+export type {
+    // チャート
+    Chart,
+    ChartData,
+    ChartFilters,
+    ChartInput,
+} from './use-charts';
+
+export type {
+    // サブスクリプション
+    Subscription,
+    Plan,
+    Payment,
+    PaymentFilters,
+    SubscriptionInput,
+} from './use-subscriptions';
+
+export type {
+    // 汎用API
+    ApiResult,
+    CrudResult,
+    ListResult,
+} from './use-api';
