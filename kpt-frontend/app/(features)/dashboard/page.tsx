@@ -14,7 +14,7 @@
 'use client';
 
 import React from 'react';
-import { DashboardHeader, FeatureGrid, dashboardFeatures } from './components';
+import { DashboardHeader, FeatureGrid, featuresData } from './components';
 
 const DashboardPage: React.FC = () => {
   return (
@@ -24,7 +24,7 @@ const DashboardPage: React.FC = () => {
 
       {/* 機能グリッドセクション */}
       <div className='mt-12 lg:mt-16'>
-        <FeatureGrid features={dashboardFeatures} columns={{ sm: 1, md: 2, lg: 3 }} />
+        <FeatureGrid features={featuresData} columns={{ sm: 1, md: 2, lg: 3 }} />
       </div>
     </div>
   );

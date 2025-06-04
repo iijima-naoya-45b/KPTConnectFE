@@ -1,35 +1,13 @@
-/**
- * @file ContactForm.tsx
- * @description お問い合わせフォームコンポーネント
- * 
- * お問い合わせに必要な入力フィールドを含むフォームコンポーネントです。
- * 名前、メール、件名、内容の必須項目と、会社名、電話番号の任意項目を提供します。
- * 
- * @example
- * ```tsx
- * <ContactForm
- *   formData={formData}
- *   onInputChange={handleInputChange}
- *   isSubmitting={isSubmitting}
- * />
- * ```
- */
-
 import React from 'react';
 import { ContactFormData } from './types';
+import { Input } from '@/components/ui/input/input';
 
 interface ContactFormProps {
-  /** フォームデータ */
   formData: ContactFormData;
-  /** 入力値変更時のハンドラ */
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  /** 送信中フラグ */
   isSubmitting: boolean;
 }
 
-/**
- * お問い合わせフォームコンポーネント
- */
 const ContactForm: React.FC<ContactFormProps> = ({
   formData,
   onInputChange,
@@ -42,7 +20,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <label htmlFor='name' className='block text-sm font-medium text-gray-700'>
           お名前 <span className='text-red-500'>*</span>
         </label>
-        <input
+        <Input
           type='text'
           id='name'
           name='name'
@@ -60,7 +38,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
           メールアドレス <span className='text-red-500'>*</span>
         </label>
-        <input
+        <Input
           type='email'
           id='email'
           name='email'
@@ -78,7 +56,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <label htmlFor='company' className='block text-sm font-medium text-gray-700'>
           会社名
         </label>
-        <input
+        <Input
           type='text'
           id='company'
           name='company'
@@ -95,7 +73,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <label htmlFor='phone' className='block text-sm font-medium text-gray-700'>
           電話番号
         </label>
-        <input
+        <Input
           type='tel'
           id='phone'
           name='phone'
@@ -112,7 +90,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <label htmlFor='subject' className='block text-sm font-medium text-gray-700'>
           件名 <span className='text-red-500'>*</span>
         </label>
-        <input
+        <Input
           type='text'
           id='subject'
           name='subject'

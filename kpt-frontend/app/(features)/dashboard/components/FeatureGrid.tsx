@@ -25,6 +25,17 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
   columns = { sm: 1, md: 2, lg: 3 },
   className = '',
 }) => {
+  // featuresがundefinedまたは空配列の場合の処理
+  if (!features || features.length === 0) {
+    return (
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
+        <div className='py-6 lg:py-8 text-center'>
+          <p className='text-gray-500'>機能データを読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
+
   const gridClasses = `
     grid gap-6 lg:gap-8
     grid-cols-${columns.sm} 
@@ -38,7 +49,7 @@ const FeatureGrid: React.FC<FeatureGridProps> = ({
       <div className='py-6 lg:py-8'>
         <div className={gridClasses}>
           {features.map(feature => (
-            <FeatureCard key={feature.path} feature={feature} />
+            <FeatureCard key={feature.href} feature={feature} />
           ))}
         </div>
       </div>

@@ -64,4 +64,27 @@ export const GoogleLoginButton: React.FC<{
   );
 };
 
+// GitHub用のプリセット  
+export const GitHubLoginButton: React.FC<{
+  onClick: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+}> = ({ onClick, loading, disabled }) => {
+  const githubProvider: SocialProvider = {
+    name: 'github',
+    displayName: 'GitHub',
+    iconUrl: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+    loginUrl: 'http://localhost:3001/api/v1/oauth/github?provider=github',
+  };
+
+  return (
+    <SocialLoginButton
+      provider={githubProvider}
+      onClick={onClick}
+      loading={loading}
+      disabled={disabled}
+    />
+  );
+};
+
 export default SocialLoginButton;

@@ -316,7 +316,6 @@ export const ERROR_CODES = {
 export const OAUTH_PROVIDERS = {
   GOOGLE: 'google',
   GITHUB: 'github',
-  SLACK: 'slack',
 } as const;
 
 /** 外部連携サービス */

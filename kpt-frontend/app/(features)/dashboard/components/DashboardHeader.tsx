@@ -1,12 +1,3 @@
-/**
- * @file DashboardHeader.tsx
- * @description ダッシュボードヘッダーコンポーネント
- *
- * ダッシュボードページのヘッダー部分を管理します。
- * タイトル、ユーザー情報、クイックアクションなどを表示します。
- */
-
-import React from 'react';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 

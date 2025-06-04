@@ -9,12 +9,13 @@ const inter = Inter({ subsets: ['latin'] });
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID!
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://kpt-connect.example.com'),
   title: {
     default: 'KPT Connect',
-    template: 'KPT Connect / %s'
+    template: '%s | KPT Connect',
   },
-  description: 'チーム開発を加速するKPT管理プラットフォーム',
-  keywords: ['KPT', 'Keep', 'Problem', 'Try', 'チーム開発', '振り返り', 'プロジェクト管理'],
+  description: '個人開発を加速するKPT管理プラットフォーム',
+  keywords: ['KPT', 'Keep', 'Problem', 'Try', '個人開発', '振り返り', '自己成長', '学習管理'],
   authors: [{ name: 'KPT Connect Team' }],
   creator: 'KPT Connect',
   publisher: 'KPT Connect',
@@ -23,28 +24,27 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   openGraph: {
-    title: 'KPT Connect',
-    description: 'チーム開発を加速するKPT管理プラットフォーム',
+    type: 'website',
+    locale: 'ja_JP',
     url: '/',
     siteName: 'KPT Connect',
-    locale: 'ja_JP',
-    type: 'website',
+    title: 'KPT Connect',
+    description: '個人開発を加速するKPT管理プラットフォーム',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'KPT Connect - チーム開発を加速するKPT管理プラットフォーム',
+        alt: 'KPT Connect - 個人開発を加速するKPT管理プラットフォーム',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'KPT Connect',
-    description: 'チーム開発を加速するKPT管理プラットフォーム',
-    images: ['/og-image.png'],
+    description: '個人開発を加速するKPT管理プラットフォーム',
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,

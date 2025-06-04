@@ -1,17 +1,7 @@
-/**
- * @fileoverview 作業ログ管理カスタムフック
- * @description 作業ログのCRUD操作と状態管理を提供
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 import { useCallback } from 'react';
 import { useApi, useApiList, useMutation, type ListResult, type CrudResult } from './use-api';
 import { API_BASE_URL } from '@/lib/constants';
 
-/**
- * 作業ログの基本型定義
- */
 export interface WorkLog {
     id: string;
     user_id: string;
@@ -22,9 +12,9 @@ export interface WorkLog {
     start_time: string;
     end_time?: string;
     duration_minutes?: number;
-    mood_score: number; // 1-5
-    productivity_score: number; // 1-5
-    difficulty_score: number; // 1-5
+    mood_score: number;
+    productivity_score: number;
+    difficulty_score: number;
     is_billable: boolean;
     billable_rate?: number;
     tags: string[];

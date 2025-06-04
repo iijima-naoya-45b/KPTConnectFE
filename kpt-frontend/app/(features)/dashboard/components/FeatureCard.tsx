@@ -18,7 +18,7 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ feature, className = '' }) => {
   return (
     <Link
-      href={feature.path}
+      href={feature.href}
       className={`
         relative rounded-xl border border-gray-300 bg-white px-8 py-6 shadow-sm 
         flex items-center space-x-4 hover:border-gray-400 hover:shadow-lg

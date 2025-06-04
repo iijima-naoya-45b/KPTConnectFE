@@ -305,10 +305,10 @@ const NotificationSettings: React.FC = () => {
 
               <div className='flex items-center justify-between'>
                 <div>
-                  <label htmlFor='team-activities' className='text-sm font-medium text-gray-700'>
-                    チーム活動
+                  <label htmlFor='learning-activities' className='text-sm font-medium text-gray-700'>
+                    学習活動
                   </label>
-                  <p className='text-sm text-gray-500'>チームメンバーの活動を通知します</p>
+                  <p className='text-sm text-gray-500'>個人の学習進捗と成果を通知します</p>
                 </div>
                 <Button
                   type='button'
