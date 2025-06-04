@@ -8,10 +8,10 @@
 
 export { default as LoginHeader } from './LoginHeader';
 export { default as LoginForm } from './LoginForm';
-export { default as SocialLoginButton, GoogleLoginButton } from './SocialLoginButton';
-export type { 
-  LoginFormData, 
-  LoginError, 
-  SocialProvider, 
-  LoginCallbackParams 
+export { default as SocialLoginButton, GoogleLoginButton, GitHubLoginButton } from './SocialLoginButton';
+export type {
+  LoginFormData,
+  LoginError,
+  SocialProvider,
+  LoginCallbackParams
 } from './types'; 

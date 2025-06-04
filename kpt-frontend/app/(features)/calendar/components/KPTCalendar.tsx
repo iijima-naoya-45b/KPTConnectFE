@@ -1,21 +1,3 @@
-/**
- * @file KPTCalendar.tsx
- * @description KPTのスケジュールを管理するカレンダーコンポーネント
- *
- * 期間指定データ取得により、過去・未来の振り返りが可能です。
- * スケジュールの状態（完了・予定・キャンセル）を視覚的に表示します。
- *
- * @example
- * ```tsx
- * <KPTCalendar
- *   schedules={schedules}
- *   onEventClick={handleEventClick}
- *   currentDate={currentDate}
- *   onDateChange={handleDateRangeChange}
- * />
- * ```
- */
-
 'use client';
 
 import React, { useState } from 'react';

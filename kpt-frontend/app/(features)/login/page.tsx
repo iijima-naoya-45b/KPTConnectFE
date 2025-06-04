@@ -19,6 +19,11 @@ const LoginPageContent = () => {
     window.location.href = 'http://localhost:3001/api/v1/oauth/google?provider=google';
   };
 
+  // GitHubログイン処理
+  const handleGitHubLogin = () => {
+    window.location.href = 'http://localhost:3001/api/v1/oauth/github?provider=github';
+  };
+
   // Googleログインコールバック処理
   const handleGoogleCallback = useCallback(
     async (sessionId: string) => {
@@ -157,7 +162,7 @@ const LoginPageContent = () => {
           <div className='mt-6'>
             <button
               onClick={handleGoogleLogin}
-              className='w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+              className='w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mb-3'
             >
               <Image
                 className='h-5 w-5 mr-2'
@@ -167,6 +172,20 @@ const LoginPageContent = () => {
                 height={20}
               />
               Googleでログイン・新規登録
+            </button>
+
+            <button
+              onClick={handleGitHubLogin}
+              className='w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            >
+              <Image
+                className='h-5 w-5 mr-2'
+                src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+                alt='GitHub logo'
+                width={20}
+                height={20}
+              />
+              GitHubでログイン・新規登録
             </button>
           </div>
         </div>

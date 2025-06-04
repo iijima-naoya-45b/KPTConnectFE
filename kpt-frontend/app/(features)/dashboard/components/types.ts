@@ -11,7 +11,7 @@ import type { ReactNode } from 'react';
 export interface DashboardFeature {
   title: string;
   description: string;
-  path: string;
+  href: string;
   icon: ReactNode;
 }
 

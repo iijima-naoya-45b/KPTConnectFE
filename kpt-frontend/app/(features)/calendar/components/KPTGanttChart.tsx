@@ -1,20 +1,3 @@
-/**
- * @file KPTGanttChart.tsx
- * @description KPTスケジュール用ガントチャートコンポーネント
- *
- * KPTの振り返りスケジュールをガントチャート形式で表示します。
- * タスクの期間、進捗、依存関係を視覚的に管理できます。
- *
- * @example
- * ```tsx
- * <KPTGanttChart
- *   schedules={schedules}
- *   onTaskClick={handleTaskClick}
- *   dateRange={dateRange}
- * />
- * ```
- */
-
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -30,7 +13,7 @@ interface KPTSchedule {
   description?: string;
   status: 'scheduled' | 'completed' | 'cancelled';
   createdAt: Date;
-  progress?: number; // 進捗率 (0-100)
+  progress?: number;
 }
 
 interface DateRange {

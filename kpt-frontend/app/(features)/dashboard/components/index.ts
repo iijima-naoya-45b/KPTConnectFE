@@ -9,9 +9,9 @@
 export { default as DashboardHeader } from './DashboardHeader';
 export { default as FeatureCard } from './FeatureCard';
 export { default as FeatureGrid } from './FeatureGrid';
-export { dashboardFeatures } from './featuresData';
-export type { 
-  DashboardFeature, 
-  DashboardStats, 
-  QuickAction 
+export { featuresData } from './featuresData';
+export type {
+  DashboardFeature,
+  DashboardStats,
+  QuickAction
 } from './types'; 
