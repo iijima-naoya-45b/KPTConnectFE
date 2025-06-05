@@ -22,6 +22,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import CalendarView from './CalendarView';
+import GanttChartView from './GanttChartView';
 
 // Todo項目の型定義
 interface TodoItem {
@@ -63,7 +65,7 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-type ActiveTab = 'board' | 'analytics';
+type ActiveTab = 'board' | 'analytics' | 'calendar' | 'gantt';
 
 const TodoBoardPage = () => {
   const router = useRouter();
@@ -120,7 +122,7 @@ const TodoBoardPage = () => {
   // URLパラメータからタブを設定
   useEffect(() => {
     const tabParam = searchParams.get('tab') as ActiveTab;
-    if (tabParam && ['board', 'analytics'].includes(tabParam)) {
+    if (tabParam && ['board', 'analytics', 'calendar', 'gantt'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -534,6 +536,62 @@ const TodoBoardPage = () => {
     initializeData();
   }, []);
 
+  // ダミーGantt用タスク
+  const dummyGanttTasks = [
+    {
+      id: 'kpt-1',
+      name: '[KPT] Reflect on what went well',
+      start: new Date('2025-06-01'),
+      end: new Date('2025-06-03'),
+      type: 'task',
+      progress: 100,
+      isDisabled: false,
+      styles: { progressColor: '#34d399', progressSelectedColor: '#059669' },
+      dependencies: [],
+      hideChildren: false,
+      displayOrder: 0,
+    },
+    {
+      id: 'kpt-2',
+      name: '[KPT] Identify areas for improvement',
+      start: new Date('2025-06-04'),
+      end: new Date('2025-06-06'),
+      type: 'task',
+      progress: 50,
+      isDisabled: false,
+      styles: { progressColor: '#34d399', progressSelectedColor: '#059669' },
+      dependencies: [],
+      hideChildren: false,
+      displayOrder: 1,
+    },
+    {
+      id: 'gh-1',
+      name: '[Issue] Dummy Issue',
+      start: new Date('2025-06-02'),
+      end: new Date('2025-06-05'),
+      type: 'task',
+      progress: 0,
+      isDisabled: false,
+      styles: { progressColor: '#60a5fa', progressSelectedColor: '#2563eb' },
+      dependencies: [],
+      hideChildren: false,
+      displayOrder: 1000,
+    },
+    {
+      id: 'gh-2',
+      name: '[PR] Dummy PR',
+      start: new Date('2025-06-03'),
+      end: new Date('2025-06-07'),
+      type: 'task',
+      progress: 100,
+      isDisabled: false,
+      styles: { progressColor: '#a78bfa', progressSelectedColor: '#7c3aed' },
+      dependencies: [],
+      hideChildren: false,
+      displayOrder: 1001,
+    },
+  ];
+
   return (
     <div className='min-h-screen bg-gray-50'>
       {/* ページヘッダー */}
@@ -591,6 +649,26 @@ const TodoBoardPage = () => {
               }`}
             >
               📊 分析・一覧
+            </button>
+            <button
+              onClick={() => handleTabChange('calendar')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                activeTab === 'calendar'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              📅 カレンダー
+            </button>
+            <button
+              onClick={() => handleTabChange('gantt')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                activeTab === 'gantt'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              📅 ガントチャート
             </button>
           </nav>
         </div>
@@ -906,6 +984,20 @@ const TodoBoardPage = () => {
                     )}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* カレンダータブ */}
+            {activeTab === 'calendar' && (
+              <div className='space-y-6'>
+                <CalendarView items={allItems} />
+              </div>
+            )}
+
+            {/* ガントチャートタブ */}
+            {activeTab === 'gantt' && (
+              <div className='space-y-6'>
+                <GanttChartView items={allItems.length > 0 ? allItems : dummyGanttTasks} />
               </div>
             )}
           </>
