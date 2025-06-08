@@ -1,12 +1,3 @@
-/**
- * @fileoverview KPT Connect フロントエンド定数定義
- * @description アプリケーション全体で使用される定数を集約
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
-// ===== アプリケーション基本情報 =====
-
 /** アプリケーション名 */
 export const APP_NAME = 'KPT Connect' as const;
 
