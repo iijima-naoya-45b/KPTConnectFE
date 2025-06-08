@@ -184,7 +184,8 @@ const TodoBoardPage = () => {
             title: 'Todo管理ボード用セッション',
             description: 'Todo管理ダッシュボード用のデフォルトセッション',
             session_date: new Date().toISOString().split('T')[0],
-            status: 'active'
+            status: 0, // not_started
+            priority: 1 // medium（デフォルト）
           }
         })
       });
@@ -198,6 +199,16 @@ const TodoBoardPage = () => {
     } catch (err) {
       console.error('セッション取得/作成エラー:', err);
       throw err;
+    }
+  };
+
+  // 優先度のenum値変換関数を追加
+  const priorityToEnum = (priority: 'high' | 'medium' | 'low'): number => {
+    switch (priority) {
+      case 'high': return 2;
+      case 'medium': return 1;
+      case 'low': return 0;
+      default: return 1;
     }
   };
 
@@ -231,7 +242,7 @@ const TodoBoardPage = () => {
             kpt_session_id: defaultSessionId,
             type: 'todo',
             content: newItemForm.content,
-            priority: newItemForm.priority,
+            priority: priorityToEnum(newItemForm.priority),
             status: selectedColumn,
             start_date: newItemForm.start_date || null,
             end_date: newItemForm.end_date || null,
@@ -278,7 +289,7 @@ const TodoBoardPage = () => {
         body: JSON.stringify({
           item: {
             content: editItemForm.content,
-            priority: editItemForm.priority,
+            priority: priorityToEnum(editItemForm.priority),
             status: editItemForm.status,
             start_date: editItemForm.start_date || null,
             end_date: editItemForm.end_date || null,

@@ -9,6 +9,7 @@ import { getDay } from 'date-fns/getDay';
 import { ja } from 'date-fns/locale/ja';
 import Link from 'next/link';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useRouter } from 'next/navigation';
 
 const locales = {
   ja,
@@ -47,6 +48,11 @@ const KPTCalendar: React.FC<KPTCalendarProps> = ({
   onDateChange,
 }) => {
   const [view, setView] = useState<View>('month');
+  // 新規Todo作成用の状態
+  const [showInput, setShowInput] = useState<{ open: boolean; date: Date | null }>({ open: false, date: null });
+  const [inputTitle, setInputTitle] = useState('');
+  const [localSchedules, setLocalSchedules] = useState<KPTSchedule[]>(schedules);
+  const router = useRouter();
 
   // イベントのスタイリング（タイプと状態に基づく）
   const eventStyleGetter = (event: KPTSchedule) => {
@@ -96,25 +102,12 @@ const KPTCalendar: React.FC<KPTCalendarProps> = ({
     };
   };
 
-  // カスタムイベントコンポーネント
+  // カスタムイベントコンポーネント（アイコンのみ表示）
   const EventComponent = ({ event }: { event: KPTSchedule }) => {
-    const getStatusIcon = (status: string) => {
-      switch (status) {
-        case 'completed':
-          return '✓';
-        case 'scheduled':
-          return '📅';
-        case 'cancelled':
-          return '✗';
-        default:
-          return '';
-      }
-    };
-
     return (
-      <div className='flex items-center space-x-1'>
-        <span>{getStatusIcon(event.status)}</span>
-        <span className='truncate'>{event.title}</span>
+      <div className='flex items-center justify-center'>
+        {/* 汎用リストアイコン */}
+        <span role='img' aria-label='todo' className='text-lg'>📝</span>
       </div>
     );
   };
@@ -130,7 +123,44 @@ const KPTCalendar: React.FC<KPTCalendarProps> = ({
     'all'
   );
 
-  const filteredSchedules = schedules.filter(schedule => {
+  // 日付セルクリック時の処理
+  const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+    // 日付をyyyy-mm-dd形式で整形
+    const date = slotInfo.start;
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const dateStr = `${yyyy}-${mm}-${dd}`;
+    // 遷移
+    router.push(`/dashboard/calendar?tab=board&date=${dateStr}`);
+  };
+
+  // Todo追加処理
+  const handleAddTodo = () => {
+    if (!showInput.date || !inputTitle.trim()) {
+      setShowInput({ open: false, date: null });
+      setInputTitle('');
+      return;
+    }
+    // ダミーID生成
+    const newId = `dummy-${Date.now()}`;
+    // 新規Todo（KPTSchedule）を作成
+    const newTodo: KPTSchedule = {
+      id: newId,
+      title: inputTitle,
+      start: showInput.date,
+      end: showInput.date,
+      type: 'keep', // 暫定値
+      status: 'scheduled', // 暫定値
+      createdAt: new Date(),
+    };
+    setLocalSchedules([...localSchedules, newTodo]);
+    setShowInput({ open: false, date: null });
+    setInputTitle('');
+  };
+
+  // localSchedulesをフィルタリング
+  const filteredSchedules = localSchedules.filter(schedule => {
     const typeMatch = filterType === 'all' || schedule.type === filterType;
     const statusMatch = filterStatus === 'all' || schedule.status === filterStatus;
     return typeMatch && statusMatch;
@@ -223,36 +253,47 @@ const KPTCalendar: React.FC<KPTCalendarProps> = ({
             startAccessor='start'
             endAccessor='end'
             style={{ height: 600 }}
-            view={view}
-            onView={setView}
+            views={['month']}
             date={currentDate}
             onNavigate={handleNavigate}
-            eventPropGetter={eventStyleGetter}
-            onSelectEvent={onEventClick}
-            components={{
-              event: EventComponent,
-            }}
-            messages={{
-              next: '次へ',
-              previous: '前へ',
-              today: '今日',
-              month: '月',
-              week: '週',
-              day: '日',
-              agenda: 'アジェンダ',
-              date: '日付',
-              time: '時間',
-              event: 'イベント',
-              noEventsInRange: 'この期間にはイベントがありません',
-              showMore: total => `他 ${total} 件`,
-            }}
-            formats={{
-              monthHeaderFormat: date => format(date, 'yyyy年MM月', { locale: ja }),
-              dayHeaderFormat: date => format(date, 'MM/dd (E)', { locale: ja }),
-              dayRangeHeaderFormat: ({ start, end }) =>
-                `${format(start, 'MM/dd', { locale: ja })} - ${format(end, 'MM/dd', { locale: ja })}`,
-            }}
+            onView={setView}
+            view={view}
+            selectable
+            onSelectSlot={handleSelectSlot}
+            components={{ event: EventComponent }}
+            popup
           />
+
+          {/* 新規Todo入力フォーム（モーダル風） */}
+          {showInput.open && (
+            <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50'>
+              <div className='bg-white rounded-lg shadow-lg p-6 w-80'>
+                <h2 className='text-lg font-semibold mb-4'>新規Todo作成</h2>
+                <input
+                  type='text'
+                  className='w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                  placeholder='タイトルを入力...'
+                  value={inputTitle}
+                  onChange={e => setInputTitle(e.target.value)}
+                  autoFocus
+                />
+                <div className='flex justify-end gap-2'>
+                  <button
+                    className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800'
+                    onClick={() => setShowInput({ open: false, date: null })}
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    className='px-4 py-2 bg-indigo-600 rounded text-white hover:bg-indigo-700'
+                    onClick={handleAddTodo}
+                  >
+                    作成
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* 期間情報表示 */}
           <div className='mt-4 text-center text-sm text-gray-500'>
