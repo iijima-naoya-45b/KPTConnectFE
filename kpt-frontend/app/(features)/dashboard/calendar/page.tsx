@@ -19,11 +19,12 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CalendarView from './CalendarView';
 import GanttChartView from './GanttChartView';
+import { Task } from 'gantt-task-react';
 
 // Todo項目の型定義
 interface TodoItem {
@@ -67,7 +68,7 @@ interface ApiResponse<T> {
 
 type ActiveTab = 'board' | 'analytics' | 'calendar' | 'gantt';
 
-const TodoBoardPage = () => {
+const TodoBoardPageInner = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -184,7 +185,8 @@ const TodoBoardPage = () => {
             title: 'Todo管理ボード用セッション',
             description: 'Todo管理ダッシュボード用のデフォルトセッション',
             session_date: new Date().toISOString().split('T')[0],
-            status: 'active'
+            status: 0, // not_started
+            priority: 1 // medium（デフォルト）
           }
         })
       });
@@ -198,6 +200,16 @@ const TodoBoardPage = () => {
     } catch (err) {
       console.error('セッション取得/作成エラー:', err);
       throw err;
+    }
+  };
+
+  // 優先度のenum値変換関数を追加
+  const priorityToEnum = (priority: 'high' | 'medium' | 'low'): number => {
+    switch (priority) {
+      case 'high': return 2;
+      case 'medium': return 1;
+      case 'low': return 0;
+      default: return 1;
     }
   };
 
@@ -231,7 +243,7 @@ const TodoBoardPage = () => {
             kpt_session_id: defaultSessionId,
             type: 'todo',
             content: newItemForm.content,
-            priority: newItemForm.priority,
+            priority: priorityToEnum(newItemForm.priority),
             status: selectedColumn,
             start_date: newItemForm.start_date || null,
             end_date: newItemForm.end_date || null,
@@ -278,7 +290,7 @@ const TodoBoardPage = () => {
         body: JSON.stringify({
           item: {
             content: editItemForm.content,
-            priority: editItemForm.priority,
+            priority: priorityToEnum(editItemForm.priority),
             status: editItemForm.status,
             start_date: editItemForm.start_date || null,
             end_date: editItemForm.end_date || null,
@@ -318,32 +330,6 @@ const TodoBoardPage = () => {
       const result = await response.json();
       if (result.success) {
         await fetchTodoItems(); // リストを再取得
-      } else {
-        setError(result.error || 'ステータスの更新に失敗しました');
-      }
-    } catch (err) {
-      console.error('ステータス更新エラー:', err);
-      setError('ステータス更新中にエラーが発生しました');
-    }
-  };
-
-  // アイテムのステータスを直接更新
-  const updateItemStatusDirect = async (itemId: string, newStatus: 'open' | 'in_progress' | 'completed' | 'cancelled') => {
-    try {
-      const response = await fetch(`/api/v1/kpt_items/${itemId}/update_status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: newStatus
-        })
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        await fetchTodoItems(); // リストを再取得
-        setError('');
       } else {
         setError(result.error || 'ステータスの更新に失敗しました');
       }
@@ -543,7 +529,7 @@ const TodoBoardPage = () => {
       name: '[KPT] Reflect on what went well',
       start: new Date('2025-06-01'),
       end: new Date('2025-06-03'),
-      type: 'task',
+      type: 'task' as Task['type'],
       progress: 100,
       isDisabled: false,
       styles: { progressColor: '#34d399', progressSelectedColor: '#059669' },
@@ -556,7 +542,7 @@ const TodoBoardPage = () => {
       name: '[KPT] Identify areas for improvement',
       start: new Date('2025-06-04'),
       end: new Date('2025-06-06'),
-      type: 'task',
+      type: 'task' as Task['type'],
       progress: 50,
       isDisabled: false,
       styles: { progressColor: '#34d399', progressSelectedColor: '#059669' },
@@ -569,7 +555,7 @@ const TodoBoardPage = () => {
       name: '[Issue] Dummy Issue',
       start: new Date('2025-06-02'),
       end: new Date('2025-06-05'),
-      type: 'task',
+      type: 'task' as Task['type'],
       progress: 0,
       isDisabled: false,
       styles: { progressColor: '#60a5fa', progressSelectedColor: '#2563eb' },
@@ -582,7 +568,7 @@ const TodoBoardPage = () => {
       name: '[PR] Dummy PR',
       start: new Date('2025-06-03'),
       end: new Date('2025-06-07'),
-      type: 'task',
+      type: 'task' as Task['type'],
       progress: 100,
       isDisabled: false,
       styles: { progressColor: '#a78bfa', progressSelectedColor: '#7c3aed' },
@@ -591,6 +577,27 @@ const TodoBoardPage = () => {
       displayOrder: 1001,
     },
   ];
+
+  /**
+   * @description TodoItem配列をgantt-task-reactのTask型配列に変換するユーティリティ関数
+   * @param {TodoItem[]} todoItems - 変換対象のTodoアイテム配列
+   * @returns {Task[]} Ganttチャート用のTask配列
+   */
+  function convertTodoItemsToTasks(todoItems: TodoItem[]): Task[] {
+    return todoItems.map((item, idx) => ({
+      id: item.id,
+      name: item.content,
+      start: item.start_date ? new Date(item.start_date) : new Date(item.created_at),
+      end: item.end_date ? new Date(item.end_date) : new Date(item.created_at),
+      type: 'task' as Task['type'],
+      progress: 0,
+      isDisabled: false,
+      styles: { progressColor: '#60a5fa', progressSelectedColor: '#2563eb' },
+      dependencies: [],
+      hideChildren: false,
+      displayOrder: idx,
+    }));
+  }
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -997,7 +1004,7 @@ const TodoBoardPage = () => {
             {/* ガントチャートタブ */}
             {activeTab === 'gantt' && (
               <div className='space-y-6'>
-                <GanttChartView items={allItems.length > 0 ? allItems : dummyGanttTasks} />
+                <GanttChartView items={allItems.length > 0 ? convertTodoItemsToTasks(allItems) : dummyGanttTasks} />
               </div>
             )}
           </>
@@ -1190,5 +1197,14 @@ const TodoBoardPage = () => {
     </div>
   );
 };
+
+/**
+ * @description useSearchParamsを利用するため、Suspenseでラップしたエクスポートコンポーネント
+ */
+const TodoBoardPage = () => (
+  <Suspense>
+    <TodoBoardPageInner />
+  </Suspense>
+);
 
 export default TodoBoardPage; 

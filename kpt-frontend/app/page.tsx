@@ -8,13 +8,14 @@ import {
 } from '@/components/ui';
 import Link from 'next/link';
 import Image from 'next/image';
+import ReportChartsGrid from './(features)/dashboard/components/ReportChartsGrid';
 
 const Home = () => {
   return (
     <div className='min-h-screen bg-gradient-to-b from-indigo-50 to-white'>
       <main className='pt-16'>
-        <section className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
+        <section className='mx-8 py-10 flex justify-center'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-[70%]'>
             {/* テキストコンテンツ */}
             <div className='text-center lg:text-left'>
               <h2 className='text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6'>
@@ -25,6 +26,10 @@ const Home = () => {
               <p className='text-xl text-gray-600 mb-8'>
                 KPT Connectは、個人開発者のための振り返りプラットフォームです。
                 一人でも継続的な改善と成長をサポートし、開発スキルの向上を促進します。
+              </p>
+              <p className='text-base text-indigo-700 bg-indigo-50 rounded px-4 py-3 mb-8'>
+                GitHubと連携することで、KPTの振り返りを実際のIssueやPull Requestと紐付けて管理できます。<br />
+                開発の進捗や課題、改善アクションをGitHub上のタスクと一元化し、より実践的な振り返りが可能です。
               </p>
 
               <div className='flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center'>
@@ -57,8 +62,8 @@ const Home = () => {
           </div>
         </section>
 
-        <section className='bg-white py-20'>
-          <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <section className='bg-white py-20 flex justify-center'>
+          <div className='mx-8 max-w-[70%]'>
             <div className='text-center mb-16'>
               <header className='text-3xl font-extrabold text-gray-900'>主な特徴</header>
             </div>
@@ -82,9 +87,46 @@ const Home = () => {
           </div>
         </section>
 
+        {/* GitHub紐づけセクション */}
+        <section className='mx-8 py-10 flex justify-center'>
+          <div className='bg-white rounded-lg shadow p-10 flex flex-col md:flex-row items-center gap-10 w-full max-w-[70%]'>
+            {/* 左：テキスト */}
+            <div className='flex-1 min-w-0'>
+              <h3 className='text-2xl font-bold text-gray-900 mb-4'>GitHub連携でタスクとKPTを一元管理</h3>
+              <p className='text-gray-700 mb-4'>
+                GitHubと連携することで、KPTのKeep/Problem/TryやTodoを実際のIssueやPull Requestと紐付けて管理できます。
+                開発の進捗や課題、改善アクションをGitHub上のタスクと一元化し、より実践的な振り返りが可能です。
+              </p>
+              <ul className='list-disc pl-5 text-gray-700 mb-4'>
+                <li>Issue・Pull Request・Branch・CommitとKPTを紐付け</li>
+                <li>進捗・課題・改善アクションの可視化</li>
+                <li>GitHubタスクとKPTの一元管理</li>
+              </ul>
+              <div className='bg-indigo-50 rounded p-4'>
+                <div className='font-semibold text-indigo-700 mb-2'>使い方の流れ</div>
+                <ol className='list-decimal pl-5 text-gray-700 text-sm'>
+                  <li>GitHub認証で連携開始</li>
+                  <li>リポジトリを選択</li>
+                  <li>IssueやPull RequestとKPTを紐付けて管理</li>
+                </ol>
+              </div>
+            </div>
+            {/* 右：ダミー画像 */}
+            <div className='flex-1 flex justify-center items-center min-w-[220px]'>
+              <Image
+                src='/images/github-link-dummy.png'
+                alt='GitHub連携イメージ（ダミー）'
+                width={320}
+                height={220}
+                className='rounded shadow object-contain bg-gray-50'
+              />
+            </div>
+          </div>
+        </section>
+
         {/* 詳細レポートプレビューセクション */}
-        <section className='bg-gradient-to-r from-slate-900 to-slate-800 py-20'>
-          <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <section className='bg-gradient-to-r from-slate-900 to-slate-800 py-20 flex justify-center'>
+          <div className='mx-8 max-w-[70%]'>
             <div className='text-center mb-12'>
               <h3 className='text-3xl font-extrabold text-white mb-4'>
                 📊 詳細レポート機能のご紹介
@@ -133,418 +175,18 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* グラフエリア */}
-              <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-                {/* 週次KPT推移（線グラフ） */}
-                <div className='bg-white rounded-lg p-6 shadow-sm'>
-                  <div className='flex items-center justify-between mb-4'>
-                    <h5 className='font-semibold text-gray-900'>週次KPT推移</h5>
-                    <div className='flex space-x-4 text-xs'>
-                      <div className='flex items-center'>
-                        <div className='w-3 h-0.5 bg-blue-500 mr-1'></div>
-                        <span>Keep</span>
-                      </div>
-                      <div className='flex items-center'>
-                        <div className='w-3 h-0.5 bg-red-500 mr-1'></div>
-                        <span>Problem</span>
-                      </div>
-                      <div className='flex items-center'>
-                        <div className='w-3 h-0.5 bg-green-500 mr-1'></div>
-                        <span>Try</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='relative h-48'>
-                    {/* Y軸 */}
-                    <div className='absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2'>
-                      <span>6</span>
-                      <span>5</span>
-                      <span>4</span>
-                      <span>3</span>
-                      <span>2</span>
-                      <span>1</span>
-                      <span>0</span>
-                    </div>
-                    
-                    {/* グラフエリア */}
-                    <div className='ml-8 h-full relative'>
-                      {/* グリッドライン */}
-                      <div className='absolute inset-0'>
-                        {[0, 1, 2, 3, 4, 5].map((i) => (
-                          <div key={i} className='absolute w-full border-t border-gray-100' style={{bottom: `${i * 20}%`}}></div>
-                        ))}
-                        <div className='h-full border-l border-gray-200'></div>
-                      </div>
-                      
-                      {/* 線グラフ */}
-                      <svg className='absolute inset-0 w-full h-full'>
-                        {/* Keep線 (青) */}
-                        <polyline
-                          points='20,160 80,160 140,80 200,120'
-                          fill='none'
-                          stroke='#3B82F6'
-                          strokeWidth='2'
-                          className='drop-shadow-sm'
-                        />
-                        {/* Problem線 (赤) */}
-                        <polyline
-                          points='20,120 80,128 140,96 200,120'
-                          fill='none'
-                          stroke='#EF4444'
-                          strokeWidth='2'
-                          className='drop-shadow-sm'
-                        />
-                        {/* Try線 (緑) */}
-                        <polyline
-                          points='20,144 80,120 140,160 200,136'
-                          fill='none'
-                          stroke='#10B981'
-                          strokeWidth='2'
-                          className='drop-shadow-sm'
-                        />
-                        
-                        {/* データポイント */}
-                        {/* Keep */}
-                        <circle cx='20' cy='160' r='3' fill='#3B82F6' />
-                        <circle cx='80' cy='160' r='3' fill='#3B82F6' />
-                        <circle cx='140' cy='80' r='3' fill='#3B82F6' />
-                        <circle cx='200' cy='120' r='3' fill='#3B82F6' />
-                        
-                        {/* Problem */}
-                        <circle cx='20' cy='120' r='3' fill='#EF4444' />
-                        <circle cx='80' cy='128' r='3' fill='#EF4444' />
-                        <circle cx='140' cy='96' r='3' fill='#EF4444' />
-                        <circle cx='200' cy='120' r='3' fill='#EF4444' />
-                        
-                        {/* Try */}
-                        <circle cx='20' cy='144' r='3' fill='#10B981' />
-                        <circle cx='80' cy='120' r='3' fill='#10B981' />
-                        <circle cx='140' cy='160' r='3' fill='#10B981' />
-                        <circle cx='200' cy='136' r='3' fill='#10B981' />
-                      </svg>
-                    </div>
-                    
-                    {/* X軸ラベル */}
-                    <div className='absolute bottom-0 left-8 right-0 flex justify-between text-xs text-gray-500 mt-2'>
-                      <span>第1週</span>
-                      <span>第2週</span>
-                      <span>第3週</span>
-                      <span>第4週</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 週次完了率（棒グラフ） */}
-                <div className='bg-white rounded-lg p-6 shadow-sm'>
-                  <div className='flex items-center justify-between mb-4'>
-                    <h5 className='font-semibold text-gray-900'>週次完了率</h5>
-                    <div className='flex items-center text-xs'>
-                      <div className='w-3 h-3 bg-green-500 rounded mr-1'></div>
-                      <span>完了率 (%)</span>
-                    </div>
-                  </div>
-                  <div className='relative h-48'>
-                    {/* Y軸 */}
-                    <div className='absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2'>
-                      <span>100%</span>
-                      <span>90%</span>
-                      <span>80%</span>
-                      <span>70%</span>
-                      <span>60%</span>
-                      <span>50%</span>
-                      <span>40%</span>
-                    </div>
-                    
-                    {/* グラフエリア */}
-                    <div className='ml-8 h-full relative flex items-end justify-between space-x-4 pb-6'>
-                      {/* 棒グラフ */}
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-green-600 to-green-400 rounded-t-sm relative' style={{height: '92%'}}>
-                          <div className='absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-gray-700'>92%</div>
-                        </div>
-                        <span className='text-xs text-gray-500 mt-2'>第1週</span>
-                      </div>
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-green-600 to-green-400 rounded-t-sm relative' style={{height: '88%'}}>
-                          <div className='absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-gray-700'>88%</div>
-                        </div>
-                        <span className='text-xs text-gray-500 mt-2'>第2週</span>
-                      </div>
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-green-600 to-green-400 rounded-t-sm relative' style={{height: '95%'}}>
-                          <div className='absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-gray-700'>95%</div>
-                        </div>
-                        <span className='text-xs text-gray-500 mt-2'>第3週</span>
-                      </div>
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-green-600 to-green-400 rounded-t-sm relative' style={{height: '85%'}}>
-                          <div className='absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-gray-700'>85%</div>
-                        </div>
-                        <span className='text-xs text-gray-500 mt-2'>第4週</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {/* グラフセクション（4カラムグリッド） */}
+              <div className='my-4'>
+                <ReportChartsGrid />
               </div>
+            </div>
 
-              {/* グラフセクション */}
-              <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 my-4'>
-                {/* 線グラフ風 - 週次完了率推移 */}
-                <div className='bg-white border border-gray-200 rounded-lg p-6'>
-                  <h4 className='text-lg font-semibold text-gray-900 mb-4'>📈 週次完了率推移</h4>
-                  <div className='relative h-40'>
-                    {/* Y軸ラベル */}
-                    <div className='absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500'>
-                      <span>100%</span>
-                      <span>75%</span>
-                      <span>50%</span>
-                      <span>25%</span>
-                      <span>0%</span>
-                    </div>
-                    
-                    {/* グラフエリア */}
-                    <div className='ml-8 h-full relative'>
-                      {/* グリッドライン */}
-                      <div className='absolute inset-0'>
-                        <div className='h-full border-l border-gray-200'></div>
-                        <div className='absolute top-0 w-full border-t border-gray-100'></div>
-                        <div className='absolute top-1/4 w-full border-t border-gray-100'></div>
-                        <div className='absolute top-1/2 w-full border-t border-gray-100'></div>
-                        <div className='absolute top-3/4 w-full border-t border-gray-100'></div>
-                        <div className='absolute bottom-0 w-full border-t border-gray-200'></div>
-                      </div>
-                      
-                      {/* 線グラフ */}
-                      <svg className='absolute inset-0 w-full h-full'>
-                        <polyline
-                          points='10,120 50,110 90,80 130,70'
-                          fill='none'
-                          stroke='#3B82F6'
-                          strokeWidth='3'
-                          className='drop-shadow-sm'
-                        />
-                        {/* データポイント */}
-                        <circle cx='10' cy='120' r='4' fill='#3B82F6' className='drop-shadow-sm' />
-                        <circle cx='50' cy='110' r='4' fill='#3B82F6' className='drop-shadow-sm' />
-                        <circle cx='90' cy='80' r='4' fill='#3B82F6' className='drop-shadow-sm' />
-                        <circle cx='130' cy='70' r='4' fill='#3B82F6' className='drop-shadow-sm' />
-                      </svg>
-                    </div>
-                    
-                    {/* X軸ラベル */}
-                    <div className='absolute bottom-0 left-8 right-0 flex justify-between text-xs text-gray-500 mt-2'>
-                      <span>第1週</span>
-                      <span>第2週</span>
-                      <span>第3週</span>
-                      <span>第4週</span>
-                    </div>
-                  </div>
-                  <div className='mt-4 text-sm text-gray-600'>
-                    最新週の完了率: <span className='font-semibold text-green-600'>95%</span>
-                  </div>
-                </div>
+            {/* ドーナツチャート風とKPT分布 */}
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
+              {/* ドーナツチャート風 - 完了状況 */}
+              
 
-                {/* 棒グラフ風 - 月次KPT数推移 */}
-                <div className='bg-white border border-gray-200 rounded-lg p-6'>
-                  <h4 className='text-lg font-semibold text-gray-900 mb-4'>📊 月次KPT数推移</h4>
-                  <div className='relative h-40'>
-                    {/* Y軸ラベル */}
-                    <div className='absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500'>
-                      <span>50</span>
-                      <span>40</span>
-                      <span>30</span>
-                      <span>20</span>
-                      <span>10</span>
-                      <span>0</span>
-                    </div>
-                    
-                    {/* グラフエリア */}
-                    <div className='ml-8 h-full relative flex items-end justify-between space-x-2 pb-6'>
-                      {/* 棒グラフ */}
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-indigo-500 to-indigo-400 rounded-t-sm' style={{height: '64%'}}></div>
-                        <span className='text-xs text-gray-500 mt-2'>3ヶ月前</span>
-                        <span className='text-xs font-semibold text-gray-700'>32</span>
-                      </div>
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-sm' style={{height: '76%'}}></div>
-                        <span className='text-xs text-gray-500 mt-2'>2ヶ月前</span>
-                        <span className='text-xs font-semibold text-gray-700'>38</span>
-                      </div>
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-cyan-500 to-cyan-400 rounded-t-sm' style={{height: '82%'}}></div>
-                        <span className='text-xs text-gray-500 mt-2'>先月</span>
-                        <span className='text-xs font-semibold text-gray-700'>41</span>
-                      </div>
-                      <div className='flex-1 flex flex-col items-center'>
-                        <div className='w-full bg-gradient-to-t from-emerald-500 to-emerald-400 rounded-t-sm' style={{height: '90%'}}></div>
-                        <span className='text-xs text-gray-500 mt-2'>今月</span>
-                        <span className='text-xs font-semibold text-gray-700'>45</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='mt-4 text-sm text-gray-600'>
-                    月間成長率: <span className='font-semibold text-green-600'>+9.8%</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* ドーナツチャート風とKPT分布 */}
-              <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
-                {/* ドーナツチャート風 - 完了状況 */}
-                <div className='bg-white border border-gray-200 rounded-lg p-6'>
-                  <h4 className='text-lg font-semibold text-gray-900 mb-4'>🍩 完了状況分布</h4>
-                  <div className='flex items-center justify-center mb-4'>
-                    <div className='relative w-32 h-32'>
-                      <svg className='w-full h-full transform -rotate-90'>
-                        {/* 背景円 */}
-                        <circle
-                          cx='64'
-                          cy='64'
-                          r='56'
-                          fill='none'
-                          stroke='#F3F4F6'
-                          strokeWidth='16'
-                        />
-                        {/* 完了済み (84%) */}
-                        <circle
-                          cx='64'
-                          cy='64'
-                          r='56'
-                          fill='none'
-                          stroke='#10B981'
-                          strokeWidth='16'
-                          strokeDasharray={`${2 * Math.PI * 56 * 0.84} ${2 * Math.PI * 56}`}
-                          className='transition-all duration-1000 ease-out'
-                        />
-                        {/* 進行中 (11%) */}
-                        <circle
-                          cx='64'
-                          cy='64'
-                          r='56'
-                          fill='none'
-                          stroke='#F59E0B'
-                          strokeWidth='16'
-                          strokeDasharray={`${2 * Math.PI * 56 * 0.11} ${2 * Math.PI * 56}`}
-                          strokeDashoffset={`-${2 * Math.PI * 56 * 0.84}`}
-                          className='transition-all duration-1000 ease-out'
-                        />
-                        {/* キャンセル (5%) */}
-                        <circle
-                          cx='64'
-                          cy='64'
-                          r='56'
-                          fill='none'
-                          stroke='#EF4444'
-                          strokeWidth='16'
-                          strokeDasharray={`${2 * Math.PI * 56 * 0.05} ${2 * Math.PI * 56}`}
-                          strokeDashoffset={`-${2 * Math.PI * 56 * 0.95}`}
-                          className='transition-all duration-1000 ease-out'
-                        />
-                      </svg>
-                      <div className='absolute inset-0 flex items-center justify-center'>
-                        <div className='text-center'>
-                          <div className='text-2xl font-bold text-gray-900'>45</div>
-                          <div className='text-xs text-gray-500'>総KPT</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='space-y-2'>
-                    <div className='flex items-center justify-between text-sm'>
-                      <div className='flex items-center'>
-                        <div className='w-3 h-3 bg-green-500 rounded-full mr-2'></div>
-                        <span className='text-gray-600'>完了済み</span>
-                      </div>
-                      <span className='font-semibold text-gray-900'>38 (84%)</span>
-                    </div>
-                    <div className='flex items-center justify-between text-sm'>
-                      <div className='flex items-center'>
-                        <div className='w-3 h-3 bg-yellow-500 rounded-full mr-2'></div>
-                        <span className='text-gray-600'>進行中</span>
-                      </div>
-                      <span className='font-semibold text-gray-900'>5 (11%)</span>
-                    </div>
-                    <div className='flex items-center justify-between text-sm'>
-                      <div className='flex items-center'>
-                        <div className='w-3 h-3 bg-red-500 rounded-full mr-2'></div>
-                        <span className='text-gray-600'>キャンセル</span>
-                      </div>
-                      <span className='font-semibold text-gray-900'>2 (5%)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* レーダーチャート風 - スキル成長 */}
-                <div className='bg-white border border-gray-200 rounded-lg p-6'>
-                  <h4 className='text-lg font-semibold text-gray-900 mb-4'>🎯 スキル成長レーダー</h4>
-                  <div className='flex items-center justify-center mb-4'>
-                    <div className='relative w-32 h-32'>
-                      <svg className='w-full h-full'>
-                        {/* 背景ペンタゴン */}
-                        <polygon
-                          points='64,8 100,45 85,85 43,85 28,45'
-                          fill='none'
-                          stroke='#E5E7EB'
-                          strokeWidth='1'
-                        />
-                        <polygon
-                          points='64,24 88,50 78,78 50,78 40,50'
-                          fill='none'
-                          stroke='#E5E7EB'
-                          strokeWidth='1'
-                        />
-                        <polygon
-                          points='64,40 76,56 71,71 57,71 52,56'
-                          fill='none'
-                          stroke='#E5E7EB'
-                          strokeWidth='1'
-                        />
-                        
-                        {/* データペンタゴン */}
-                        <polygon
-                          points='64,20 92,48 80,75 48,75 36,48'
-                          fill='rgba(59, 130, 246, 0.2)'
-                          stroke='#3B82F6'
-                          strokeWidth='2'
-                        />
-                        
-                        {/* データポイント */}
-                        <circle cx='64' cy='20' r='3' fill='#3B82F6' />
-                        <circle cx='92' cy='48' r='3' fill='#3B82F6' />
-                        <circle cx='80' cy='75' r='3' fill='#3B82F6' />
-                        <circle cx='48' cy='75' r='3' fill='#3B82F6' />
-                        <circle cx='36' cy='48' r='3' fill='#3B82F6' />
-                        
-                        {/* 中心から各頂点への線 */}
-                        <line x1='64' y1='64' x2='64' y2='8' stroke='#E5E7EB' strokeWidth='1' />
-                        <line x1='64' y1='64' x2='100' y2='45' stroke='#E5E7EB' strokeWidth='1' />
-                        <line x1='64' y1='64' x2='85' y2='85' stroke='#E5E7EB' strokeWidth='1' />
-                        <line x1='64' y1='64' x2='43' y2='85' stroke='#E5E7EB' strokeWidth='1' />
-                        <line x1='64' y1='64' x2='28' y2='45' stroke='#E5E7EB' strokeWidth='1' />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className='grid grid-cols-2 gap-2 text-xs'>
-                    <div className='text-center'>
-                      <div className='font-semibold text-blue-600'>85</div>
-                      <div className='text-gray-500'>継続性</div>
-                    </div>
-                    <div className='text-center'>
-                      <div className='font-semibold text-green-600'>78</div>
-                      <div className='text-gray-500'>問題解決</div>
-                    </div>
-                    <div className='text-center'>
-                      <div className='font-semibold text-purple-600'>72</div>
-                      <div className='text-gray-500'>実行力</div>
-                    </div>
-                    <div className='text-center'>
-                      <div className='font-semibold text-orange-600'>69</div>
-                      <div className='text-gray-500'>改善提案</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                
 
               {/* 強み・改善点分析 */}
               <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
@@ -656,8 +298,8 @@ const Home = () => {
         </section>
 
         {/* チュートリアルセクション */}
-        <section className='bg-gradient-to-r from-indigo-500 to-purple-600 py-20'>
-          <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <section className='bg-gradient-to-r from-indigo-500 to-purple-600 py-20 flex justify-center'>
+          <div className='mx-8 max-w-[70%]'>
             <div className='text-center mb-12'>
               <h3 className='text-3xl font-extrabold text-white mb-4'>
                 📖 3分で始められるチュートリアル
@@ -668,13 +310,14 @@ const Home = () => {
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12'>
-              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
-                <div className='w-20 h-20 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4 p-3'>
+              {/* アカウント作成 */}
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center'>
+                <div className='w-32 h-32 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-6 p-6'>
                   <Image
-                    src='/images/step1-account.svg'
+                    src='/images/tutorial1.svg'
                     alt='アカウント作成のイラスト'
-                    width={64}
-                    height={64}
+                    width={128}
+                    height={128}
                     className='w-full h-full object-contain'
                   />
                 </div>
@@ -684,13 +327,14 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
-                <div className='w-20 h-20 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4 p-3'>
+              {/* 初回KPT作成 */}
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center'>
+                <div className='w-32 h-32 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-6 p-6'>
                   <Image
-                    src='/images/step2-create.svg'
+                    src='/images/tutorial2.svg'
                     alt='KPT作成のイラスト'
-                    width={64}
-                    height={64}
+                    width={128}
+                    height={128}
                     className='w-full h-full object-contain'
                   />
                 </div>
@@ -700,13 +344,14 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center'>
-                <div className='w-20 h-20 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4 p-3'>
+              {/* 継続的改善 */}
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center'>
+                <div className='w-32 h-32 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-6 p-6'>
                   <Image
-                    src='/images/step3-improve.svg'
+                    src='/images/tutorial3.svg'
                     alt='継続的改善のイラスト'
-                    width={64}
-                    height={64}
+                    width={128}
+                    height={128}
                     className='w-full h-full object-contain'
                   />
                 </div>
@@ -737,8 +382,8 @@ const Home = () => {
           </div>
         </section>
 
-        <section className='bg-gray-50 py-20'>
-          <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <section className='bg-gray-50 py-20 flex justify-center'>
+          <div className='mx-8 max-w-[70%]'>
             <div className='text-center mb-16'>
               <h3 className='text-3xl font-extrabold text-gray-900 mb-4'>すべての機能を探索</h3>
               <p className='text-xl text-gray-600'>KPT Connectの豊富な機能をご体験ください</p>
@@ -986,8 +631,8 @@ const Home = () => {
           </div>
         </section>
 
-        <section className='bg-indigo-600 py-16'>
-          <div className='max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8'>
+        <section className='bg-indigo-600 py-16 flex justify-center'>
+          <div className='mx-auto text-center px-8 sm:px-12 lg:px-16 max-w-[70%]'>
             <h3 className='text-3xl font-extrabold text-white mb-4'>
               今すぐKPT Connectを始めましょう
             </h3>
@@ -1001,9 +646,6 @@ const Home = () => {
                 </Button>
               </Link>
               <Link href='/dashboard'>
-                <Button className='bg-white text-indigo-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold shadow-lg'>
-                  ダッシュボードを見る
-                </Button>
               </Link>
             </div>
           </div>

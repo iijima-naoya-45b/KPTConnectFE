@@ -4,6 +4,7 @@
  *
  * KPT管理システムのメインダッシュボードページです。
  * 各機能へのナビゲーション、統計情報、クイックアクションを提供します。
+ * 週次・月次グラフも上部に表示します。
  *
  * @example
  * ```tsx
@@ -15,12 +16,18 @@
 
 import React from 'react';
 import { DashboardHeader, FeatureGrid, featuresData } from './components';
+import WeeklyMonthlyCharts from './components/WeeklyMonthlyCharts';
 
 const DashboardPage: React.FC = () => {
   return (
     <div className='mt-10 py-8 lg:py-12 min-h-screen bg-gray-50 pt-16'>
       {/* ヘッダーセクション */}
       <DashboardHeader userName='開発太郎' showQuickActions={true} />
+
+      {/* 週次・月次グラフセクション */}
+      <div className='mt-8 mb-12'>
+        <WeeklyMonthlyCharts />
+      </div>
 
       {/* 機能グリッドセクション */}
       <div className='mt-12 lg:mt-16'>
