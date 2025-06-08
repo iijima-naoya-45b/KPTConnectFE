@@ -1,10 +1,3 @@
-/**
- * @fileoverview 通知APIクライアント
- * @description 通知機能のAPI呼び出しを管理
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 import { API_BASE_URL } from '@/lib/constants';
 
 /**
