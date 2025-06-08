@@ -1,10 +1,3 @@
-/**
- * @fileoverview KPT Connect フロントエンド共通型定義
- * @description アプリケーション全体で使用される型定義を集約
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 // ===== 基本型定義 =====
 
 /**
@@ -418,11 +411,11 @@ export interface UserSubscription {
 /**
  * サブスクリプションステータス
  */
-export type SubscriptionStatus = 
-  | 'active' 
-  | 'canceled' 
-  | 'past_due' 
-  | 'unpaid' 
+export type SubscriptionStatus =
+  | 'active'
+  | 'canceled'
+  | 'past_due'
+  | 'unpaid'
   | 'trialing';
 
 /**
@@ -544,9 +537,9 @@ export interface Recommendation {
 /**
  * 推奨カテゴリ
  */
-export type RecommendationCategory = 
-  | 'frequency' 
-  | 'quality' 
-  | 'follow_up' 
-  | 'goal_setting' 
+export type RecommendationCategory =
+  | 'frequency'
+  | 'quality'
+  | 'follow_up'
+  | 'goal_setting'
   | 'reflection_depth';
