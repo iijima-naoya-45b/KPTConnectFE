@@ -7,6 +7,9 @@ import Image from 'next/image';
 // このページは動的レンダリングが必要
 export const dynamic = 'force-dynamic';
 
+// 環境変数からバックエンドAPIのベースURLを取得
+const backendBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
+
 const LoginPageContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -14,21 +17,27 @@ const LoginPageContent = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Googleログイン処理
+  /**
+   * Googleログイン処理
+   * @description バックエンドのGoogle OAuthエンドポイントにリダイレクト
+   */
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:3001/api/v1/oauth/google?provider=google';
+    window.location.href = `${backendBaseUrl}/api/v1/oauth/google?provider=google`;
   };
 
-  // GitHubログイン処理
+  /**
+   * GitHubログイン処理
+   * @description バックエンドのGitHub OAuthエンドポイントにリダイレクト
+   */
   const handleGitHubLogin = () => {
-    window.location.href = 'http://localhost:3001/api/v1/oauth/github?provider=github';
+    window.location.href = `${backendBaseUrl}/api/v1/oauth/github?provider=github`;
   };
 
   // Googleログインコールバック処理
   const handleGoogleCallback = useCallback(
     async (sessionId: string) => {
       try {
-        const response = await fetch('http://localhost:3001/api/v1/sessions/verify', {
+        const response = await fetch(`${backendBaseUrl}/api/v1/sessions/verify`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +75,7 @@ const LoginPageContent = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/v1/sessions', {
+      const response = await fetch(`${backendBaseUrl}/api/v1/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
