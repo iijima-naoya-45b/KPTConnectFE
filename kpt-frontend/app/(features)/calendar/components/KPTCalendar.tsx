@@ -1,3 +1,16 @@
+/**
+ * @file KPTCalendarコンポーネント
+ * @概要 KPTスケジュールをカレンダー形式で表示・管理するReactコンポーネント
+ * @主な仕様
+ *   - スケジュールのフィルタリング（タイプ・状態）
+ *   - 日付ナビゲーション
+ *   - 新規Todo追加
+ *   - スケジュールのカスタム表示
+ * @制限事項
+ *   - 未使用のpropsや変数は定義しないこと
+ * @author
+ *   - 作成者: あなたの名前
+ */
 'use client';
 
 import React, { useState } from 'react';
@@ -36,14 +49,12 @@ interface KPTSchedule {
 
 interface KPTCalendarProps {
   schedules: KPTSchedule[];
-  onEventClick?: (schedule: KPTSchedule) => void;
   currentDate: Date;
   onDateChange: (date: Date) => void;
 }
 
 const KPTCalendar: React.FC<KPTCalendarProps> = ({
   schedules,
-  onEventClick,
   currentDate,
   onDateChange,
 }) => {
@@ -54,56 +65,11 @@ const KPTCalendar: React.FC<KPTCalendarProps> = ({
   const [localSchedules, setLocalSchedules] = useState<KPTSchedule[]>(schedules);
   const router = useRouter();
 
-  // イベントのスタイリング（タイプと状態に基づく）
-  const eventStyleGetter = (event: KPTSchedule) => {
-    let backgroundColor = '';
-    let opacity = 0.8;
-    let borderStyle = 'solid';
-
-    // タイプ別の色設定
-    switch (event.type) {
-      case 'keep':
-        backgroundColor = '#4F46E5'; // indigo-600
-        break;
-      case 'problem':
-        backgroundColor = '#DC2626'; // red-600
-        break;
-      case 'try':
-        backgroundColor = '#059669'; // green-600
-        break;
-    }
-
-    // 状態別のスタイル調整
-    switch (event.status) {
-      case 'completed':
-        opacity = 1.0;
-        break;
-      case 'scheduled':
-        opacity = 0.7;
-        borderStyle = 'dashed';
-        break;
-      case 'cancelled':
-        opacity = 0.3;
-        backgroundColor = '#6B7280'; // gray-500
-        break;
-    }
-
-    return {
-      style: {
-        backgroundColor,
-        borderRadius: '4px',
-        opacity,
-        color: 'white',
-        border: `2px ${borderStyle} ${backgroundColor}`,
-        display: 'block',
-        fontSize: '12px',
-        padding: '2px 4px',
-      },
-    };
-  };
-
-  // カスタムイベントコンポーネント（アイコンのみ表示）
-  const EventComponent = ({ event }: { event: KPTSchedule }) => {
+  /**
+   * @description カレンダーイベントのカスタム表示用コンポーネント
+   * @remarks 現状はアイコンのみ表示し、event引数は未使用のため削除
+   */
+  const EventComponent = () => {
     return (
       <div className='flex items-center justify-center'>
         {/* 汎用リストアイコン */}

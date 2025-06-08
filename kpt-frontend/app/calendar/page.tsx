@@ -18,7 +18,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -92,7 +92,7 @@ interface ApiResponse<T> {
 
 type ActiveTab = 'calendar' | 'timeline' | 'analytics';
 
-const CalendarPage = () => {
+const CalendarPageInner = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -687,5 +687,14 @@ const CalendarPage = () => {
     </div>
   );
 };
+
+/**
+ * @description useSearchParamsを利用するため、Suspenseでラップしたエクスポートコンポーネント
+ */
+const CalendarPage = () => (
+  <Suspense>
+    <CalendarPageInner />
+  </Suspense>
+);
 
 export default CalendarPage; 
