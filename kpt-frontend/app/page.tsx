@@ -88,8 +88,8 @@ const Home = () => {
         </section>
 
         {/* GitHub紐づけセクション */}
-        <section className='mx-8 py-10 flex justify-center'>
-          <div className='bg-white rounded-lg shadow p-10 flex flex-col md:flex-row items-center gap-10 w-full max-w-[70%]'>
+        <section className='mx-8 py-10 flex justify-center bg-gradient-to-b from-indigo-50 to-white'>
+          <div className='rounded-lg p-10 flex flex-col md:flex-row items-center gap-10 w-full max-w-[70%]'>
             {/* 左：テキスト */}
             <div className='flex-1 min-w-0'>
               <h3 className='text-2xl font-bold text-gray-900 mb-4'>GitHub連携でタスクとKPTを一元管理</h3>
@@ -102,7 +102,7 @@ const Home = () => {
                 <li>進捗・課題・改善アクションの可視化</li>
                 <li>GitHubタスクとKPTの一元管理</li>
               </ul>
-              <div className='bg-indigo-50 rounded p-4'>
+              <div className='bg-indigo-100 rounded p-4'>
                 <div className='font-semibold text-indigo-700 mb-2'>使い方の流れ</div>
                 <ol className='list-decimal pl-5 text-gray-700 text-sm'>
                   <li>GitHub認証で連携開始</li>
@@ -114,8 +114,8 @@ const Home = () => {
             {/* 右：ダミー画像 */}
             <div className='flex-1 flex justify-center items-center min-w-[220px]'>
               <Image
-                src='/images/github-link-dummy.png'
-                alt='GitHub連携イメージ（ダミー）'
+                src='/images/github-connect.png'
+                alt='GitHub連携イメージ'
                 width={320}
                 height={220}
                 className='rounded shadow object-contain bg-gray-50'
@@ -285,7 +285,7 @@ const Home = () => {
                   </Button>
                 </Link>
                 <Link href='/pricing'>
-                  <Button variant='outline' className='text-white border-white hover:bg-white/10 px-10 py-4 text-lg'>
+                  <Button className='bg-white text-slate-900 hover:bg-gray-100 px-10 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200'>
                     プロプランを確認
                   </Button>
                 </Link>
