@@ -41,6 +41,10 @@ const UpgradePageContent: React.FC = () => {
    * 初期化処理
    */
   useEffect(() => {
+    /**
+     * @description searchParamsがnullの場合は何もしない。
+     */
+    if (!searchParams) return;
     const planId = searchParams.get('plan');
     const cycle = searchParams.get('cycle') as 'monthly' | 'yearly' | null;
 

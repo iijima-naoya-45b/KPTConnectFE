@@ -113,13 +113,20 @@ const CalendarPageInner = () => {
   // タブ変更ハンドラー（URLも更新）
   const handleTabChange = (tab: ActiveTab) => {
     setActiveTab(tab);
-    const params = new URLSearchParams(searchParams);
+    /**
+     * @description searchParamsがnullの場合は空のURLSearchParamsを使う。
+     */
+    const params = new URLSearchParams((searchParams as any)?.toString?.() || '');
     params.set('tab', tab);
     router.replace(`/calendar?${params.toString()}`);
   };
 
   // URLパラメータからタブを設定
   useEffect(() => {
+    /**
+     * @description searchParamsがnullの場合は何もしない。
+     */
+    if (!searchParams) return;
     const tabParam = searchParams.get('tab') as ActiveTab;
     if (tabParam && ['calendar', 'timeline', 'analytics'].includes(tabParam)) {
       setActiveTab(tabParam);

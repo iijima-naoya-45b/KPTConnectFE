@@ -28,6 +28,10 @@ const BillingSuccessContent: React.FC = () => {
    * 初期化処理
    */
   useEffect(() => {
+    /**
+     * @description searchParamsがnullの場合は何もしない。
+     */
+    if (!searchParams) return;
     const paymentIntent = searchParams.get('payment_intent');
     const plan = searchParams.get('plan');
 

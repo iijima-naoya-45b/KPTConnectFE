@@ -93,7 +93,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthenticatedHeader />
-        <main>{children}</main>
+        <main className='mt-[64px]'>{children}</main>
         <Footer />
       </body>
     </html>
