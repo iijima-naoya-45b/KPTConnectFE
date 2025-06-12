@@ -2,6 +2,16 @@
  * @file page.tsx
  * @description KPT詳細ページ
  *
+ * @仕様
+ * - URLパラメータからKPTセッションIDを取得し、詳細情報を表示する。
+ * - paramsがnullの場合はエラーメッセージを表示する。
+ * - API通信や編集・削除などの操作に失敗した場合は詳細なエラーメッセージを表示する。
+ * - コード全体でローワーキャメルケース命名、可読性重視。
+ *
+ * @制限事項
+ * - paramsがnullの場合、セッション詳細は取得できない。
+ * - fetchSessionDetailはuseCallbackでラップし、useEffect依存配列に追加。
+ *
  * @example
  * ```tsx
  * <KptDetailPage />
@@ -10,7 +20,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 
@@ -60,9 +70,13 @@ interface KptSessionDetailResponse {
 }
 
 const KptDetailPage = () => {
+  /**
+   * @property {object|null} params - URLパラメータ。nullの場合はエラー扱い。
+   * @property {string|null} sessionId - セッションID。paramsがnullの場合はnull。
+   */
   const router = useRouter();
-  const params = useParams();
-  const sessionId = params.id as string;
+  const params = useParams() as { id?: string } | null;
+  const sessionId = params?.id ?? null;
   
   const [session, setSession] = useState<KptSessionDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -78,15 +92,21 @@ const KptDetailPage = () => {
   const [editTags, setEditTags] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
-  // KPTセッション詳細を取得
-  const fetchSessionDetail = async () => {
+  /**
+   * @function fetchSessionDetail
+   * @description KPTセッション詳細をAPIから取得する。paramsまたはsessionIdがnullの場合はエラー。
+   */
+  const fetchSessionDetail = useCallback(async () => {
+    if (!sessionId) {
+      setError('URLパラメータが不正です（セッションIDが取得できません）');
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       setError('');
-      
       const response = await fetch(`/api/v1/kpt_sessions/${sessionId}`);
       const result: KptSessionDetailResponse = await response.json();
-      
       if (result.success) {
         setSession(result.data);
       } else {
@@ -98,7 +118,7 @@ const KptDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sessionId]);
 
   // ステータス色を取得
   const getStatusColor = (status: string): string => {
@@ -303,10 +323,19 @@ const KptDetailPage = () => {
 
   // 初期化
   useEffect(() => {
-    if (sessionId) {
-      fetchSessionDetail();
-    }
-  }, [sessionId]);
+    fetchSessionDetail();
+  }, [fetchSessionDetail]);
+
+  if (!sessionId) {
+    return (
+      <div className='min-h-screen bg-gray-50 pt-16 flex items-center justify-center'>
+        <div className='text-center'>
+          <div className='text-red-600 text-lg font-bold'>URLパラメータが不正です（セッションIDが取得できません）</div>
+          <Link href='/dashboard/kpt' className='mt-4 inline-block text-blue-600 hover:text-blue-900'>KPT一覧に戻る</Link>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

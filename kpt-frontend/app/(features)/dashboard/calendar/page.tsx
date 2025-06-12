@@ -25,6 +25,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import CalendarView from './CalendarView';
 import GanttChartView from './GanttChartView';
 import { Task } from 'gantt-task-react';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 // Todo項目の型定義
 interface TodoItem {
@@ -70,7 +71,7 @@ type ActiveTab = 'board' | 'analytics' | 'calendar' | 'gantt';
 
 const TodoBoardPageInner = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() as ReadonlyURLSearchParams;
   
   // 状態管理
   const [activeTab, setActiveTab] = useState<ActiveTab>('board');
@@ -115,7 +116,7 @@ const TodoBoardPageInner = () => {
   // タブ変更ハンドラー（URLも更新）
   const handleTabChange = (tab: ActiveTab) => {
     setActiveTab(tab);
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams((searchParams as ReadonlyURLSearchParams).toString());
     params.set('tab', tab);
     router.replace(`/dashboard/calendar?${params.toString()}`);
   };

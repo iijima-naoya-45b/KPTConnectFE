@@ -51,6 +51,10 @@ const LoginPageContent = () => {
   );
 
   useEffect(() => {
+    /**
+     * @description searchParamsがnullの場合は何もしない。
+     */
+    if (!searchParams) return;
     const sessionId = searchParams.get('session_id');
     if (sessionId) {
       handleGoogleCallback(sessionId);

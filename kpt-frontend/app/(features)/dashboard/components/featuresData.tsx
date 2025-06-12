@@ -13,7 +13,7 @@ export const featuresData = [
     icon: <FileText className='w-8 h-8 text-indigo-600' />,
     title: 'Todo作成',
     description: '新しいTodoを作成して管理',
-    href: '/dashboard/todo',
+    href: '/dashboard/templates/new',
   },
   {
     icon: <List className='w-8 h-8 text-indigo-600' />,
