@@ -328,10 +328,12 @@ const KptDetailPage = () => {
 
   if (!sessionId) {
     return (
-      <div className='min-h-screen bg-gray-50 pt-16 flex items-center justify-center'>
-        <div className='text-center'>
-          <div className='text-red-600 text-lg font-bold'>URLパラメータが不正です（セッションIDが取得できません）</div>
-          <Link href='/dashboard/kpt' className='mt-4 inline-block text-blue-600 hover:text-blue-900'>KPT一覧に戻る</Link>
+      <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
+        <div className='  bg-gray-50 pt-16 flex items-center justify-center'>
+          <div className='text-center'>
+            <div className='text-red-600 text-lg font-bold'>URLパラメータが不正です（セッションIDが取得できません）</div>
+            <Link href='/dashboard/kpt' className='mt-4 inline-block text-blue-600 hover:text-blue-900'>KPT一覧に戻る</Link>
+          </div>
         </div>
       </div>
     );
@@ -339,10 +341,12 @@ const KptDetailPage = () => {
 
   if (loading) {
     return (
-      <div className='min-h-screen bg-gray-50 pt-16 flex items-center justify-center'>
-        <div className='text-center'>
-          <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600'></div>
-          <p className='mt-4 text-gray-600'>KPTセッション詳細を読み込み中...</p>
+      <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
+        <div className='  bg-gray-50 pt-16 flex items-center justify-center'>
+          <div className='text-center'>
+            <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600'></div>
+            <p className='mt-4 text-gray-600'>KPTセッション詳細を読み込み中...</p>
+          </div>
         </div>
       </div>
     );
@@ -350,7 +354,7 @@ const KptDetailPage = () => {
 
   if (error) {
     return (
-      <div className='min-h-screen bg-gray-50 pt-16'>
+      <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
           <div className='bg-red-50 border border-red-200 rounded-md p-4'>
             <p className='text-red-800'>{error}</p>
@@ -371,7 +375,7 @@ const KptDetailPage = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 pt-16'>
+    <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
       {/* ヘッダー */}
       <header className='bg-white shadow'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>

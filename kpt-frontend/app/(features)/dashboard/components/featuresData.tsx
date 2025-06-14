@@ -1,5 +1,5 @@
 import { BarChart, Calendar, FileText,
-   Bell, Link, List } from 'lucide-react';
+   Bell, List } from 'lucide-react';
 
 export const featuresData = [
   {
@@ -33,9 +33,15 @@ export const featuresData = [
     href: '/notifications',
   },
   {
-    icon: <Link className='w-8 h-8 text-indigo-600' />,
-    title: '外部連携',
-    description: 'GitHub、Calendar等との連携設定',
-    href: '/integrations',
+    icon: <Calendar className='w-8 h-8 text-indigo-600' />,
+    title: 'カレンダー',
+    description: 'Todoをカレンダー形式で可視化',
+    href: '/dashboard/calendar',
+  },
+  {
+    icon: <BarChart className='w-8 h-8 text-indigo-600' />,
+    title: 'ガントチャート',
+    description: 'Todoをガントチャートで管理',
+    href: '/dashboard/gantt',
   },
 ];

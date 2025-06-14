@@ -36,7 +36,7 @@ export default function LearningRoadmapPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center  ">
         <div className="text-center">
           <Brain className="h-12 w-12 animate-pulse text-purple-500 mx-auto mb-4" />
           <p className="text-lg font-medium">ロードマップ作成中...</p>

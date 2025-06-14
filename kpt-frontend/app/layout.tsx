@@ -60,7 +60,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
+    <html lang='ja' className='h-full'>
       <head>
         {GA_TRACKING_ID && (
           <>
@@ -82,9 +82,9 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className}flex flex-col`}>
         <AuthenticatedHeader />
-        <main className='mt-[64px]'>{children}</main>
+        <main className='flex-1 mt-[64px] min-h-[calc(100vh-116px-64px)]'>{children}</main>
         <Footer />
       </body>
     </html>

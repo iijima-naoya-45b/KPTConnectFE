@@ -46,6 +46,12 @@ const nextConfig = {
                 port: '',
                 pathname: '/firebasejs/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'avatars.githubusercontent.com',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
     async rewrites() {

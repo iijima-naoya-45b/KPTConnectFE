@@ -4,8 +4,8 @@
  * @returns Issues一覧テーブル＋選択保存UI
  */
 
-import React, { useState } from 'react';
 import Image from 'next/image';
+import React, { useState } from 'react';
 
 interface Issue {
   id: number;
@@ -163,13 +163,7 @@ const GithubIssuesSample: React.FC = () => {
                     <td className='px-4 py-2 border-b'>{issue.state}</td>
                     <td className='px-4 py-2 border-b'>
                       <a href={issue.user.html_url} target='_blank' rel='noopener noreferrer' className='flex items-center space-x-2'>
-                        <Image
-                          src={issue.user.avatar_url}
-                          alt={issue.user.login}
-                          width={24}
-                          height={24}
-                          className='rounded-full'
-                        />
+                        <Image src={issue.user.avatar_url} alt={issue.user.login} className='w-6 h-6 rounded-full' />
                         <span>{issue.user.login}</span>
                       </a>
                     </td>

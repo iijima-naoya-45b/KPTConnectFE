@@ -43,7 +43,7 @@ const PricingPage = (): JSX.Element => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-b from-indigo-50 to-white'>
+    <div className='  bg-gradient-to-b from-indigo-50 to-white'>
       <main className='pt-16'>
         {/* ヘッダーセクション */}
         <section className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20'>
