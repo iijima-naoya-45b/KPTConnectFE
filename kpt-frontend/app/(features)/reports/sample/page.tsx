@@ -206,7 +206,7 @@ const ReportsSamplePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+      <div className='  flex items-center justify-center bg-gray-50'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto'></div>
           <p className='mt-4 text-gray-600'>サンプルレポートを生成中...</p>
@@ -217,7 +217,7 @@ const ReportsSamplePage: React.FC = () => {
 
   if (!reportData) {
     return (
-      <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+      <div className='  flex items-center justify-center bg-gray-50'>
         <div className='text-center'>
           <p className='text-gray-600'>サンプルデータの読み込みに失敗しました</p>
           <Button onClick={() => window.location.reload()} className='mt-4'>
@@ -229,7 +229,7 @@ const ReportsSamplePage: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 pt-16'>
+    <div className='  bg-gray-50 pt-16'>
       {/* サンプル版であることを示すバナー */}
       <div className='bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>

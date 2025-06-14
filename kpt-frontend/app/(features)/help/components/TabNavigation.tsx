@@ -1,19 +1,3 @@
-/**
- * @file TabNavigation.tsx
- * @description タブナビゲーションコンポーネント
- * 
- * ヘルプページのタブ切り替えを行うための
- * ナビゲーションコンポーネントです。
- * 
- * @example
- * ```tsx
- * <TabNavigation
- *   activeTab={activeTab}
- *   onTabChange={setActiveTab}
- * />
- * ```
- */
-
 import React from 'react';
 import { TabType } from './types';
 
@@ -35,7 +19,7 @@ const tabLabels: Record<TabType, string> = {
 };
 
 /**
- * タブナビゲーションコンポーネント
+//  * タブナビゲーションコンポーネント
  */
 const TabNavigation: React.FC<TabNavigationProps> = ({
   activeTab,

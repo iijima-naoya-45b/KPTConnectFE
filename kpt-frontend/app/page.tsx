@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 const Home = () => {
   return (
-    <div className='min-h-screen bg-gradient-to-b from-indigo-50 to-white'>
+    <div className='  bg-gradient-to-b from-indigo-50 to-white'>
       <main className='pt-16'>
         <section className='mx-8 py-10 flex justify-center'>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-[70%]'>
