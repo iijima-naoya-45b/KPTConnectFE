@@ -10,12 +10,20 @@
  * ```
  */
 
-'use client';
-
+import type { Metadata } from 'next';
 import React from 'react';
 import IntegrationSettings from './components/IntegrationSettings';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: '外部連携設定',
+  description: 'GitHub、Slack、Trelloなどの外部サービスとの連携を設定します。開発の進捗や課題、改善アクションを一元管理できます。',
+  openGraph: {
+    title: '外部連携設定 | KPT Connect',
+    description: 'GitHub、Slack、Trelloなどの外部サービスとの連携を設定します。開発の進捗や課題、改善アクションを一元管理できます。',
+  },
+};
 
 const IntegrationsPage: React.FC = () => {
   return (

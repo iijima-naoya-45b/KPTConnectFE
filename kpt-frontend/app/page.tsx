@@ -1,3 +1,9 @@
+/**
+ * @file page.tsx
+ * @description Home page for KPT Connect
+ */
+
+import type { Metadata } from 'next';
 import React from 'react';
 import {
   FeatureCard,
@@ -10,6 +16,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ReportChartsGrid from './(features)/dashboard/components/ReportChartsGrid';
 
+export const metadata: Metadata = {
+  title: 'KPT Connect',
+  description: 'Welcome to KPT Connect. Manage your projects, tasks, and team activities efficiently.',
+  openGraph: {
+    title: 'KPT Connect',
+    description: 'Welcome to KPT Connect. Manage your projects, tasks, and team activities efficiently.',
+    type: 'website',
+  },
+};
+
 const Home = () => {
   return (
     <div className='min-h-screen bg-gradient-to-b from-indigo-50 to-white'>
@@ -18,12 +34,12 @@ const Home = () => {
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-[70%]'>
             {/* テキストコンテンツ */}
             <div className='text-center lg:text-left'>
-              <h2 className='text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6'>
+              <h2 className='text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 px-4'>
                 個人開発の振り返りを
                 <br />
                 もっと効果的に
               </h2>
-              <p className='text-xl text-gray-600 mb-8'>
+              <p className='text-xl text-gray-600 mb-8 px-4'>
                 KPT Connectは、個人開発者のための振り返りプラットフォームです。
                 一人でも継続的な改善と成長をサポートし、開発スキルの向上を促進します。
               </p>
@@ -89,7 +105,7 @@ const Home = () => {
 
         {/* GitHub紐づけセクション */}
         <section className='mx-8 py-10 flex justify-center bg-gradient-to-b from-indigo-50 to-white'>
-          <div className='rounded-lg p-10 flex flex-col md:flex-row items-center gap-10 w-full max-w-[70%]'>
+          <div className='rounded-lg flex flex-col lg:flex-row items-center gap-10 w-full max-w-[70%]'>
             {/* 左：テキスト */}
             <div className='flex-1 min-w-0'>
               <h3 className='text-2xl font-bold text-gray-900 mb-4'>GitHub連携でタスクとKPTを一元管理</h3>
@@ -104,7 +120,7 @@ const Home = () => {
               </ul>
               <div className='bg-indigo-100 rounded p-4'>
                 <div className='font-semibold text-indigo-700 mb-2'>使い方の流れ</div>
-                <ol className='list-decimal pl-5 text-gray-700 text-sm'>
+                <ol className='list-decimal pl-5 text-gray-700 text-sm flex flex-col gap-2'>
                   <li>GitHub認証で連携開始</li>
                   <li>リポジトリを選択</li>
                   <li>IssueやPull RequestとKPTを紐付けて管理</li>
@@ -311,7 +327,7 @@ const Home = () => {
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12'>
               {/* アカウント作成 */}
-              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center'>
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg py-8 text-center px-4'>
                 <div className='w-32 h-32 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-6 p-6'>
                   <Image
                     src='/images/tutorial1.svg'
@@ -328,7 +344,7 @@ const Home = () => {
               </div>
 
               {/* 初回KPT作成 */}
-              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center'>
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg py-8 text-center px-4'>
                 <div className='w-32 h-32 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-6 p-6'>
                   <Image
                     src='/images/tutorial2.svg'
@@ -345,7 +361,7 @@ const Home = () => {
               </div>
 
               {/* 継続的改善 */}
-              <div className='bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center'>
+              <div className='bg-white/10 backdrop-blur-sm rounded-lg py-8 text-center px-4'>
                 <div className='w-32 h-32 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-6 p-6'>
                   <Image
                     src='/images/tutorial3.svg'

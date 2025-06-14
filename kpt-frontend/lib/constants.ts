@@ -363,24 +363,6 @@ export const PRICING_PLANS = {
     isPopular: true,
     isRecommended: false,
   },
-  ENTERPRISE: {
-    id: 'enterprise',
-    name: 'エンタープライズ',
-    type: 'enterprise' as const,
-    monthlyPrice: 2980,
-    yearlyPrice: 29800,
-    description: 'チーム・組織向けの包括的ソリューション',
-    features: [
-      { name: 'KPT作成', description: '基本的なKPT振り返り機能', included: true },
-      { name: '基本レポート', description: 'シンプルな統計表示', included: true },
-      { name: 'データエクスポート', description: '全形式でのデータ出力', included: true },
-      { name: '詳細レポート', description: '高度な分析とインサイト', included: true },
-      { name: '無制限KPT', description: '制限なしでKPT作成', included: true },
-      { name: 'API連携', description: '外部サービスとの連携', included: true },
-      { name: '優先サポート', description: '24時間以内の回答保証', included: true },
-    ],
-    isRecommended: true,
-  },
 } as const;
 
 /**
@@ -396,12 +378,6 @@ export const FEATURE_LIMITS = {
   PRO: {
     maxKpts: -1, // 無制限
     maxIntegrations: 3,
-    detailedReports: true,
-    apiAccess: true,
-  },
-  ENTERPRISE: {
-    maxKpts: -1, // 無制限
-    maxIntegrations: -1, // 無制限
     detailedReports: true,
     apiAccess: true,
   },

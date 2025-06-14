@@ -67,7 +67,7 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-type ActiveTab = 'board' | 'analytics' | 'calendar' | 'gantt';
+type ActiveTab = 'board' | 'analytics' | 'calendar' | 'gantt' | 'github';
 
 const TodoBoardPageInner = () => {
   const router = useRouter();
@@ -651,12 +651,12 @@ const TodoBoardPageInner = () => {
             <button
               onClick={() => handleTabChange('analytics')}
               className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                activeTab === 'analytics'
+                activeTab === 'github'
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              📊 分析・一覧
+              📊 Github
             </button>
             <button
               onClick={() => handleTabChange('calendar')}

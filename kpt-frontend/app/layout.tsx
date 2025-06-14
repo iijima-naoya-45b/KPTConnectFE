@@ -1,3 +1,8 @@
+/**
+ * @file layout.tsx
+ * @description Root layout for KPT Connect. Sets default metadata for the entire site.
+ */
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
@@ -10,12 +15,14 @@ const inter = Inter({ subsets: ['latin'] });
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID!
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://kpt-connect.example.com'),
-  title: {
-    default: 'KPT Connect',
-    template: '%s | KPT Connect',
+  title: 'KPT Connect',
+  description: 'KPT Connect is a platform to manage your project progress, tasks, and team activities in one place.',
+  openGraph: {
+    title: 'KPT Connect',
+    description: 'KPT Connect is a platform to manage your project progress, tasks, and team activities in one place.',
+    type: 'website',
   },
-  description: '個人開発を加速するKPT管理プラットフォーム',
+  metadataBase: new URL('https://kpt-connect.example.com'),
   keywords: ['KPT', 'Keep', 'Problem', 'Try', '個人開発', '振り返り', '自己成長', '学習管理'],
   authors: [{ name: 'KPT Connect Team' }],
   creator: 'KPT Connect',
@@ -24,22 +31,6 @@ export const metadata: Metadata = {
     email: false,
     address: false,
     telephone: false,
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'ja_JP',
-    url: '/',
-    siteName: 'KPT Connect',
-    title: 'KPT Connect',
-    description: '個人開発を加速するKPT管理プラットフォーム',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'KPT Connect - 個人開発を加速するKPT管理プラットフォーム',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -69,7 +60,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='ja'>
+    <html lang='en'>
       <head>
         {GA_TRACKING_ID && (
           <>
