@@ -33,7 +33,7 @@ interface FeatureCardProps {
  */
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, className = '' }) => {
   return (
-    <div className={`text-center p-6 bg-white rounded-lg shadow-sm ${className}`}>
+    <div className={`text-center p-6 bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}>
       <div className='bg-indigo-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center'>
         {icon}
       </div>

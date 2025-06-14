@@ -18,7 +18,7 @@ import Link from 'next/link';
  */
 const PricingPage = (): JSX.Element => {
   /** 年額/月額切り替えフラグ */
-  const [isYearly, setIsYearly] = useState<boolean>(false);
+  const [isYearly] = useState<boolean>(false);
 
   /**
    * 価格フォーマット関数
@@ -51,46 +51,14 @@ const PricingPage = (): JSX.Element => {
             <h1 className='text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6'>
               シンプルで透明性のある料金プラン
             </h1>
-            <p className='text-xl text-gray-600 mb-8 max-w-3xl mx-auto'>
+            <p className='text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-10'>
               あなたのニーズに合わせて選べる3つのプラン。
               いつでもアップグレード・ダウングレードが可能です。
             </p>
-
-            {/* 月額/年額切り替え */}
-            <div className='flex items-center justify-center mb-12'>
-              <span
-                className={`mr-3 ${!isYearly ? 'text-indigo-600 font-semibold' : 'text-gray-500'}`}
-              >
-                月額
-              </span>
-              <button
-                onClick={() => setIsYearly(!isYearly)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                  isYearly ? 'bg-indigo-600' : 'bg-gray-200'
-                }`}
-                aria-label={`料金表示を${isYearly ? '月額' : '年額'}に切り替える`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isYearly ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-              <span
-                className={`ml-3 ${isYearly ? 'text-indigo-600 font-semibold' : 'text-gray-500'}`}
-              >
-                年額
-              </span>
-              {isYearly && (
-                <span className='ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'>
-                  最大17%お得
-                </span>
-              )}
-            </div>
           </div>
 
           {/* プランカード */}
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto'>
             {Object.values(PRICING_PLANS).map(plan => {
               const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
               const discount = isYearly
@@ -307,8 +275,7 @@ const PricingPage = (): JSX.Element => {
               <Link href='/contact'>
                 <Button
                   variant='outline'
-                  className='border-white text-white hover:bg-white hover:text-indigo-600 px-8 py-3 text-lg'
-                >
+                  className='bg-white text-indigo-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold'>
                   お問い合わせ
                 </Button>
               </Link>

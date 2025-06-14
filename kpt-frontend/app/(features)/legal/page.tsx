@@ -1,16 +1,3 @@
-/**
- * @file page.tsx
- * @description 法的事項インデックスページ
- *
- * プライバシーポリシーと利用規約へのリンクを提供するインデックスページです。
- * ユーザーが必要な法的情報に簡単にアクセスできるよう設計されています。
- *
- * @example
- * ```tsx
- * // /legal でアクセス可能
- * ```
- */
-
 'use client';
 
 import React from 'react';
@@ -24,7 +11,7 @@ const LegalIndexPage: React.FC = () => {
         <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
           {/* ヘッダー */}
           <div className='text-center mb-12'>
-            <h1 className='text-4xl font-bold text-gray-900 mb-4'>法的事項</h1>
+            <h1 className='text-3xl font-bold text-gray-900 mb-4 lg:text-4xl'>利用規約・プライバシーポリシー</h1>
             <p className='text-xl text-gray-600'>
               KPT Connectサービスの利用に関する重要な情報をご確認ください
             </p>
@@ -113,26 +100,6 @@ const LegalIndexPage: React.FC = () => {
               </Link>
             </div>
           </div>
-
-          {/* 追加情報 */}
-          <div className='bg-white rounded-lg shadow p-6 mb-8'>
-            <h3 className='text-lg font-semibold text-gray-900 mb-4'>重要なお知らせ</h3>
-            <div className='grid md:grid-cols-2 gap-6 text-sm text-gray-600'>
-              <div>
-                <h4 className='font-medium text-gray-800 mb-2'>最終更新日</h4>
-                <p>プライバシーポリシー: 2024年3月15日</p>
-                <p>利用規約: 2024年3月15日</p>
-              </div>
-              <div>
-                <h4 className='font-medium text-gray-800 mb-2'>変更について</h4>
-                <p>
-                  重要な変更がある場合は、事前にメール通知またはサービス内でのお知らせを行います。
-                  継続してサービスをご利用いただく場合、変更内容にご同意いただいたものとみなします。
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* お問い合わせ・ナビゲーション */}
           <div className='text-center'>
             <p className='text-gray-600 mb-6'>

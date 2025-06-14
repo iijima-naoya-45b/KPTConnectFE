@@ -1,12 +1,5 @@
-/**
- * @file featuresData.tsx
- * @description ダッシュボード機能データ
- *
- * ダッシュボードで表示する機能カードのデータを定義します。
- * 各機能の説明とリンク先を管理します。
- */
-
-import { BarChart, Calendar, FileText, User, Bell, Link, List } from 'lucide-react';
+import { BarChart, Calendar, FileText,
+   Bell, Link, List } from 'lucide-react';
 
 export const featuresData = [
   {
@@ -44,11 +37,5 @@ export const featuresData = [
     title: '外部連携',
     description: 'GitHub、Calendar等との連携設定',
     href: '/integrations',
-  },
-  {
-    icon: <User className='w-8 h-8 text-indigo-600' />,
-    title: 'プロフィール',
-    description: 'アカウント情報と設定管理',
-    href: '/profile',
   },
 ];
