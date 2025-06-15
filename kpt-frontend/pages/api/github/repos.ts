@@ -1,35 +1,5 @@
-/**
- * @file repos.ts
- * @description GitHubリポジトリ一覧取得API
- *
- * @仕様
- *   - 認証済みユーザーのアクセストークンでGitHub APIからリポジトリ一覧を取得
- *   - 必要な情報のみ抽出し返却
- *   - エラー時は詳細なメッセージを返却
- * @制限事項
- *   - アクセストークン取得方法は仮実装（適宜修正必要）
- */
-
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-/**
- * @typedef {object} githubRepository
- * @property {number} id - リポジトリID
- * @property {string} fullName - owner/name 形式のリポジトリ名
- * @property {string} name - リポジトリ名
- * @property {boolean} private - プライベートリポジトリかどうか
- * @property {string} owner - オーナー名
- * @property {string} htmlUrl - GitHub上のリポジトリURL
- * @property {string} description - リポジトリの説明
- */
-
-/**
- * GitHubリポジトリ一覧取得APIハンドラ
- *
- * @param {NextApiRequest} req - リクエスト
- * @param {NextApiResponse} res - レスポンス
- * @returns {Promise<void>}
- */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') {
         res.status(405).json({ message: 'GETメソッドのみ許可されています' });

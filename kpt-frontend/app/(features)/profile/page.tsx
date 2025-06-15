@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
-import DeleteAccountModal from '@/components/account/DeleteAccountModal';
+import DeleteAccountModal from '@/app/(features)/profile/components/account/DeleteAccountModal';
 
 interface UserProfile {
   id: string;

@@ -1,14 +1,3 @@
-/**
- * @file OnboardingSteps.tsx
- * @description オンボーディングステップデータ
- *
- * オンボーディングの各ステップのコンテンツとデータを定義します。
- * ステップの内容、説明、表示コンテンツを管理します。
- * 各ステップのコンテンツ高さを統一し、スムーズな切り替えを実現します。
- */
-
-import React from 'react';
-
 export interface OnboardingStepData {
   id: number;
   title: string;

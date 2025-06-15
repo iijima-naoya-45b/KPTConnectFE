@@ -1,12 +1,3 @@
-/**
- * @file next.config.mjs
- * @description Next.js設定ファイル
- *
- * アプリケーションの基本設定、画像最適化設定、
- * 外部画像ホストの許可設定、APIプロキシ設定を管理します。
- *
- * @type {import('next').NextConfig}
- */
 const nextConfig = {
     images: {
         remotePatterns: [
@@ -55,24 +46,18 @@ const nextConfig = {
         ],
     },
     async rewrites() {
-        // 開発環境では特定のAPIを除外
         if (process.env.NODE_ENV === 'development') {
             return [
-                // 開発用APIエンドポイントは除外（カレンダーAPIのみ内部処理）
                 {
                     source: '/api/v1/calendar/:path*',
-                    destination: '/api/v1/calendar/:path*', // 内部で処理
+                    destination: '/api/v1/calendar/:path*',
                 },
-                // KPTセッションとアイテムAPIもRailsサーバーにプロキシ（認証が必要なため）
-                // その他のAPIはRailsサーバーにプロキシ
                 {
                     source: '/api/:path*',
                     destination: 'http://localhost:3001/api/:path*',
                 },
             ];
         }
-
-        // 本番環境では全てRailsサーバーにプロキシ
         return [
             {
                 source: '/api/:path*',

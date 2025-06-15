@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '../ui/button/button';
+import { Button } from '../../../../../components/ui/button/button';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;

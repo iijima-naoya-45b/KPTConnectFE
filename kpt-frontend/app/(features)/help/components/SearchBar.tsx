@@ -1,19 +1,10 @@
-import React from 'react';
-
 interface SearchBarProps {
-  /** 検索クエリ */
   searchQuery: string;
-  /** 検索クエリ変更時のハンドラ */
   onSearchChange: (query: string) => void;
-  /** プレースホルダーテキスト */
   placeholder?: string;
-  /** 追加のクラス名 */
   className?: string;
 }
 
-/**
- * FAQ検索バーコンポーネント
- */
 const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,
   onSearchChange,

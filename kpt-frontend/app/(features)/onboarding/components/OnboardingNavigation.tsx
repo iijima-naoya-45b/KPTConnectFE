@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@/components/ui';
 
 interface OnboardingNavigationProps {
@@ -23,7 +22,6 @@ const OnboardingNavigation: React.FC<OnboardingNavigationProps> = ({
 
   return (
     <div className='flex justify-between items-center mt-8 h-12'>
-      {/* 左側：戻るボタン - 固定幅で配置安定化 */}
       <div className='w-24'>
         {!isFirstStep && (
           <Button variant='outline' onClick={onPrev} className='px-6 py-2'>
@@ -32,7 +30,6 @@ const OnboardingNavigation: React.FC<OnboardingNavigationProps> = ({
         )}
       </div>
 
-      {/* 中央：スキップボタン - 固定幅で配置安定化 */}
       <div className='w-24 flex justify-center'>
         {!isLastStep && (
           <Button variant='ghost' onClick={onSkip} className='text-gray-500 hover:text-gray-700'>
@@ -41,7 +38,6 @@ const OnboardingNavigation: React.FC<OnboardingNavigationProps> = ({
         )}
       </div>
 
-      {/* 右側：次へ/完了ボタン - 固定幅で配置安定化 */}
       <div className='w-32 flex justify-end'>
         {isLastStep ? (
           <Button onClick={onComplete} className='bg-indigo-600 hover:bg-indigo-700 px-8 py-2'>

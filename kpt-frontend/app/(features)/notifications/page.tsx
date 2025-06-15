@@ -1,13 +1,6 @@
-/**
- * @fileoverview 通知機能ページ
- * @description 通知の一覧表示と設定を行うページ
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 'use client';
 
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { NotificationsList, NotificationSettings } from '@/components/notifications';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/';
 
