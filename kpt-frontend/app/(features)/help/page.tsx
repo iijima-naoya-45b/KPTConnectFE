@@ -1,15 +1,3 @@
-/**
- * @file page.tsx
- * @description ヘルプセンターページ
- *
- * ユーザーサポート、FAQ、フィードバック機能を提供するページです。
- *
- * @example
- * ```tsx
- * // /help でアクセス可能
- * ```
- */
-
 'use client';
 
 import React, { useState } from 'react';

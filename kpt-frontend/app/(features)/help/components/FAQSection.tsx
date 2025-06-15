@@ -1,19 +1,3 @@
-/**
- * @file FAQSection.tsx
- * @description FAQセクションコンポーネント
- * 
- * よくある質問と回答を表示するための
- * セクションコンポーネントです。
- * 
- * @example
- * ```tsx
- * <FAQSection
- *   faqs={filteredFaqs}
- *   className="max-w-3xl mx-auto"
- * />
- * ```
- */
-
 import React from 'react';
 import { FAQ } from './types';
 

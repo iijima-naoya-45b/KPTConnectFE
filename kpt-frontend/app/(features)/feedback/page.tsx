@@ -1,19 +1,6 @@
-/**
- * @file page.tsx
- * @description フィードバックページ
- *
- * ユーザーからの意見、要望、バグ報告を収集するための専用ページです。
- * カテゴリ別のフィードバック送信機能を提供します。
- *
- * @example
- * ```tsx
- * // /feedback でアクセス可能
- * ```
- */
-
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   FeedbackTypeSelector,
   FeedbackForm,
@@ -26,10 +13,7 @@ import {
   type FeedbackType,
 } from './components';
 
-/**
- * フィードバックページコンポーネント
- */
-const FeedbackPage: React.FC = () => {
+const FeedbackPage = () => {
   const [formData, setFormData] = useState<FeedbackFormData>({
     type: 'improvement',
     title: '',

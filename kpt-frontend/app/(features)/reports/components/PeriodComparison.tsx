@@ -1,20 +1,3 @@
-/**
- * @file PeriodComparison.tsx
- * @description 期間比較コンポーネント
- *
- * 現在期間と前期間のKPTスコアを比較分析します。
- * 変化の可視化と詳細な比較データを提供します。
- *
- * @example
- * ```tsx
- * <PeriodComparison
- *   currentPeriod={currentPeriod}
- *   previousPeriod={previousPeriod}
- *   periodLabel={periodLabel}
- * />
- * ```
- */
-
 'use client';
 
 import React from 'react';

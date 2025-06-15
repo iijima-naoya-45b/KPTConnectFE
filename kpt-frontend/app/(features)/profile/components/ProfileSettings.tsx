@@ -1,11 +1,3 @@
-/**
- * @file ProfileSettings.tsx
- * @description プロフィール設定コンポーネント
- *
- * ユーザーの設定（タイムゾーン、言語、通知設定）の
- * 表示と編集を管理するコンポーネントです。
- */
-
 import React from 'react';
 import { Label } from '@/components/ui';
 import type { UserProfile, ProfileFieldKey } from './types';

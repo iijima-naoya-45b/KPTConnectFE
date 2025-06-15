@@ -1,10 +1,3 @@
-/**
- * @fileoverview 通知設定コンポーネント
- * @description 通知設定の表示・編集機能を提供
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 import React from 'react';
 import { useNotificationSettings } from '@/hooks/use-notifications';
 

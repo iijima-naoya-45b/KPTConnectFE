@@ -1,19 +1,3 @@
-/**
- * @file FeedbackTypeSelector.tsx
- * @description フィードバックタイプ選択コンポーネント
- * 
- * ユーザーがフィードバックの種類（バグ報告、機能要望、改善提案、その他）を
- * 選択するためのラジオボタン形式のセレクターコンポーネントです。
- * 
- * @example
- * ```tsx
- * <FeedbackTypeSelector
- *   selectedType="bug"
- *   onTypeChange={(type) => console.log(type)}
- * />
- * ```
- */
-
 import React from 'react';
 import { FeedbackType, FeedbackTypeConfig } from './types';
 

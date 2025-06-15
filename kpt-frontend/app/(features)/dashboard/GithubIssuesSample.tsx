@@ -1,9 +1,3 @@
-/**
- * @file GithubIssuesSample.tsx
- * @description ユーザーがリポジトリ（owner/repo）を入力し、GitHub IssuesをAPI経由で取得・複数選択・保存できるサンプルコンポーネント
- * @returns Issues一覧テーブル＋選択保存UI
- */
-
 import Image from 'next/image';
 import React, { useState } from 'react';
 

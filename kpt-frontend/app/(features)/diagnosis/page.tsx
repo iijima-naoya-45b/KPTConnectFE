@@ -1,16 +1,3 @@
-/**
- * @file page.tsx
- * @description KPT診断ページ - 技術分野別の向上ポイント分析
- *
- * ユーザーのKPTデータを分析して、フロントエンド・バックエンド・その他の分野での
- * 向上ポイントを特定し、具体的な改善提案を提供します。
- *
- * @example
- * ```tsx
- * // /diagnosis でアクセス可能
- * ```
- */
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -29,8 +16,8 @@ interface TechnicalArea {
   id: string;
   name: string;
   category: 'frontend' | 'backend' | 'infrastructure' | 'design' | 'management';
-  currentLevel: number; // 1-5
-  targetLevel: number; // 1-5
+  currentLevel: number;
+  targetLevel: number;
   priority: 'high' | 'medium' | 'low';
   skills: string[];
   kptCount: {

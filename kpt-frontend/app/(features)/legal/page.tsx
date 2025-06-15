@@ -1,15 +1,13 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 
-const LegalIndexPage: React.FC = () => {
+const LegalIndexPage = () => {
   return (
     <div className='  bg-gray-50 pt-16'>
       <div className='py-12'>
         <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
-          {/* ヘッダー */}
           <div className='text-center mb-12'>
             <h1 className='text-3xl font-bold text-gray-900 mb-4 lg:text-4xl'>利用規約・プライバシーポリシー</h1>
             <p className='text-xl text-gray-600'>

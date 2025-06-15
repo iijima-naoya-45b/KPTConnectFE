@@ -1,11 +1,3 @@
-/**
- * @file ProfileBasicInfo.tsx
- * @description プロフィール基本情報コンポーネント
- *
- * ユーザーの基本情報（アバター、ユーザー名、メール、自己紹介）の
- * 表示と編集を管理するコンポーネントです。
- */
-
 import React from 'react';
 import { Button, Input, Label } from '@/components/ui';
 import Image from 'next/image';

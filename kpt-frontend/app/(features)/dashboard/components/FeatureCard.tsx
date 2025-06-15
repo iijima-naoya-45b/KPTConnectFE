@@ -1,11 +1,3 @@
-/**
- * @file FeatureCard.tsx
- * @description 機能カードコンポーネント
- *
- * ダッシュボードに表示する各機能のカードを管理します。
- * アイコン、タイトル、説明、リンクなどを表示します。
- */
-
 import React from 'react';
 import Link from 'next/link';
 import type { DashboardFeature } from './types';

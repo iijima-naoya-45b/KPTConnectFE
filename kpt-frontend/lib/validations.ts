@@ -1,10 +1,3 @@
-/**
- * @fileoverview KPT Connect フロントエンド バリデーション関数
- * @description フォームやデータのバリデーション関数を集約
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 import {
   TEXT_LIMITS,
   PASSWORD_REQUIREMENTS,

@@ -1,16 +1,3 @@
-/**
- * @file ProgressTracking.tsx
- * @description 進捗追跡コンポーネント
- *
- * 技術分野別の進捗状況を可視化し、
- * 目標達成に向けた進捗管理を支援します。
- *
- * @example
- * ```tsx
- * <ProgressTracking technicalAreas={technicalAreas} />
- * ```
- */
-
 'use client';
 
 import React from 'react';

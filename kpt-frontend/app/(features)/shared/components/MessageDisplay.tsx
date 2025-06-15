@@ -1,27 +1,6 @@
-/**
- * @file MessageDisplay.tsx
- * @description メッセージ表示コンポーネント
- * 
- * 成功メッセージやエラーメッセージを表示するための
- * 再利用可能なコンポーネントです。
- * 
- * @example
- * ```tsx
- * <MessageDisplay
- *   message="送信に成功しました"
- *   type="success"
- * />
- * ```
- */
-
-import React from 'react';
-
 interface MessageDisplayProps {
-  /** 表示するメッセージ */
   message: string;
-  /** メッセージのタイプ */
   type?: 'success' | 'error' | 'info' | 'warning';
-  /** 表示する場合のクラス名の追加 */
   className?: string;
 }
 

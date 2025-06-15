@@ -1,19 +1,3 @@
-/**
- * @file CategoryFilter.tsx
- * @description FAQカテゴリーフィルターコンポーネント
- * 
- * FAQをカテゴリー別にフィルタリングするための
- * ボタン群コンポーネントです。
- * 
- * @example
- * ```tsx
- * <CategoryFilter
- *   selectedCategory={selectedCategory}
- *   onCategoryChange={setSelectedCategory}
- * />
- * ```
- */
-
 import React from 'react';
 import { FAQCategory } from './types';
 

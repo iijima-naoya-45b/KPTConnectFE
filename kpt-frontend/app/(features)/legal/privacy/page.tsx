@@ -1,16 +1,3 @@
-/**
- * @file page.tsx
- * @description プライバシーポリシーページ
- *
- * ユーザーの個人情報の取り扱いに関するポリシーを表示します。
- * KPTアプリケーションで収集・利用・管理される個人情報について詳細に説明します。
- *
- * @example
- * ```tsx
- * // /legal/privacy でアクセス可能
- * ```
- */
-
 'use client';
 
 import React from 'react';

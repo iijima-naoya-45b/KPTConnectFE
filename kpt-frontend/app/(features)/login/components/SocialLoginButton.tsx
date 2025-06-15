@@ -1,11 +1,3 @@
-/**
- * @file SocialLoginButton.tsx
- * @description ソーシャルログインボタンコンポーネント
- *
- * Google、GitHub、Twitterなどのソーシャルログインボタンを管理します。
- * プロバイダーごとの設定とスタイリングを提供します。
- */
-
 import React from 'react';
 import Image from 'next/image';
 import type { SocialProvider } from './types';

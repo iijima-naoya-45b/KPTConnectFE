@@ -1,16 +1,3 @@
-/**
- * @file FeedbackNotes.tsx
- * @description フィードバック送信時の注意事項コンポーネント
- * 
- * フィードバック送信時の注意事項やガイドラインを
- * 表示するための情報コンポーネントです。
- * 
- * @example
- * ```tsx
- * <FeedbackNotes />
- * ```
- */
-
 import React from 'react';
 
 /**

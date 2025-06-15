@@ -1,13 +1,3 @@
-/**
- * @file ReportChartsGrid.tsx
- * @description 詳細レポート用グラフ4種（週次完了率・月次KPT数・完了状況分布・スキル成長レーダー）を横並びで表示するコンポーネント
- *
- * Chart.js（react-chartjs-2）で4つのグラフをカード枠＋タイトル付きで1行4カラム表示します。
- * レスポンシブ対応、データはダミー、デザインは既存UIに準拠。
- *
- * @component
- */
-
 'use client';
 
 import React from 'react';

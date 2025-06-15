@@ -1,34 +1,11 @@
-/**
- * @fileoverview KPT Connect フロントエンド共通ユーティリティ関数
- * @description アプリケーション全体で使用されるヘルパー関数を集約
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { AppError, ValidationError } from '@/types';
 
-// ===== CSS関連ユーティリティ =====
-
-/**
- * TailwindCSSクラスを結合・マージする
- * @param inputs - クラス名の配列
- * @returns マージされたクラス名
- */
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
-// ===== 文字列操作ユーティリティ =====
-
-/**
- * 文字列を指定した長さで切り詰める
- * @param text - 対象の文字列
- * @param maxLength - 最大長
- * @param suffix - 切り詰め時の接尾辞
- * @returns 切り詰められた文字列
- */
 export function truncateText(text: string, maxLength: number, suffix: string = '...'): string {
   if (text.length <= maxLength) {
     return text;
@@ -458,58 +435,4 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
       setTimeout(() => (inThrottle = false), limit);
     }
   };
-}
-
-// ===== ローカルストレージユーティリティ =====
-
-/**
- * ローカルストレージから値を取得
- * @param key - キー
- * @param defaultValue - デフォルト値
- * @returns 取得した値
- */
-export function getLocalStorageItem<T>(key: string, defaultValue: T): T {
-  if (typeof window === 'undefined') {
-    return defaultValue;
-  }
-
-  try {
-    const item = window.localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue;
-  } catch {
-    return defaultValue;
-  }
-}
-
-/**
- * ローカルストレージに値を保存
- * @param key - キー
- * @param value - 値
- */
-export function setLocalStorageItem<T>(key: string, value: T): void {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.warn('ローカルストレージへの保存に失敗しました:', error);
-  }
-}
-
-/**
- * ローカルストレージから値を削除
- * @param key - キー
- */
-export function removeLocalStorageItem(key: string): void {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    window.localStorage.removeItem(key);
-  } catch (error) {
-    console.warn('ローカルストレージからの削除に失敗しました:', error);
-  }
 }

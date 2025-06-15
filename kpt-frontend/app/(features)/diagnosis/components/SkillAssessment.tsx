@@ -1,19 +1,3 @@
-/**
- * @file SkillAssessment.tsx
- * @description スキル評価コンポーネント
- *
- * 技術分野別のスキルレベルを視覚的に表示し、
- * 現在レベルと目標レベルの比較を提供します。
- *
- * @example
- * ```tsx
- * <SkillAssessment 
- *   technicalAreas={technicalAreas}
- *   overallScore={72}
- * />
- * ```
- */
-
 'use client';
 
 import React from 'react';

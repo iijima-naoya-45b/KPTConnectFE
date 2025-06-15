@@ -13,7 +13,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui';
 
 interface Recommendation {
@@ -31,7 +31,7 @@ interface ActionRecommendationsProps {
 type FilterCategory = 'all' | 'keep' | 'problem' | 'try';
 type SortBy = 'priority' | 'impact' | 'category';
 
-const ActionRecommendations: React.FC<ActionRecommendationsProps> = ({ recommendations }) => {
+const ActionRecommendations = ({ recommendations }: ActionRecommendationsProps) => {
   const [filterCategory, setFilterCategory] = useState<FilterCategory>('all');
   const [sortBy, setSortBy] = useState<SortBy>('priority');
   const [selectedActions, setSelectedActions] = useState<Set<number>>(new Set());

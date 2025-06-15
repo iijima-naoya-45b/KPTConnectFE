@@ -5,8 +5,7 @@
  * @author KPT Connect Team
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } from '@/utils';
+import { useState, useCallback } from 'react';
 
 /**
  * ローカルストレージの値を状態として管理するフック
@@ -19,10 +18,8 @@ export function useLocalStorage<T>(
   key: string,
   defaultValue: T
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
-  // 初期値を取得
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    return getLocalStorageItem(key, defaultValue);
-  });
+  // 初期値は常にdefaultValueを使用
+  const [storedValue, setStoredValue] = useState<T>(defaultValue);
 
   /**
    * 値を設定する関数
@@ -31,16 +28,12 @@ export function useLocalStorage<T>(
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
       try {
-        // 関数の場合は現在の値を渡して実行
         const valueToStore = value instanceof Function ? value(storedValue) : value;
-
-        // 状態を更新
         setStoredValue(valueToStore);
-
-        // ローカルストレージに保存
-        setLocalStorageItem(key, valueToStore);
+        // localStorage操作をコメントアウト
+        // setLocalStorageItem(key, valueToStore);
       } catch (error) {
-        console.error(`ローカルストレージへの保存に失敗しました (key: ${key}):`, error);
+        console.error(`値の設定に失敗しました (key: ${key}):`, error);
       }
     },
     [key, storedValue]
@@ -51,38 +44,31 @@ export function useLocalStorage<T>(
    */
   const removeValue = useCallback(() => {
     try {
-      // 状態をデフォルト値にリセット
       setStoredValue(defaultValue);
-
-      // ローカルストレージから削除
-      removeLocalStorageItem(key);
+      // localStorage操作をコメントアウト
+      // removeLocalStorageItem(key);
     } catch (error) {
-      console.error(`ローカルストレージからの削除に失敗しました (key: ${key}):`, error);
+      console.error(`値の削除に失敗しました (key: ${key}):`, error);
     }
   }, [key, defaultValue]);
 
-  // ストレージイベントを監視（他のタブでの変更を検知）
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === key && e.newValue !== null) {
-        try {
-          const newValue = JSON.parse(e.newValue);
-          setStoredValue(newValue);
-        } catch {
-          // JSON解析に失敗した場合はデフォルト値を使用
-          setStoredValue(defaultValue);
-        }
-      }
-    };
-
-    // ストレージイベントリスナーを追加
-    window.addEventListener('storage', handleStorageChange);
-
-    // クリーンアップ
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [key, defaultValue]);
+  // ストレージイベント監視もコメントアウト
+  // useEffect(() => {
+  //   const handleStorageChange = (e: StorageEvent) => {
+  //     if (e.key === key && e.newValue !== null) {
+  //       try {
+  //         const newValue = JSON.parse(e.newValue);
+  //         setStoredValue(newValue);
+  //       } catch {
+  //         setStoredValue(defaultValue);
+  //       }
+  //     }
+  //   };
+  //   window.addEventListener('storage', handleStorageChange);
+  //   return () => {
+  //     window.removeEventListener('storage', handleStorageChange);
+  //   };
+  // }, [key, defaultValue]);
 
   return [storedValue, setValue, removeValue];
 }

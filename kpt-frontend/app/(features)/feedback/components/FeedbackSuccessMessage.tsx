@@ -1,30 +1,11 @@
-/**
- * @file FeedbackSuccessMessage.tsx
- * @description フィードバック送信成功メッセージコンポーネント
- * 
- * フィードバック送信が完了した際に表示される成功メッセージと
- * 次のアクションボタンを含むコンポーネントです。
- * 
- * @example
- * ```tsx
- * <FeedbackSuccessMessage
- *   onNewFeedback={() => setSubmitted(false)}
- * />
- * ```
- */
-
 import React from 'react';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 
 interface FeedbackSuccessMessageProps {
-  /** 新しいフィードバック送信を開始するコールバック */
   onNewFeedback: () => void;
 }
 
-/**
- * フィードバック送信成功メッセージコンポーネント
- */
 const FeedbackSuccessMessage: React.FC<FeedbackSuccessMessageProps> = ({ onNewFeedback }) => {
   return (
     <div className='  bg-gray-50 flex items-center justify-center'>

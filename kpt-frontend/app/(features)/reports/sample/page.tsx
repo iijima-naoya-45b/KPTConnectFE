@@ -1,17 +1,3 @@
-/**
- * @file page.tsx
- * @description 詳細レポートサンプルページ - KPT分析レポート
- *
- * KPTの詳細分析レポートのサンプル版を表示するページです。
- * 成長スコア、トレンド分析、強み・改善点の特定、期間比較などを提供します。
- * ※このページはデモ用のサンプルデータを表示しています。
- *
- * @example
- * ```tsx
- * // /reports/sample でアクセス可能
- * ```
- */
-
 'use client';
 
 import React, { useState, useEffect } from 'react';

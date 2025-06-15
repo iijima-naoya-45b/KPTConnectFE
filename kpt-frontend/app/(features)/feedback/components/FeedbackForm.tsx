@@ -1,21 +1,3 @@
-/**
- * @file FeedbackForm.tsx
- * @description フィードバック詳細フォームコンポーネント
- * 
- * フィードバックの詳細情報（タイトル、説明、メールアドレス、優先度）を
- * 入力するためのフォームコンポーネントです。
- * 
- * @example
- * ```tsx
- * <FeedbackForm
- *   formData={formData}
- *   onInputChange={handleInputChange}
- *   selectedType={formData.type}
- *   disabled={loading}
- * />
- * ```
- */
-
 import React from 'react';
 import { Input, Label, Separator } from '@/components/ui';
 import { FeedbackForm as FeedbackFormData, FeedbackType } from './types';
