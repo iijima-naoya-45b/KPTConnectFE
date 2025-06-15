@@ -1,19 +1,3 @@
-/**
- * @file DiagnosisHeader.tsx
- * @description 診断ページのヘッダーコンポーネント
- *
- * 総合スコアの表示、カテゴリフィルター、診断概要を提供します。
- *
- * @example
- * ```tsx
- * <DiagnosisHeader 
- *   overallScore={72}
- *   selectedCategory="frontend"
- *   onCategoryChange={handleCategoryChange}
- * />
- * ```
- */
-
 'use client';
 
 import React from 'react';

@@ -1,16 +1,3 @@
-/**
- * @file FeedbackSection.tsx
- * @description フィードバックセクションコンポーネント
- * 
- * フィードバック送信案内を表示するための
- * セクションコンポーネントです。
- * 
- * @example
- * ```tsx
- * <FeedbackSection className="max-w-3xl mx-auto" />
- * ```
- */
-
 import React from 'react';
 import Link from 'next/link';
 

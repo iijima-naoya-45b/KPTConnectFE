@@ -1,11 +1,3 @@
-/**
- * @file FeatureGrid.tsx
- * @description 機能グリッドコンポーネント
- *
- * ダッシュボードの機能カードをグリッドレイアウトで表示します。
- * レスポンシブデザインに対応し、カードの配置を管理します。
- */
-
 import React from 'react';
 import FeatureCard from './FeatureCard';
 import type { DashboardFeature } from './types';

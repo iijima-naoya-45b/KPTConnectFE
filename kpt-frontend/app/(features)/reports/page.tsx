@@ -1,16 +1,3 @@
-/**
- * @file page.tsx
- * @description 詳細レポートページ - KPT分析レポート
- *
- * KPTの詳細分析レポートを表示するページです。
- * 成長スコア、トレンド分析、強み・改善点の特定、期間比較などを提供します。
- *
- * @example
- * ```tsx
- * // /reports でアクセス可能
- * ```
- */
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -210,7 +197,7 @@ const ReportsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className='  flex items-center justify-center bg-gray-50'>
+      <div className='  flex items-center justify-center bg-gray-50 min-h-[calc(100vh-116px-64px)]'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto'></div>
           <p className='mt-4 text-gray-600'>詳細レポートを生成中...</p>

@@ -1,10 +1,3 @@
-/**
- * @fileoverview API hooksの統合エクスポート
- * @description 全てのAPIフックを一元管理し、使いやすく提供
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 // 汎用APIフック
 export * from './use-api';
 

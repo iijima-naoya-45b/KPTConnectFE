@@ -1,9 +1,3 @@
-/**
- * @file not-found.tsx
- * @description 404 Not Found ページ（ページが見つかりません）
- * @returns カスタム404画面
- */
-
 import Link from 'next/link';
 
 export default function NotFound() {

@@ -1,39 +1,15 @@
-/**
- * @file DeleteAccountModal.tsx
- * @description アカウント削除モーダルコンポーネント
- * 
- * @overview
- * - アカウント削除の確認モーダル
- * - メールアドレス確認による安全な削除
- * - バックエンドAPIとの連携
- * 
- * @example
- * ```tsx
- * <DeleteAccountModal 
- *   isOpen={showDeleteModal} 
- *   onClose={() => setShowDeleteModal(false)}
- *   userEmail="user@example.com"
- * />
- * ```
- */
-
 'use client';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from '../ui/button/button';
 
 interface DeleteAccountModalProps {
-  /** モーダルの表示状態 */
   isOpen: boolean;
-  /** モーダルを閉じるコールバック */
   onClose: () => void;
-  /** ユーザーのメールアドレス */
   userEmail: string;
 }
 
-/**
- * アカウント削除モーダルコンポーネント
- */
 const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   isOpen,
   onClose,
@@ -41,15 +17,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 }) => {
   const router = useRouter();
   
-  // 状態管理
   const [confirmationEmail, setConfirmationEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState<'warning' | 'confirmation'>('warning');
 
-  /**
-   * アカウント削除を実行
-   */
   const handleDeleteAccount = async () => {
     try {
       setLoading(true);
@@ -74,16 +46,13 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       const result = await response.json();
 
       if (result.success) {
-        // アカウント削除成功
         alert('アカウントが削除されました。ご利用ありがとうございました。');
         
-        // ログアウト処理
         await fetch('/api/v1/sessions/logout', {
           method: 'DELETE',
           credentials: 'include'
         });
 
-        // ログインページにリダイレクト
         router.push('/login?message=account_deleted');
       } else {
         setError(result.error || 'アカウントの削除に失敗しました');
@@ -96,9 +65,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     }
   };
 
-  /**
-   * モーダルをリセットして閉じる
-   */
   const handleClose = () => {
     setConfirmationEmail('');
     setError('');
@@ -106,17 +72,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     onClose();
   };
 
-  /**
-   * 確認ステップに進む
-   */
   const proceedToConfirmation = () => {
     setStep('confirmation');
     setError('');
   };
 
-  /**
-   * 警告ステップに戻る
-   */
   const backToWarning = () => {
     setStep('warning');
     setConfirmationEmail('');
@@ -130,7 +90,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div className="mt-3">
           {step === 'warning' ? (
-            // 警告ステップ
             <>
               <div className="flex items-center mb-4">
                 <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
@@ -164,22 +123,21 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               </div>
 
               <div className="flex justify-center space-x-3">
-                <button
+                <Button
                   onClick={handleClose}
                   className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
                 >
                   キャンセル
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={proceedToConfirmation}
                   className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
                 >
                   削除手続きに進む
-                </button>
+                </Button>
               </div>
             </>
           ) : (
-            // 確認ステップ
             <>
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 最終確認
@@ -212,20 +170,20 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               </div>
 
               <div className="flex justify-center space-x-3">
-                <button
+                <Button
                   onClick={backToWarning}
                   disabled={loading}
                   className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50"
                 >
                   戻る
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleDeleteAccount}
                   disabled={loading || confirmationEmail !== userEmail}
                   className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? '削除中...' : '完全に削除する'}
-                </button>
+                </Button>
               </div>
             </>
           )}

@@ -1,16 +1,3 @@
-/**
- * @file LearningPath.tsx
- * @description 学習パスコンポーネント
- *
- * 段階的な成長プランとマイルストーンを表示し、
- * 学習の進捗を視覚的に管理できます。
- *
- * @example
- * ```tsx
- * <LearningPath learningPath={learningPath} />
- * ```
- */
-
 'use client';
 
 import React, { useState } from 'react';

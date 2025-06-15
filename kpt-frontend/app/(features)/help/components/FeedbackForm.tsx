@@ -1,13 +1,3 @@
-/**
- * @file FeedbackForm.tsx
- * @description ユーザーからのフィードバックを収集するフォームコンポーネント
- *
- * @example
- * ```tsx
- * <FeedbackForm />
- * ```
- */
-
 'use client';
 
 import React from 'react';

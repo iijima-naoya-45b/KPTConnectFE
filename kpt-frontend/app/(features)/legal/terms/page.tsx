@@ -1,16 +1,3 @@
-/**
- * @file page.tsx
- * @description 利用規約ページ
- *
- * サービスの利用に関する規約・条件を表示します。
- * KPTアプリケーションの利用における権利・義務・制限事項について詳細に説明します。
- *
- * @example
- * ```tsx
- * // /legal/terms でアクセス可能
- * ```
- */
-
 'use client';
 
 import React from 'react';

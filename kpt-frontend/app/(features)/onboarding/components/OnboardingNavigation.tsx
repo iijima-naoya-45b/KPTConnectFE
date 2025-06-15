@@ -1,12 +1,3 @@
-/**
- * @file OnboardingNavigation.tsx
- * @description オンボーディングナビゲーションコンポーネント
- *
- * オンボーディングの進行を制御するナビゲーションボタンを提供します。
- * 前へ、次へ、スキップ、完了の操作を管理します。
- * 固定レイアウトによりボタン配置の安定性を確保します。
- */
-
 import React from 'react';
 import { Button } from '@/components/ui';
 

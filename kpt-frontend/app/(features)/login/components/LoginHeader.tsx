@@ -1,11 +1,3 @@
-/**
- * @file LoginHeader.tsx
- * @description ログインヘッダーコンポーネント
- *
- * ログインページのヘッダー部分を管理します。
- * タイトル、ロゴ、説明文などを表示します。
- */
-
 import React from 'react';
 
 interface LoginHeaderProps {

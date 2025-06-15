@@ -1,17 +1,3 @@
-/**
- * @file page.tsx
- * @description ダッシュボードページコンポーネント
- *
- * KPT管理システムのメインダッシュボードページです。
- * 各機能へのナビゲーション、統計情報、クイックアクションを提供します。
- * 週次・月次グラフも上部に表示します。
- *
- * @example
- * ```tsx
- * <DashboardPage />
- * ```
- */
-
 'use client';
 
 import React from 'react';

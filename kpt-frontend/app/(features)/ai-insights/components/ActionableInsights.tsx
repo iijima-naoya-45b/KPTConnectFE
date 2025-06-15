@@ -1,10 +1,3 @@
-/**
- * 実行可能インサイトコンポーネント
- * 
- * @description AI分析による実行可能なインサイトを表示
- * @param data インサイトデータ
- */
-
 'use client';
 
 import React from 'react';

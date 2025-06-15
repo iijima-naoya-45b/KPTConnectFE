@@ -1,23 +1,3 @@
-/**
- * @file PageHeader.tsx
- * @description ページヘッダーコンポーネント
- * 
- * ページのタイトル、説明、戻るボタンなどを含む
- * 再利用可能なヘッダーコンポーネントです。
- * 
- * @example
- * ```tsx
- * <PageHeader
- *   title="フィードバック"
- *   description="ご意見、ご要望をお聞かせください"
- *   backButton={{
- *     href: "/dashboard",
- *     label: "ダッシュボードに戻る"
- *   }}
- * />
- * ```
- */
-
 import React from 'react';
 import { Button } from '@/components/ui';
 import Link from 'next/link';

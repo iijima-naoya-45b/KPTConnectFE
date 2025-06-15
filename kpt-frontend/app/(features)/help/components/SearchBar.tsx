@@ -1,20 +1,3 @@
-/**
- * @file SearchBar.tsx
- * @description FAQ検索バーコンポーネント
- * 
- * FAQやヘルプコンテンツを検索するための
- * 検索バーコンポーネントです。
- * 
- * @example
- * ```tsx
- * <SearchBar
- *   searchQuery={searchQuery}
- *   onSearchChange={setSearchQuery}
- *   placeholder="質問を検索..."
- * />
- * ```
- */
-
 import React from 'react';
 
 interface SearchBarProps {

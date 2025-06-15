@@ -1,11 +1,3 @@
-/**
- * @file LoginForm.tsx
- * @description ログインフォームコンポーネント
- *
- * メールアドレスとパスワードによるログインフォームを管理します。
- * バリデーション、送信処理、エラーハンドリングを含みます。
- */
-
 import React, { useState } from 'react';
 import type { LoginFormData } from './types';
 

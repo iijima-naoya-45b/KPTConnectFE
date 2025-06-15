@@ -1,19 +1,3 @@
-/**
- * @file ImprovementRecommendations.tsx
- * @description 改善提案コンポーネント
- *
- * 優先度付きの具体的な学習・改善アクションを表示し、
- * 学習リソースと推定時間を提供します。
- *
- * @example
- * ```tsx
- * <ImprovementRecommendations 
- *   recommendations={recommendations}
- *   selectedCategory="frontend"
- * />
- * ```
- */
-
 'use client';
 
 import React, { useState } from 'react';

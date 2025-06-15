@@ -1,22 +1,8 @@
-/**
- * @fileoverview Stripe設定
- * @description Stripe決済システムの初期化と設定
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 import { loadStripe } from '@stripe/stripe-js';
 import type { Stripe } from '@stripe/stripe-js';
 
-/**
- * Stripe公開可能キー
- * 本番環境では環境変数から取得
- */
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef';
 
-/**
- * Stripeインスタンス
- */
 let stripePromise: Promise<Stripe | null>;
 
 /**

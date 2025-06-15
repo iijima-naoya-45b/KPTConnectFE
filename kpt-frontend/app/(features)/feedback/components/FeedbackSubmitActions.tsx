@@ -1,23 +1,3 @@
-/**
- * @file FeedbackSubmitActions.tsx
- * @description フィードバック送信アクションボタンコンポーネント
- * 
- * フィードバック送信とキャンセルのアクションボタンを
- * 含むコンポーネントです。
- * 
- * @example
- * ```tsx
- * <FeedbackSubmitActions
- *   loading={loading}
- *   onSubmit={handleSubmit}
- *   cancelButton={{
- *     href: "/help",
- *     label: "ヘルプページに戻る"
- *   }}
- * />
- * ```
- */
-
 import React from 'react';
 import { Button, Separator } from '@/components/ui';
 import Link from 'next/link';

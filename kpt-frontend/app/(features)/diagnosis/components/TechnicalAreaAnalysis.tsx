@@ -1,19 +1,3 @@
-/**
- * @file TechnicalAreaAnalysis.tsx
- * @description 技術分野別分析コンポーネント
- *
- * 技術分野ごとの詳細分析と強み・弱みの特定結果を表示します。
- *
- * @example
- * ```tsx
- * <TechnicalAreaAnalysis 
- *   technicalAreas={technicalAreas}
- *   strengths={strengths}
- *   weaknesses={weaknesses}
- * />
- * ```
- */
-
 'use client';
 
 import React from 'react';

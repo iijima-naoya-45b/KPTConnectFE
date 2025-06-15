@@ -1,13 +1,3 @@
-/**
- * @file HelpCenter.tsx
- * @description ヘルプセンターとサポート機能を提供するコンポーネント
- *
- * @example
- * ```tsx
- * <HelpCenter />
- * ```
- */
-
 'use client';
 
 import React, { useState } from 'react';
