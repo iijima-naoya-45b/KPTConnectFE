@@ -1,10 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FeatureGrid, featuresData } from './components';
-// import GithubIssuesSample from './GithubIssuesSample';
+import { useFlashMessageStore } from '../../../store/useFlashMessageStore';
+import { toast } from "sonner";
 
 const DashboardPage: React.FC = () => {
+  const { flashMessage, clearFlashMessage } = useFlashMessageStore();
+
+  useEffect(() => {
+    if (flashMessage) {
+      toast.success(flashMessage, {
+        description: "KPT振り返りが保存されました",
+        duration: 4000,
+      });
+      clearFlashMessage();
+    }
+  }, [flashMessage, clearFlashMessage]);
+
   return (
     <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
       {/* 機能グリッドセクション */}

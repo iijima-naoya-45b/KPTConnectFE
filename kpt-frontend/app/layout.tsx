@@ -6,6 +6,7 @@ import { AuthenticatedHeader } from '@/components/ui/layout/header';
 import { Footer } from '@/components/ui';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { metadata } from '@/lib/metadata';
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <main className='flex-1 mt-[64px] min-h-[calc(100vh-116px-64px)]'>
           {children}
         </main>
+        <Toaster position="bottom-right" richColors />
         <Footer />
       </body>
     </html>

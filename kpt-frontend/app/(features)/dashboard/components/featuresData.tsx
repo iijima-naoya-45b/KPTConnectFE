@@ -6,31 +6,7 @@ export const featuresData = [
     icon: <FileText className='w-8 h-8 text-indigo-600' />,
     title: 'Todo作成',
     description: '新しいTodoを作成して管理',
-    href: '/dashboard/templates/new',
-  },
-  {
-    icon: <List className='w-8 h-8 text-indigo-600' />,
-    title: 'Todo一覧',
-    description: '作成したTodoをカレンダー形式で管理',
-    href: '/dashboard/calendar',
-  },
-  {
-    icon: <Calendar className='w-8 h-8 text-indigo-600' />,
-    title: '個人振り返りカレンダー',
-    description: '個人成長スケジュールと振り返りの可視化',
-    href: '/dashboard/calendar',
-  },
-  {
-    icon: <BarChart className='w-8 h-8 text-indigo-600' />,
-    title: 'レポート',
-    description: '成長の軌跡と傾向を分析',
-    href: '/reports',
-  },
-  {
-    icon: <Bell className='w-8 h-8 text-indigo-600' />,
-    title: '通知設定',
-    description: '学習リマインダーと成長アラート',
-    href: '/notifications',
+    href: '/dashboard/new',
   },
   {
     icon: <Calendar className='w-8 h-8 text-indigo-600' />,
@@ -43,5 +19,23 @@ export const featuresData = [
     title: 'ガントチャート',
     description: 'Todoをガントチャートで管理',
     href: '/dashboard/gantt',
+  },
+  {
+    icon: <List className='w-8 h-8 text-indigo-600' />,
+    title: 'Todo一覧',
+    description: '作成したTodoを一覧形式で管理',
+    href: '/dashboard/todos',
+  },
+  {
+    icon: <BarChart className='w-8 h-8 text-indigo-600' />,
+    title: 'レポート',
+    description: '成長の軌跡と傾向を分析',
+    href: '/reports',
+  },
+  {
+    icon: <Bell className='w-8 h-8 text-indigo-600' />,
+    title: '通知設定',
+    description: '学習リマインダーと成長アラート',
+    href: '/notifications',
   },
 ];

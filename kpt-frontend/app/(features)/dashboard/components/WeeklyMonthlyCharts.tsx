@@ -1,18 +1,3 @@
-/**
- * @file WeeklyMonthlyCharts.tsx
- * @description 週次完了率・月次KPT数推移グラフ表示コンポーネント
- *
- * Chart.js（react-chartjs-2）を用いて、週次完了率（%）と月次KPT数推移をカード枠内に表示します。
- * サンプルデータを使用し、グラフ下部にラベル＋数値を表示します。
- *
- * @remarks
- * - データはダミー（API連携なし）
- * - カード枠は共通UIを利用
- * - レスポンシブ対応
- *
- * @component
- */
-
 'use client';
 
 import React from 'react';

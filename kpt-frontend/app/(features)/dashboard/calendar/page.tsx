@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { startOfMonth, endOfMonth, format } from 'date-fns';
 import CalendarView from './CalendarView';
 
 // Todo項目の型定義
@@ -26,10 +27,23 @@ interface TodoItem {
   session_date?: string;
 }
 
+interface KptReview {
+  id: number;
+  title: string;
+  description: string;
+  keep: string;
+  problem: string;
+  try: string;
+  created_at: string;
+  user_id: number;
+}
+
 const CalendarPage = () => {
   const [allItems, setAllItems] = useState<TodoItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [kptReviews, setKptReviews] = useState<KptReview[]>([]);
+  const [currentDate] = useState(new Date());
 
   useEffect(() => {
     const fetchTodoItems = async () => {
@@ -52,6 +66,29 @@ const CalendarPage = () => {
     fetchTodoItems();
   }, []);
 
+  useEffect(() => {
+    const fetchKptReviews = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const start = format(startOfMonth(currentDate), 'yyyy-MM-dd');
+        const end = format(endOfMonth(currentDate), 'yyyy-MM-dd');
+        const apiBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
+        const res = await fetch(`${apiBaseUrl}/api/v1/kpt_reviews?start=${start}&end=${end}`, {
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('KPT一覧の取得に失敗しました');
+        const data = await res.json();
+        setKptReviews(data);
+      } catch (e: any) {
+        setError(e.message || '予期せぬエラーが発生しました');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchKptReviews();
+  }, [currentDate]);
+
   return (
     <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
       <header className='bg-white shadow'>
@@ -71,7 +108,7 @@ const CalendarPage = () => {
             <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600'></div>
           </div>
         ) : (
-          <CalendarView items={allItems} />
+          <CalendarView items={allItems} kptReviews={kptReviews} />
         )}
       </main>
     </div>
