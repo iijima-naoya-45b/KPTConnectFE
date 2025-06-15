@@ -1,8 +1,3 @@
-/**
- * @file layout.tsx
- * @description Layout for the help page
- */
-
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

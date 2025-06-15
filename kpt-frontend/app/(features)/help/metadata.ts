@@ -1,8 +1,3 @@
-/**
- * @file metadata.ts
- * @description ヘルプページのメタデータ設定
- */
-
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

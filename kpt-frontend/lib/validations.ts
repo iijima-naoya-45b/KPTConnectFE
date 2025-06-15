@@ -1,20 +1,11 @@
 import {
   TEXT_LIMITS,
   PASSWORD_REQUIREMENTS,
-  ALLOWED_FILE_TYPES,
-  FILE_SIZE_LIMITS,
 } from './constants';
 import { isValidEmail, isEmpty } from '@/utils';
 import type { ValidationError } from '@/types';
 
 // ===== 基本バリデーション関数 =====
-
-/**
- * 必須フィールドのバリデーション
- * @param value - 検証する値
- * @param fieldName - フィールド名
- * @returns バリデーションエラー（エラーがない場合はnull）
- */
 export function validateRequired(value: unknown, fieldName: string): ValidationError | null {
   if (isEmpty(value)) {
     return {
@@ -26,14 +17,6 @@ export function validateRequired(value: unknown, fieldName: string): ValidationE
   return null;
 }
 
-/**
- * 文字列長のバリデーション
- * @param value - 検証する文字列
- * @param fieldName - フィールド名
- * @param minLength - 最小長（オプション）
- * @param maxLength - 最大長（オプション）
- * @returns バリデーションエラー（エラーがない場合はnull）
- */
 export function validateStringLength(
   value: string,
   fieldName: string,
@@ -59,11 +42,6 @@ export function validateStringLength(
   return null;
 }
 
-/**
- * メールアドレスのバリデーション
- * @param email - 検証するメールアドレス
- * @returns バリデーションエラー（エラーがない場合はnull）
- */
 export function validateEmail(email: string): ValidationError | null {
   if (!isValidEmail(email)) {
     return {
@@ -75,11 +53,6 @@ export function validateEmail(email: string): ValidationError | null {
   return null;
 }
 
-/**
- * パスワードのバリデーション
- * @param password - 検証するパスワード
- * @returns バリデーションエラーの配列
- */
 export function validatePassword(password: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -139,12 +112,6 @@ export function validatePassword(password: string): ValidationError[] {
   return errors;
 }
 
-/**
- * パスワード確認のバリデーション
- * @param password - パスワード
- * @param confirmPassword - 確認用パスワード
- * @returns バリデーションエラー（エラーがない場合はnull）
- */
 export function validatePasswordConfirmation(
   password: string,
   confirmPassword: string
@@ -160,12 +127,6 @@ export function validatePasswordConfirmation(
 }
 
 // ===== KPT関連バリデーション関数 =====
-
-/**
- * KPTアイテムタイトルのバリデーション
- * @param title - タイトル
- * @returns バリデーションエラーの配列
- */
 export function validateKptItemTitle(title: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -209,11 +170,6 @@ export function validateKptItemContent(content: string): ValidationError[] {
   return errors;
 }
 
-/**
- * セッションタイトルのバリデーション
- * @param title - タイトル
- * @returns バリデーションエラーの配列
- */
 export function validateSessionTitle(title: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -238,11 +194,6 @@ export function validateSessionTitle(title: string): ValidationError[] {
   return errors;
 }
 
-/**
- * セッション説明のバリデーション
- * @param description - 説明
- * @returns バリデーションエラーの配列
- */
 export function validateSessionDescription(description: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -266,12 +217,6 @@ export function validateSessionDescription(description: string): ValidationError
 }
 
 // ===== ユーザー関連バリデーション関数 =====
-
-/**
- * ユーザー表示名のバリデーション
- * @param displayName - 表示名
- * @returns バリデーションエラーの配列
- */
 export function validateUserDisplayName(displayName: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -300,11 +245,6 @@ export function validateUserDisplayName(displayName: string): ValidationError[] 
   return errors;
 }
 
-/**
- * ユーザー自己紹介のバリデーション
- * @param bio - 自己紹介
- * @returns バリデーションエラーの配列
- */
 export function validateUserBio(bio: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -323,13 +263,6 @@ export function validateUserBio(bio: string): ValidationError[] {
 }
 
 // ===== ファイル関連バリデーション関数 =====
-
-/**
- * ファイル形式のバリデーション
- * @param file - ファイル
- * @param allowedTypes - 許可されるファイル形式
- * @returns バリデーションエラー（エラーがない場合はnull）
- */
 export function validateFileType(
   file: File,
   allowedTypes: readonly string[]
@@ -344,12 +277,6 @@ export function validateFileType(
   return null;
 }
 
-/**
- * ファイルサイズのバリデーション
- * @param file - ファイル
- * @param maxSize - 最大サイズ（バイト）
- * @returns バリデーションエラー（エラーがない場合はnull）
- */
 export function validateFileSize(file: File, maxSize: number): ValidationError | null {
   if (file.size > maxSize) {
     const maxSizeMB = Math.round(maxSize / (1024 * 1024));
@@ -362,37 +289,8 @@ export function validateFileSize(file: File, maxSize: number): ValidationError |
   return null;
 }
 
-/**
- * プロフィール画像のバリデーション
- * @param file - 画像ファイル
- * @returns バリデーションエラーの配列
- */
-export function validateProfileImage(file: File): ValidationError[] {
-  const errors: ValidationError[] = [];
-
-  // ファイル形式チェック
-  const typeError = validateFileType(file, ALLOWED_FILE_TYPES.IMAGES);
-  if (typeError) {
-    errors.push(typeError);
-  }
-
-  // ファイルサイズチェック
-  const sizeError = validateFileSize(file, FILE_SIZE_LIMITS.PROFILE_IMAGE);
-  if (sizeError) {
-    errors.push(sizeError);
-  }
-
-  return errors;
-}
-
 // ===== 複合バリデーション関数 =====
 
-/**
- * ログインフォームのバリデーション
- * @param email - メールアドレス
- * @param password - パスワード
- * @returns バリデーションエラーの配列
- */
 export function validateLoginForm(email: string, password: string): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -416,14 +314,6 @@ export function validateLoginForm(email: string, password: string): ValidationEr
   return errors;
 }
 
-/**
- * 新規登録フォームのバリデーション
- * @param email - メールアドレス
- * @param password - パスワード
- * @param confirmPassword - 確認用パスワード
- * @param displayName - 表示名
- * @returns バリデーションエラーの配列
- */
 export function validateRegistrationForm(
   email: string,
   password: string,
@@ -465,13 +355,6 @@ export function validateRegistrationForm(
   return errors;
 }
 
-/**
- * KPTアイテム作成フォームのバリデーション
- * @param title - タイトル
- * @param content - 内容
- * @param type - タイプ
- * @returns バリデーションエラーの配列
- */
 export function validateKptItemForm(
   title: string,
   content: string,
@@ -496,11 +379,6 @@ export function validateKptItemForm(
   return errors;
 }
 
-/**
- * バリデーションエラーをフィールドごとにグループ化
- * @param errors - バリデーションエラーの配列
- * @returns フィールドごとのエラーマップ
- */
 export function groupValidationErrors(errors: ValidationError[]): Record<string, string[]> {
   return errors.reduce(
     (acc, error) => {
@@ -514,12 +392,6 @@ export function groupValidationErrors(errors: ValidationError[]): Record<string,
   );
 }
 
-/**
- * バリデーションエラーの最初のメッセージを取得
- * @param errors - バリデーションエラーの配列
- * @param field - フィールド名
- * @returns 最初のエラーメッセージ（エラーがない場合はundefined）
- */
 export function getFirstValidationError(
   errors: ValidationError[],
   field: string

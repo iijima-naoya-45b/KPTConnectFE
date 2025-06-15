@@ -5,9 +5,6 @@ interface ContactSubmitButtonProps {
   className?: string;
 }
 
-/**
- * お問い合わせ送信ボタンコンポーネント
- */
 const ContactSubmitButton: React.FC<ContactSubmitButtonProps> = ({
   isSubmitting,
   submitLabel = '送信する',
