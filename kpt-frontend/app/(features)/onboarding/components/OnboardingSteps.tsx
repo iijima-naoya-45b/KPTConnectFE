@@ -170,6 +170,103 @@ export const onboardingSteps: OnboardingStepData[] = [
   },
   {
     id: 4,
+    title: 'GitHub IssueとKPTの紐づけ',
+    description: 'GitHub IssueとKPTを紐づける方法を学びましょう',
+    content: (
+      <div className='space-y-6 flex flex-col justify-center h-full'>
+        <div className='bg-gray-50 p-6 rounded-lg'>
+          <h4 className='font-semibold text-gray-900 mb-2'>GitHub IssueとKPTの紐づけ</h4>
+          <p className='text-gray-600 mb-4'>
+            GitHub IssueとKPTを紐づけることで、開発の進捗を効率的に管理できます。以下の手順に従って設定してください。
+          </p>
+          <ol className='list-decimal pl-6 mb-4'>
+            <li className='mb-2'>GitHub Issueを作成します。</li>
+            <li className='mb-2'>KPTアプリケーションで、該当するKPTを選択します。</li>
+            <li className='mb-2'>「GitHub Issueと紐づけ」ボタンをクリックし、IssueのURLを入力します。</li>
+            <li className='mb-2'>紐づけが完了すると、カレンダーやガントチャートでKPTの進捗を確認できます。</li>
+          </ol>
+          <p className='text-gray-600'>
+            紐づけたKPTは、カレンダーやガントチャートで視覚的に管理できるため、進捗の把握が容易になります。
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 5,
+    title: 'GitHub Issueの作成方法',
+    description: 'GitHubでIssueを作成する手順を紹介します',
+    content: (
+      <div className='space-y-6 flex flex-col justify-center h-full'>
+        <div className='text-center'>
+          <h3 className='text-xl font-bold text-gray-900 mb-4'>GitHub Issue作成ガイド</h3>
+          <ol className='list-decimal pl-6 text-left max-w-lg mx-auto space-y-2'>
+            <li>GitHubにログインし、対象リポジトリのページにアクセスします。</li>
+            <li>上部メニューから「<span className='font-semibold'>Issues</span>」タブをクリックします。</li>
+            <li>「<span className='font-semibold'>New issue</span>」ボタンをクリックします。</li>
+            <li>タイトルと内容（詳細・再現手順など）を入力します。</li>
+            <li>必要に応じてラベルや担当者を設定します。</li>
+            <li>「<span className='font-semibold'>Submit new issue</span>」ボタンをクリックして作成完了です。</li>
+            <li>作成したIssueのURLをコピーし、KPTアプリで紐づけに利用できます。</li>
+          </ol>
+          <div className='flex justify-center mt-6'>
+            <svg width='320' height='80' viewBox='0 0 320 80' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <rect x='10' y='20' width='60' height='40' rx='8' fill='#6366F1' />
+              <text x='40' y='45' textAnchor='middle' fill='white' fontSize='14'>Repo</text>
+              <rect x='90' y='20' width='60' height='40' rx='8' fill='#10B981' />
+              <text x='120' y='45' textAnchor='middle' fill='white' fontSize='14'>Issues</text>
+              <rect x='170' y='20' width='60' height='40' rx='8' fill='#F59E0B' />
+              <text x='200' y='45' textAnchor='middle' fill='white' fontSize='14'>New</text>
+              <rect x='250' y='20' width='60' height='40' rx='8' fill='#EF4444' />
+              <text x='280' y='45' textAnchor='middle' fill='white' fontSize='14'>作成</text>
+              <line x1='70' y1='40' x2='90' y2='40' stroke='#888' strokeWidth='2' markerEnd='url(#arrow)' />
+              <line x1='150' y1='40' x2='170' y2='40' stroke='#888' strokeWidth='2' markerEnd='url(#arrow)' />
+              <line x1='230' y1='40' x2='250' y2='40' stroke='#888' strokeWidth='2' markerEnd='url(#arrow)' />
+              <defs>
+                <marker id='arrow' markerWidth='8' markerHeight='8' refX='6' refY='4' orient='auto' markerUnits='strokeWidth'>
+                  <path d='M0,0 L8,4 L0,8 L2,4 Z' fill='#888' />
+                </marker>
+              </defs>
+            </svg>
+          </div>
+        </div>
+        <div className='text-gray-600 text-center mt-4'>
+          Issueはバグ報告・要望・質問など、どんな内容でもOKです。迷ったらまず簡単な内容から作成してみましょう。
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 6,
+    title: '毎日のKPTで成長を記録',
+    description: '一日の終わりにKPTを記入し、日々の成長や課題を可視化しましょう',
+    content: (
+      <div className='space-y-6 flex flex-col justify-center h-full'>
+        <div className='text-center'>
+          <h3 className='text-xl font-bold text-gray-900 mb-4'>サンプルKPT</h3>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div className='bg-green-50 border-l-4 border-green-400 rounded-lg p-4 shadow'>
+              <div className='font-bold text-green-700 mb-2'>Keep</div>
+              <div className='text-gray-700 text-sm'>毎日30分のコーディング習慣を継続できた</div>
+            </div>
+            <div className='bg-red-50 border-l-4 border-red-400 rounded-lg p-4 shadow'>
+              <div className='font-bold text-red-700 mb-2'>Problem</div>
+              <div className='text-gray-700 text-sm'>レビューの記録を忘れる日があった</div>
+            </div>
+            <div className='bg-blue-50 border-l-4 border-blue-400 rounded-lg p-4 shadow'>
+              <div className='font-bold text-blue-700 mb-2'>Try</div>
+              <div className='text-gray-700 text-sm'>毎晩寝る前にKPTを記入するリマインダーを設定する</div>
+            </div>
+          </div>
+        </div>
+        <div className='text-gray-600 text-center mt-6'>
+          毎日のKPTを積み重ねることで、成長や課題の変化をカレンダーやガントチャートで振り返ることができます。
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 7,
     title: 'はじめましょう！',
     description: '準備完了です。最初のKPTを作成してみましょう',
     content: (

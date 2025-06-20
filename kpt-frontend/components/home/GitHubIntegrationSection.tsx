@@ -12,14 +12,13 @@ const GitHubIntegrationSection = () => {
           開発の進捗や課題、改善アクションをGitHub上のタスクと一元化し、より実践的な振り返りが可能です。
         </p>
         <ul className='list-disc pl-5 text-gray-700 mb-4'>
-          <li>Issue・Pull Request・Branch・CommitとKPTを紐付け</li>
+          <li>Issue・Pull RequestとKPTを紐付け</li>
           <li>進捗・課題・改善アクションの可視化</li>
           <li>GitHubタスクとKPTの一元管理</li>
         </ul>
         <div className='bg-indigo-100 rounded p-4'>
           <div className='font-semibold text-indigo-700 mb-2'>使い方の流れ</div>
           <ol className='list-decimal pl-5 text-gray-700 text-sm flex flex-col gap-2'>
-            <li>GitHub認証で連携開始</li>
             <li>リポジトリを選択</li>
             <li>IssueやPull RequestとKPTを紐付けて管理</li>
           </ol>
