@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, momentLocalizer, Event } from 'react-big-calendar';
+import { Calendar, momentLocalizer, Event as RBCEvent } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { TodoItem } from './types';
@@ -22,9 +22,14 @@ interface CalendarViewProps {
   kptReviews?: KptReview[];
 }
 
-const getEventStyle = (event: Event) => {
+interface CalendarEvent extends RBCEvent {
+  id: string;
+  resource: TodoItem | { isKpt: true; date: string };
+}
+
+const getEventStyle = (event: CalendarEvent) => {
   // KPTレビューの場合は緑の丸ポチ風
-  if (event.resource && event.resource.isKpt) {
+  if (event.resource && 'isKpt' in event.resource && event.resource.isKpt) {
     return {
       style: {
         backgroundColor: 'transparent',
@@ -73,7 +78,7 @@ const getEventStyle = (event: Event) => {
 
 const CalendarView: React.FC<CalendarViewProps> = ({ items, kptReviews = [] }) => {
   // TodoItemをreact-big-calendarのイベント形式に変換
-  const todoEvents: Event[] = items.map(item => ({
+  const todoEvents: CalendarEvent[] = items.map(item => ({
     id: item.id,
     title: item.content,
     start: item.start_date ? new Date(item.start_date) : new Date(item.created_at),
@@ -81,21 +86,31 @@ const CalendarView: React.FC<CalendarViewProps> = ({ items, kptReviews = [] }) =
     resource: item
   }));
 
-  // KPTレビューを緑の丸ポチイベントとして追加
-  const kptEvents: Event[] = kptReviews.map(review => ({
-    id: `kpt-${review.id}`,
-    title: '',
-    start: new Date(review.created_at),
-    end: new Date(review.created_at),
-    resource: { ...review, isKpt: true }
-  }));
+  // KPTレビューをJST日付で日付ごとにグループ化し、1日につき1つのイベントとして追加
+  const kptEventsByDate = kptReviews.reduce((acc, review) => {
+    // JST変換は不要。created_atをそのままmomentで日付抽出
+    const dateStr = moment(review.created_at).format('YYYY-MM-DD');
+    if (!acc[dateStr]) {
+      // 日付の0時0分0秒でDateオブジェクトを作成
+      const dateObj = moment(review.created_at).startOf('day').toDate();
+      acc[dateStr] = {
+        id: `kpt-${dateStr}`,
+        title: '',
+        start: dateObj,
+        end: dateObj,
+        resource: { isKpt: true, date: dateStr }
+      };
+    }
+    return acc;
+  }, {} as Record<string, CalendarEvent>);
 
+  const kptEvents = Object.values(kptEventsByDate);
   const allEvents = [...todoEvents, ...kptEvents];
 
   // KPTレビューイベントの場合は該当日のKPT一覧ページに遷移
-  const handleSelectEvent = (event: Event) => {
-    if (event.resource && event.resource.isKpt) {
-      const dateStr = moment(event.start).format('YYYY-MM-DD');
+  const handleSelectEvent = (event: CalendarEvent) => {
+    if (event.resource && 'isKpt' in event.resource && event.resource.isKpt) {
+      const dateStr = event.resource.date;
       window.location.href = `/dashboard/kpt?date=${dateStr}`;
     }
   };
@@ -112,7 +127,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ items, kptReviews = [] }) =
         eventPropGetter={getEventStyle}
         onSelectEvent={handleSelectEvent}
       />
-      <style>{`
+      <style jsx global>{`
         .kpt-dot-event .rbc-event-content {
           display: flex;
           align-items: center;

@@ -1,15 +1,3 @@
-/**
- * 学習ロードマップページ
- * 
- * @description KPTデータを基にAIが生成するパーソナライズされた学習計画
- * @features
- * - 個人の強み・弱みに基づく学習提案
- * - スキルマップ可視化
- * - 段階的学習計画
- * - 進捗トラッキング
- * @access プロプラン限定機能
- */
-
 'use client';
 
 import { useState } from 'react';
