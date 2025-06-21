@@ -10,8 +10,6 @@ const ContactPage: React.FC = () => {
     email: '',
     subject: '',
     message: '',
-    company: '',
-    phone: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,8 +60,6 @@ const ContactPage: React.FC = () => {
           email: '',
           subject: '',
           message: '',
-          company: '',
-          phone: '',
         });
       } else {
         setSubmitResult({
