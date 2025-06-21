@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 interface Issue {
   id: number;
@@ -36,7 +36,9 @@ const GithubIssuesSample: React.FC = () => {
     setSelected(new Set());
     setSaveMessage(null);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/github/issues?repo=${encodeURIComponent(repo)}`);
+      const response = await fetch(`${BACKEND_URL}/api/v1/github/issues?repo=${encodeURIComponent(repo)}`, {
+        credentials: 'include',
+      });
       if (!response.ok) {
         throw new Error('GitHub Issuesの取得に失敗しました');
       }

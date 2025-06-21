@@ -6,7 +6,7 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const locales = {
   'ja': ja,
@@ -32,7 +32,9 @@ const CalendarPage = () => {
       setLoading(true);
       setError('');
       try {
-        const response = await fetch(`${BACKEND_URL}/api/v1/kpt_sessions`);
+        const response = await fetch(`${BACKEND_URL}/api/v1/kpt_sessions`, {
+          credentials: 'include',
+        });
         if (!response.ok) {
           throw new Error('カレンダーデータの取得に失敗しました');
         }
