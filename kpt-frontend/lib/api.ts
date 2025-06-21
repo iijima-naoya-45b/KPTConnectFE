@@ -8,13 +8,21 @@ export const fetcher = async (path: string, options?: RequestInit) => {
 
     if (!res.ok) {
         const error: any = new Error('An error occurred while fetching the data.');
-        try {
-            error.info = await res.json();
-        } catch (e) {
-            // If the response is not JSON, use text
-            error.info = { message: await res.text() };
-        }
         error.status = res.status;
+
+        // レスポンスbodyは一度だけ読み込む
+        try {
+            const contentType = res.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                error.info = await res.json();
+            } else {
+                error.info = { message: await res.text() };
+            }
+        } catch (e) {
+            // 読み込みに失敗した場合はデフォルトメッセージ
+            error.info = { message: `HTTP ${res.status}: ${res.statusText}` };
+        }
+
         throw error;
     }
 
