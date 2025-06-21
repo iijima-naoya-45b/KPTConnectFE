@@ -3,8 +3,6 @@ export interface ContactFormData {
     email: string;
     subject: string;
     message: string;
-    company?: string;
-    phone?: string;
 }
 
 export interface SubmitResult {

@@ -50,40 +50,6 @@ const ContactForm: React.FC<ContactFormProps> = ({
         />
       </div>
 
-      {/* 会社名 */}
-      <div>
-        <label htmlFor='company' className='block text-sm font-medium text-gray-700'>
-          会社名
-        </label>
-        <Input
-          type='text'
-          id='company'
-          name='company'
-          value={formData.company}
-          onChange={onInputChange}
-          disabled={isSubmitting}
-          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500'
-          placeholder='株式会社〇〇'
-        />
-      </div>
-
-      {/* 電話番号 */}
-      <div>
-        <label htmlFor='phone' className='block text-sm font-medium text-gray-700'>
-          電話番号
-        </label>
-        <Input
-          type='tel'
-          id='phone'
-          name='phone'
-          value={formData.phone}
-          onChange={onInputChange}
-          disabled={isSubmitting}
-          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500'
-          placeholder='03-1234-5678'
-        />
-      </div>
-
       {/* 件名 */}
       <div>
         <label htmlFor='subject' className='block text-sm font-medium text-gray-700'>
