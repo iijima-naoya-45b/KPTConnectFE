@@ -1,5 +1,6 @@
 const getApiUrl = (): string => {
-    return process.env.NEXT_PUBLIC_API_URL || '';
+    // Vercelのリライト設定により、相対パスでバックエンドAPIに転送される
+    return '';
 };
 
 export const fetcher = async (path: string, options?: RequestInit) => {
