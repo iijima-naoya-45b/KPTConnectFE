@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
+import { toast } from 'sonner';
+import { fetcher } from '@/lib/api';
 
 interface Issue {
   id: number;
@@ -25,22 +27,24 @@ const GithubIssuesSample: React.FC = () => {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
-  const fetchIssues = async (repoName: string) => {
+  const fetchIssues = async () => {
+    if (!repo) return;
     setLoading(true);
     setError(null);
     setIssues([]);
     setSelected(new Set());
     setSaveMessage(null);
     try {
-      const res = await fetch(`/api/v1/github/issues?repo=${encodeURIComponent(repoName)}`);
-      const data = await res.json();
+      const data = await fetcher(`/api/v1/github/issues?repo=${encodeURIComponent(repo)}`);
       if (data.success) {
-        setIssues(data.issues);
+        setIssues(data.issues || []);
       } else {
         setError(data.error || '取得に失敗しました');
       }
-    } catch (e) {
-      setError('通信エラーが発生しました');
+    } catch (error) {
+      console.error("Failed to fetch issues:", error);
+      toast.error('GitHub Issuesの取得に失敗しました');
+      setIssues([]);
     } finally {
       setLoading(false);
     }
@@ -49,7 +53,7 @@ const GithubIssuesSample: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (repo.trim()) {
-      fetchIssues(repo.trim());
+      fetchIssues();
     }
   };
 
@@ -69,7 +73,7 @@ const GithubIssuesSample: React.FC = () => {
     const selectedIssues = issues.filter(issue => selected.has(issue.id));
     setSaveMessage(null);
     try {
-      const res = await fetch('/api/v1/kpt_items/import_github', {
+      const res = await fetcher('/api/v1/kpt_items/import_github', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -86,14 +90,15 @@ const GithubIssuesSample: React.FC = () => {
           })),
         }),
       });
-      const data = await res.json();
-      if (data.success) {
+      if (res.success) {
         setSaveMessage(`${selectedIssues.length}件のIssueを保存しました`);
         setSelected(new Set());
       } else {
-        setSaveMessage('保存に失敗しました: ' + (data.error || ''));
+        setSaveMessage('保存に失敗しました: ' + (res.error || ''));
       }
-    } catch (e) {
+    } catch (error) {
+      console.error("Failed to import issues:", error);
+      toast.error('KPT Problemへのインポートに失敗しました');
       setSaveMessage('保存に失敗しました');
     }
   };

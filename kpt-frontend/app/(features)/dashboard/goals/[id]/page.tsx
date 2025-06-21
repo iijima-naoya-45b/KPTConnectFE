@@ -1,20 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { fetcher } from '@/lib/api';
 
-interface AiGoalInsight {
+// 統一されたGoalインターフェース
+interface Goal {
   id: number;
   title: string;
   description: string;
-  milestone?: string;
+  deadline?: string;
   action_plan: string[];
-  progress_check?: string;
-  status: string;
   progress: number;
+  status: string;
+  progress_check?: string;
   created_at?: string;
   updated_at?: string;
+  created_by_ai: boolean;
 }
 
 const statusOptions = [
@@ -28,113 +31,80 @@ interface PageProps {
   params: { id: string };
 }
 
-const AiGoalInsightDetail: React.FC<PageProps> = ({ params }) => {
+const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
   const router = useRouter();
   const { id } = params;
-  const [insight, setInsight] = useState<AiGoalInsight | null>(null);
+  const [goal, setGoal] = useState<Goal | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchInsight = async () => {
-      if (!id) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`/api/v1/ai_goal_insights/${id}`);
-        if (!res.ok) throw new Error('AI目標インサイトの取得に失敗しました');
-        const data = await res.json();
-
-        // action_planが文字列の場合、JSONとしてパースする
-        if (data && typeof data.action_plan === 'string') {
-          try {
-            data.action_plan = JSON.parse(data.action_plan);
-          } catch (e) {
-            console.error("action_planのJSONパースに失敗:", e);
-            data.action_plan = []; // パース失敗時は空配列にする
-          }
+  const fetchGoal = useCallback(async () => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetcher(`/api/v1/goals/${id}`);
+      // action_planが文字列で返ってくる場合があるのでパースする
+      if (data && typeof data.action_plan === 'string') {
+        try {
+          data.action_plan = JSON.parse(data.action_plan);
+        } catch (e) {
+          data.action_plan = [];
         }
-
-        setInsight(data);
-      } catch (e: any) {
-        setError(e.message || 'エラーが発生しました');
-      } finally {
-        setLoading(false);
       }
-    };
-    
-    fetchInsight();
+      setGoal(data);
+    } catch (e: any) {
+      setError('目標の読み込みに失敗しました。');
+      setGoal(null);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
-  const handleStatusChange = async (newStatus: string) => {
-    if (!insight) return;
+  useEffect(() => {
+    fetchGoal();
+  }, [fetchGoal]);
 
-    const originalStatus = insight.status;
-    setInsight({ ...insight, status: newStatus });
+  const handleStatusChange = useCallback(async (newStatus: string) => {
+    if (!goal) return;
+
+    const originalGoal = { ...goal };
+    const newProgress = newStatus === 'completed' ? 100 : newStatus === 'in_progress' ? 50 : 0;
+    setGoal(prev => (prev ? { ...prev, status: newStatus, progress: newProgress } : null));
 
     try {
-      const res = await fetch(`/api/v1/ai_goal_insights/${insight.id}`, {
+      const updatedData = await fetcher(`/api/v1/goals/${goal.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ai_goal_insight: { status: newStatus } }),
+        body: JSON.stringify({ goal: { status: newStatus, progress: newProgress } }),
       });
-
-      if (!res.ok) throw new Error('ステータス更新に失敗');
-
-      const updatedInsight = await res.json();
-
-      // action_planのパース処理を再適用
-      if (updatedInsight && typeof updatedInsight.action_plan === 'string') {
-        try {
-          updatedInsight.action_plan = JSON.parse(updatedInsight.action_plan);
-        } catch (e) {
-          updatedInsight.action_plan = [];
-        }
-      }
-
-      setInsight(updatedInsight);
+      setGoal(updatedData);
       toast.success('ステータスを更新しました');
     } catch (e) {
-      if (insight) {
-        setInsight({ ...insight, status: originalStatus });
-      }
+      setGoal(originalGoal);
       toast.error('ステータス更新に失敗しました');
     }
-  };
+  }, [goal]);
 
-  const handleProgressChange = async (newProgress: number) => {
-    if (!insight) return;
+  const handleProgressChange = useCallback(async (newProgress: number) => {
+    if (!goal) return;
 
-    const originalProgress = insight.progress;
-    setInsight({ ...insight, progress: newProgress });
+    const originalGoal = { ...goal };
+    const newStatus = newProgress >= 100 ? 'completed' : newProgress > 0 ? 'in_progress' : 'not_started';
+    setGoal(prev => (prev ? { ...prev, progress: newProgress, status: newStatus } : null));
 
     try {
-      const res = await fetch(`/api/v1/ai_goal_insights/${insight.id}`, {
+      const updatedData = await fetcher(`/api/v1/goals/${goal.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ai_goal_insight: { progress: newProgress } }),
+        body: JSON.stringify({ goal: { progress: newProgress, status: newStatus } }),
       });
-
-      if (!res.ok) throw new Error('進捗更新に失敗');
-
-      // サーバーからのレスポンスで最終的な状態を更新
-      const updatedInsight = await res.json();
-       if (updatedInsight && typeof updatedInsight.action_plan === 'string') {
-        try {
-          updatedInsight.action_plan = JSON.parse(updatedInsight.action_plan);
-        } catch (e) {
-          updatedInsight.action_plan = [];
-        }
-      }
-      setInsight(updatedInsight);
-
+      setGoal(updatedData);
     } catch (e) {
-      if (insight) {
-        setInsight({ ...insight, progress: originalProgress });
-      }
+      setGoal(originalGoal);
       toast.error('進捗更新に失敗しました');
     }
-  };
+  }, [goal]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -151,19 +121,24 @@ const AiGoalInsightDetail: React.FC<PageProps> = ({ params }) => {
     }
   };
 
-  if (loading) return <div className="p-8">読み込み中...</div>;
-  if (error) return <div className="p-8 text-red-600">{error}</div>;
-  if (!insight) return <div className="p-8">データがありません</div>;
+  if (loading) return <div className="p-8 text-center">読み込み中...</div>;
+  if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
+  if (!goal) return <div className="p-8 text-center">目標が見つかりませんでした。</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">{insight.title}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+            {goal?.title}
+            {goal?.created_by_ai && (
+              <span className="ml-2 text-xs bg-cyan-100 text-cyan-700 font-semibold px-2 py-0.5 rounded-full">AI</span>
+            )}
+          </h1>
           <select
-            value={insight.status}
+            value={goal.status}
             onChange={(e) => handleStatusChange(e.target.value)}
-            className={`cursor-pointer border-transparent rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150 py-1 pl-4 pr-8 ${getStatusColor(insight.status)}`}
+            className={`cursor-pointer border-transparent rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150 py-1 pl-4 pr-8 ${getStatusColor(goal.status)}`}
           >
             {statusOptions.map(option => (
               <option key={option.value} value={option.value}>
@@ -173,38 +148,37 @@ const AiGoalInsightDetail: React.FC<PageProps> = ({ params }) => {
           </select>
         </div>
         
-        <div className="text-gray-700 text-base mb-4 whitespace-pre-line">{insight.description}</div>
+        <div className="text-gray-700 text-base mb-4 whitespace-pre-line">{goal?.description}</div>
         
-        {/* Progress Bar and Slider */}
         <div className="my-6">
           <div className="flex justify-between items-center mb-1">
             <label className="text-sm font-medium text-gray-700">進捗率</label>
-            <span className="text-lg font-bold text-indigo-600">{insight.progress}%</span>
+            <span className="text-lg font-bold text-indigo-600">{goal.progress}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
             <div 
               className="bg-gradient-to-r from-indigo-500 to-blue-500 h-3 rounded-full transition-all duration-300 ease-in-out" 
-              style={{ width: `${insight.progress}%` }}
+              style={{ width: `${goal.progress}%` }}
             ></div>
           </div>
           <input
             type="range"
             min="0"
             max="100"
-            value={insight.progress}
+            value={goal.progress}
             onChange={(e) => handleProgressChange(parseInt(e.target.value, 10))}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
         </div>
         
-        {insight.milestone && (
+        {goal?.deadline && (
           <div className="mb-4 p-3 bg-purple-50 border-l-4 border-purple-400 rounded-lg">
             <div className="font-bold text-purple-700 mb-1">マイルストーン</div>
-            <div className="text-purple-800">{insight.milestone}</div>
+            <div className="text-purple-800">{new Date(goal.deadline).toLocaleDateString()}</div>
           </div>
         )}
         
-        {Array.isArray(insight.action_plan) && insight.action_plan.length > 0 && (
+        {Array.isArray(goal.action_plan) && goal.action_plan.length > 0 && (
           <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-lg p-6">
             <div className="font-bold text-blue-700 mb-4 text-lg flex items-center">
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,7 +187,7 @@ const AiGoalInsightDetail: React.FC<PageProps> = ({ params }) => {
               アクションプラン
             </div>
             <div className="space-y-3">
-              {insight.action_plan.map((item: string, idx: number) => (
+              {goal.action_plan.map((item: string, idx: number) => (
                 <div key={idx} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-blue-100 shadow-sm">
                   <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                     {idx + 1}
@@ -225,15 +199,15 @@ const AiGoalInsightDetail: React.FC<PageProps> = ({ params }) => {
               ))}
             </div>
             <div className="mt-4 text-xs text-blue-600 bg-blue-100 px-3 py-2 rounded-lg">
-              <strong>合計 {insight.action_plan.length} ステップ</strong>のアクションプランが設定されています
+              <strong>合計 {goal.action_plan.length} ステップ</strong>のアクションプランが設定されています
             </div>
           </div>
         )}
         
-        {insight.progress_check && (
+        {goal.progress_check && (
           <div className="mt-6 p-3 bg-green-50 border-l-4 border-green-400 rounded-lg">
             <div className="font-bold text-green-700 mb-1">進捗管理方法</div>
-            <div className="text-green-800 text-sm">{insight.progress_check}</div>
+            <div className="text-green-800 text-sm">{goal.progress_check}</div>
           </div>
         )}
         
@@ -244,16 +218,10 @@ const AiGoalInsightDetail: React.FC<PageProps> = ({ params }) => {
           >
             一覧に戻る
           </button>
-          <button 
-            className="px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-            onClick={() => router.push('/dashboard/goals')}
-          >
-            目標一覧へ
-          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default AiGoalInsightDetail; 
+export default GoalDetailPage; 

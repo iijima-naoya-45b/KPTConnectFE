@@ -1,93 +1,67 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { startOfMonth, endOfMonth, format } from 'date-fns';
-import CalendarView from './CalendarView';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Calendar, dateFnsLocalizer, Views, Event } from 'react-big-calendar';
+import { format, parse, startOfWeek, getDay } from 'date-fns';
+import { ja } from 'date-fns/locale';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { fetcher } from '@/lib/api';
 
-// Todo項目の型定義
-interface TodoItem {
-  id: string;
-  kpt_session_id: string;
-  type: 'todo';
-  content: string;
-  priority: 'high' | 'medium' | 'low';
-  status: 'open' | 'in_progress' | 'completed' | 'cancelled';
-  due_date?: string;
-  start_date?: string;
-  end_date?: string;
-  assigned_to?: string;
-  emotion_score?: number;
-  impact_score?: number;
-  tags: string[];
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-  completed_at?: string;
-  session_title?: string;
-  session_date?: string;
-}
+const locales = {
+  'ja': ja,
+};
 
-interface KptReview {
-  id: number;
-  title: string;
-  description: string;
-  keep: string;
-  problem: string;
-  try: string;
-  created_at: string;
-  user_id: number;
-}
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek: () => startOfWeek(new Date(), { locale: ja }),
+  getDay,
+  locales,
+});
 
 const CalendarPage = () => {
-  const [allItems, setAllItems] = useState<TodoItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [kptReviews, setKptReviews] = useState<KptReview[]>([]);
-  const [currentDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+  const [myEvents, setMyEvents] = useState<Event[]>([]);
+  const [view, setView] = useState<typeof Views.MONTH | typeof Views.WEEK | typeof Views.DAY>(Views.MONTH);
 
   useEffect(() => {
-    const fetchTodoItems = async () => {
+    const fetchEvents = async () => {
       setLoading(true);
       setError('');
       try {
-        const response = await fetch('/api/v1/kpt_items?type=todo');
-        const result = await response.json();
-        if (result.success) {
-          setAllItems(result.data.items);
-        } else {
-          setError(result.error || 'Todo項目の取得に失敗しました');
-        }
-      } catch (err) {
-        setError('Todo項目の取得中にエラーが発生しました');
+        const data = await fetcher('/api/v1/kpt_sessions');
+        const kptEvents = data.map((session: any) => ({
+          title: session.title,
+          start: new Date(session.started_at),
+          end: new Date(session.ended_at || session.started_at),
+          allDay: false,
+          resource: { type: 'kpt', ...session },
+        }));
+        setMyEvents(kptEvents);
+      } catch (error) {
+        console.error('Failed to fetch KPT sessions:', error);
+        setError('カレンダーデータの取得に失敗しました');
       } finally {
         setLoading(false);
       }
     };
-    fetchTodoItems();
-  }, []);
 
-  useEffect(() => {
-    const fetchKptReviews = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const start = format(startOfMonth(currentDate), 'yyyy-MM-dd');
-        const end = format(endOfMonth(currentDate), 'yyyy-MM-dd');
-        const apiBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
-        const res = await fetch(`${apiBaseUrl}/api/v1/kpt_reviews?start=${start}&end=${end}`, {
-          credentials: 'include',
-        });
-        if (!res.ok) throw new Error('KPT一覧の取得に失敗しました');
-        const data = await res.json();
-        setKptReviews(data);
-      } catch (e: any) {
-        setError(e.message || '予期せぬエラーが発生しました');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchKptReviews();
-  }, [currentDate]);
+    fetchEvents();
+  }, [date]);
+
+  const { defaultDate, scrollToTime } = useMemo(
+    () => ({
+      defaultDate: date,
+      scrollToTime: new Date(1970, 1, 1, 6),
+    }),
+    [date]
+  );
+
+  const handleNavigate = (newDate: Date) => {
+    setDate(newDate);
+  };
 
   return (
     <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
@@ -108,7 +82,25 @@ const CalendarPage = () => {
             <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600'></div>
           </div>
         ) : (
-          <CalendarView items={allItems} kptReviews={kptReviews} />
+          <Calendar
+            localizer={localizer}
+            events={myEvents}
+            startAccessor="start"
+            endAccessor="end"
+            defaultView={view}
+            defaultDate={defaultDate}
+            scrollToTime={scrollToTime}
+            onNavigate={handleNavigate}
+            onView={(newView: any) => setView(newView)}
+            messages={{
+              next: "次",
+              previous: "前",
+              today: "今日",
+              month: "月",
+              week: "週",
+              day: "日"
+            }}
+          />
         )}
       </main>
     </div>
