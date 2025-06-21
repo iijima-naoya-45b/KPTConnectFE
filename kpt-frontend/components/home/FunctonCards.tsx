@@ -103,10 +103,10 @@ export default function FunctionCards() {
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
       {cardData.map((card) => (
-        <Link key={card.href} href={card.href} className='group'>
-          <div className='bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6'>
+        <Link key={card.href} href={card.href} className='group h-full flex'>
+          <div className='w-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col'>
             <div className='flex items-center mb-4'>
-              <div className={`w-12 h-12 ${card.icon.bgColor} rounded-lg flex items-center justify-center mr-4`}>
+              <div className={`w-12 h-12 ${card.icon.bgColor} rounded-lg flex items-center justify-center mr-4 flex-shrink-0`}>
                 <svg
                   className={`w-6 h-6 ${card.icon.textColor}`}
                   fill='none'
@@ -125,7 +125,7 @@ export default function FunctionCards() {
                 {card.title}
               </h4>
             </div>
-            <p className='text-gray-600 text-sm'>{card.description}</p>
+            <p className='text-gray-600 text-sm flex-grow'>{card.description}</p>
           </div>
         </Link>
       ))}
