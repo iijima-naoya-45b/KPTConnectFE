@@ -24,6 +24,8 @@ export interface FAQ {
     question: string;
     /** 回答 */
     answer: string;
+    /** カテゴリー（オプション） */
+    category?: FAQCategory;
 }
 
 /**
