@@ -5,7 +5,8 @@ import { Calendar, dateFnsLocalizer, Views, Event } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { apiCall } from '@/lib/api';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const locales = {
   'ja': ja,
@@ -31,7 +32,11 @@ const CalendarPage = () => {
       setLoading(true);
       setError('');
       try {
-        const data = await apiCall('/api/v1/kpt_sessions');
+        const response = await fetch(`${BACKEND_URL}/api/v1/kpt_sessions`);
+        if (!response.ok) {
+          throw new Error('カレンダーデータの取得に失敗しました');
+        }
+        const data = await response.json();
         const kptEvents = data.map((session: any) => ({
           title: session.title,
           start: new Date(session.started_at),

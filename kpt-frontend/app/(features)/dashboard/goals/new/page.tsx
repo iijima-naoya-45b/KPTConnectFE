@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { apiCall } from '@/lib/api';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const initialForm = {
   title: '',
@@ -83,12 +84,19 @@ const GoalNewPage: React.FC = () => {
   const handleAiSuggest = async () => {
     setLoading(true);
     try {
-      const suggestion = await apiCall('/api/v1/goals/suggest', {
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals/suggest`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(aiAnswers),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'AIからの応答を解析できませんでした。' }));
+        throw new Error(errorData.message || `エラーが発生しました: ${response.statusText}`);
+      }
       
+      const suggestion = await response.json();
+
       setForm({
         ...initialForm, // フォームを初期化しつつ
         title: suggestion.title || '',
@@ -101,8 +109,8 @@ const GoalNewPage: React.FC = () => {
       
       toast.success('AIが目標を提案しました！', { description: '内容を確認・編集して保存してください。' });
       setShowModal(false);
-    } catch (e) {
-      toast.error('AI目標生成に失敗しました', { description: String(e) });
+    } catch (e: any) {
+      toast.error('AI目標生成に失敗しました', { description: e.message });
     } finally {
       setLoading(false);
     }
@@ -119,7 +127,7 @@ const GoalNewPage: React.FC = () => {
     try {
       const filteredActionPlan = form.action_plan.filter(action => action.trim() !== '');
       
-      await apiCall('/api/v1/goals', {
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -127,11 +135,16 @@ const GoalNewPage: React.FC = () => {
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: '保存サーバーとの通信に失敗しました。' }));
+        throw new Error(errorData.message || `エラーが発生しました: ${response.statusText}`);
+      }
+
       toast.success('目標が保存されました！');
       setForm(initialForm);
       window.location.href = '/dashboard/goals';
-    } catch (e) {
-      toast.error('目標の保存に失敗しました', { description: String(e) });
+    } catch (e: any) {
+      toast.error('目標の保存に失敗しました', { description: e.message });
     } finally {
       setLoading(false);
     }

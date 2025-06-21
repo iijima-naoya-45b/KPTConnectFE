@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { apiCall } from '@/lib/api';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface Issue {
   id: number;
@@ -35,7 +36,11 @@ const GithubIssuesSample: React.FC = () => {
     setSelected(new Set());
     setSaveMessage(null);
     try {
-      const data = await apiCall(`/api/v1/github/issues?repo=${encodeURIComponent(repo)}`);
+      const response = await fetch(`${BACKEND_URL}/api/v1/github/issues?repo=${encodeURIComponent(repo)}`);
+      if (!response.ok) {
+        throw new Error('GitHub Issuesの取得に失敗しました');
+      }
+      const data = await response.json();
       if (data.success) {
         setIssues(data.issues || []);
       } else {
@@ -73,7 +78,7 @@ const GithubIssuesSample: React.FC = () => {
     const selectedIssues = issues.filter(issue => selected.has(issue.id));
     setSaveMessage(null);
     try {
-      const res = await apiCall('/api/v1/kpt_items/import_github', {
+      const response = await fetch(`${BACKEND_URL}/api/v1/kpt_items/import_github`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -90,6 +95,10 @@ const GithubIssuesSample: React.FC = () => {
           })),
         }),
       });
+      if (!response.ok) {
+        throw new Error('KPT Problemへのインポートに失敗しました');
+      }
+      const res = await response.json();
       if (res.success) {
         setSaveMessage(`${selectedIssues.length}件のIssueを保存しました`);
         setSelected(new Set());
