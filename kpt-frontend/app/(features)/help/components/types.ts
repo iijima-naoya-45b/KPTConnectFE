@@ -17,15 +17,13 @@ export type FAQCategory = 'general' | 'kpt' | 'integration' | 'notification';
 export type TabType = 'help' | 'feedback';
 
 /**
- * FAQ項目の型
+ * FAQの型定義
  */
 export interface FAQ {
     /** 質問 */
     question: string;
     /** 回答 */
     answer: string;
-    /** カテゴリー */
-    category: FAQCategory;
 }
 
 /**
@@ -36,4 +34,9 @@ export interface FilterState {
     selectedCategory: FAQCategory | 'all';
     /** 検索クエリ */
     searchQuery: string;
+}
+
+export interface Guide {
+    title: string;
+    description: string;
 } 

@@ -31,27 +31,51 @@ const ContactPage: React.FC = () => {
     setSubmitResult(null);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setSubmitResult({
-        success: true,
-        message: 'お問い合わせを受け付けました。担当者より折り返しご連絡いたします。',
+      // バックエンドAPIに送信
+      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
+      const response = await fetch(`${baseUrl}/api/v1/contacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contact: {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message,
+          }
+        }),
       });
 
-      // フォームをリセット
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-        company: '',
-        phone: '',
-      });
+      const result = await response.json();
+
+      if (response.ok) {
+        setSubmitResult({
+          success: true,
+          message: result.message || 'お問い合わせを受け付けました。確認メールをお送りしましたのでご確認ください。',
+        });
+
+        // フォームをリセット
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+          company: '',
+          phone: '',
+        });
+      } else {
+        setSubmitResult({
+          success: false,
+          message: result.error || 'お問い合わせの送信に失敗しました。もう一度お試しください。',
+        });
+      }
     } catch (error) {
       console.error('お問い合わせ送信エラー:', error);
       setSubmitResult({
         success: false,
-        message: 'お問い合わせの送信に失敗しました。もう一度お試しください。',
+        message: 'お問い合わせの送信に失敗しました。ネットワーク接続をご確認の上、もう一度お試しください。',
       });
     } finally {
       setIsSubmitting(false);
