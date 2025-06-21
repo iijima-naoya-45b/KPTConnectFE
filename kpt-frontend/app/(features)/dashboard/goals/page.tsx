@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { apiCall } from '@/lib/api';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // 統一されたGoalインターフェース
 interface Goal {
@@ -41,7 +42,11 @@ const GoalsPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await apiCall('/api/v1/goals');
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals`);
+      if (!response.ok) {
+        throw new Error('目標の読み込みに失敗しました');
+      }
+      const data = await response.json();
       // action_planが文字列で返ってくる場合があるのでパースする
       const formattedGoals = (data || []).map((goal: Goal) => {
         let actionPlan = goal.action_plan;
@@ -67,11 +72,14 @@ const GoalsPage: React.FC = () => {
     setGoals(prev => prev.map(g => (g.id === id ? { ...g, status: newStatus } : g)));
 
     try {
-      await apiCall(`/api/v1/goals/${id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal: { status: newStatus } }),
       });
+      if (!response.ok) {
+        throw new Error('ステータスの更新に失敗しました');
+      }
       toast.success('ステータスを更新しました');
       // 必要に応じて再フェッチ or レスポンスでstate更新
       fetchGoals();
@@ -85,9 +93,12 @@ const GoalsPage: React.FC = () => {
     if (!confirm('この目標を削除しますか？')) return;
     
     try {
-      await apiCall(`/api/v1/goals/${id}`, {
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals/${id}`, {
         method: 'DELETE',
       });
+      if (!response.ok) {
+        throw new Error('削除に失敗しました');
+      }
       toast.success('目標を削除しました');
       fetchGoals(); // 一覧を再取得
     } catch (e: any) {
