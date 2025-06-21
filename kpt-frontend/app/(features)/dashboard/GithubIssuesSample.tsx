@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { fetcher } from '@/lib/api';
+import { apiCall } from '@/lib/api';
 
 interface Issue {
   id: number;
@@ -35,7 +35,7 @@ const GithubIssuesSample: React.FC = () => {
     setSelected(new Set());
     setSaveMessage(null);
     try {
-      const data = await fetcher(`/api/v1/github/issues?repo=${encodeURIComponent(repo)}`);
+      const data = await apiCall(`/api/v1/github/issues?repo=${encodeURIComponent(repo)}`);
       if (data.success) {
         setIssues(data.issues || []);
       } else {
@@ -73,7 +73,7 @@ const GithubIssuesSample: React.FC = () => {
     const selectedIssues = issues.filter(issue => selected.has(issue.id));
     setSaveMessage(null);
     try {
-      const res = await fetcher('/api/v1/kpt_items/import_github', {
+      const res = await apiCall('/api/v1/kpt_items/import_github', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { fetcher } from '@/lib/api';
+import { apiCall } from '@/lib/api';
 
 // 統一されたGoalインターフェース
 interface Goal {
@@ -43,7 +43,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetcher(`/api/v1/goals/${id}`);
+      const data = await apiCall(`/api/v1/goals/${id}`);
       // action_planが文字列で返ってくる場合があるのでパースする
       if (data && typeof data.action_plan === 'string') {
         try {
@@ -73,7 +73,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
     setGoal(prev => (prev ? { ...prev, status: newStatus, progress: newProgress } : null));
 
     try {
-      const updatedData = await fetcher(`/api/v1/goals/${goal.id}`, {
+      const updatedData = await apiCall(`/api/v1/goals/${goal.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal: { status: newStatus, progress: newProgress } }),
@@ -94,7 +94,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
     setGoal(prev => (prev ? { ...prev, progress: newProgress, status: newStatus } : null));
 
     try {
-      const updatedData = await fetcher(`/api/v1/goals/${goal.id}`, {
+      const updatedData = await apiCall(`/api/v1/goals/${goal.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal: { progress: newProgress, status: newStatus } }),

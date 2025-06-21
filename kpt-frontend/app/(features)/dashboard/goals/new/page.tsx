@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { fetcher } from '@/lib/api';
+import { apiCall } from '@/lib/api';
 
 const initialForm = {
   title: '',
@@ -83,7 +83,7 @@ const GoalNewPage: React.FC = () => {
   const handleAiSuggest = async () => {
     setLoading(true);
     try {
-      const suggestion = await fetcher('/api/v1/goals/suggest', {
+      const suggestion = await apiCall('/api/v1/goals/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(aiAnswers),
@@ -119,7 +119,7 @@ const GoalNewPage: React.FC = () => {
     try {
       const filteredActionPlan = form.action_plan.filter(action => action.trim() !== '');
       
-      await fetcher('/api/v1/goals', {
+      await apiCall('/api/v1/goals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

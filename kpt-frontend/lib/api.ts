@@ -1,11 +1,18 @@
 const getApiUrl = (): string => {
-    // Vercelのリライト設定により、相対パスでバックエンドAPIに転送される
-    return '';
+    return process.env.NEXT_PUBLIC_API_URL || '';
 };
 
-export const fetcher = async (path: string, options?: RequestInit) => {
-    const url = `${getApiUrl()}${path}`;
-    const res = await fetch(url, options);
+export const apiCall = async (path: string, options?: RequestInit) => {
+    const baseUrl = getApiUrl();
+    const url = `${baseUrl}${path}`;
+
+    const res = await fetch(url, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers,
+        },
+    });
 
     if (!res.ok) {
         const error: any = new Error('An error occurred while fetching the data.');
