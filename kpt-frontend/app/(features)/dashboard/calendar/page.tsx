@@ -5,7 +5,7 @@ import { Calendar, dateFnsLocalizer, Views, Event } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { fetcher } from '@/lib/api';
+import { apiCall } from '@/lib/api';
 
 const locales = {
   'ja': ja,
@@ -31,7 +31,7 @@ const CalendarPage = () => {
       setLoading(true);
       setError('');
       try {
-        const data = await fetcher('/api/v1/kpt_sessions');
+        const data = await apiCall('/api/v1/kpt_sessions');
         const kptEvents = data.map((session: any) => ({
           title: session.title,
           start: new Date(session.started_at),

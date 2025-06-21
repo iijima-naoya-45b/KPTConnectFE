@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { fetcher } from '@/lib/api';
+import { apiCall } from '@/lib/api';
 
 // 統一されたGoalインターフェース
 interface Goal {
@@ -41,7 +41,7 @@ const GoalsPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetcher('/api/v1/goals');
+      const data = await apiCall('/api/v1/goals');
       // action_planが文字列で返ってくる場合があるのでパースする
       const formattedGoals = (data || []).map((goal: Goal) => {
         let actionPlan = goal.action_plan;
@@ -67,7 +67,7 @@ const GoalsPage: React.FC = () => {
     setGoals(prev => prev.map(g => (g.id === id ? { ...g, status: newStatus } : g)));
 
     try {
-      await fetcher(`/api/v1/goals/${id}`, {
+      await apiCall(`/api/v1/goals/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal: { status: newStatus } }),
@@ -85,7 +85,7 @@ const GoalsPage: React.FC = () => {
     if (!confirm('この目標を削除しますか？')) return;
     
     try {
-      await fetcher(`/api/v1/goals/${id}`, {
+      await apiCall(`/api/v1/goals/${id}`, {
         method: 'DELETE',
       });
       toast.success('目標を削除しました');
