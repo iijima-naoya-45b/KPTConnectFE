@@ -7,6 +7,7 @@ import { Footer } from '@/components/ui';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { metadata } from '@/lib/metadata';
 import { Toaster } from 'sonner';
+import { ToastProvider } from '@/components/toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,12 +20,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <GoogleAnalytics />
       </head>
       <body className={`${inter.className} flex flex-col`}>
-        <AuthenticatedHeader />
-        <main className='flex-1 mt-[64px] min-h-[calc(100vh-116px-64px)]'>
-          {children}
-        </main>
-        <Toaster position="bottom-right" richColors />
-        <Footer />
+        <ToastProvider>
+          <AuthenticatedHeader />
+          <main className='flex-1 mt-[64px] min-h-[calc(100vh-116px-64px)]'>
+            {children}
+          </main>
+          <Toaster position="bottom-right" richColors />
+          <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

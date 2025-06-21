@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ContactForm, ContactSubmitButton, type ContactFormData, type SubmitResult } from './components';
-import { MessageDisplay, PageHeader } from '../shared/components';
+import { useRouter } from 'next/navigation';
+import { ContactForm, ContactSubmitButton, type ContactFormData } from '../(features)/contact/components';
+import { PageHeader } from '../(features)/shared/components';
+import { useToast } from '@/components/toast';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -13,11 +15,12 @@ const ContactPage: React.FC = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
+  const { addToast } = useToast();
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev: ContactFormData) => ({
       ...prev,
       [name]: value,
     }));
@@ -26,7 +29,6 @@ const ContactPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitResult(null);
 
     try {
       // バックエンドAPIに送信
@@ -49,9 +51,11 @@ const ContactPage: React.FC = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setSubmitResult({
-          success: true,
-          message: result.message || 'お問い合わせを受け付けました。確認メールをお送りしましたのでご確認ください。',
+        // 成功時のトースト通知
+        addToast({
+          message: 'お問い合わせを受け付けました！',
+          type: 'success',
+          duration: 3000,
         });
 
         // フォームをリセット
@@ -61,17 +65,27 @@ const ContactPage: React.FC = () => {
           subject: '',
           message: '',
         });
+
+        // 3秒後にホーム画面に遷移
+        setTimeout(() => {
+          router.push('/');
+        }, 3000);
       } else {
-        setSubmitResult({
-          success: false,
+        // エラー時のトースト通知
+        addToast({
           message: result.error || 'お問い合わせの送信に失敗しました。もう一度お試しください。',
+          type: 'error',
+          duration: 8000,
         });
       }
     } catch (error) {
       console.error('お問い合わせ送信エラー:', error);
-      setSubmitResult({
-        success: false,
+      
+      // ネットワークエラー時のトースト通知
+      addToast({
         message: 'お問い合わせの送信に失敗しました。ネットワーク接続をご確認の上、もう一度お試しください。',
+        type: 'error',
+        duration: 8000,
       });
     } finally {
       setIsSubmitting(false);
@@ -91,14 +105,6 @@ const ContactPage: React.FC = () => {
         />
 
         <div className='bg-white shadow rounded-lg p-6'>
-          {/* メッセージ表示 */}
-          {submitResult && (
-            <MessageDisplay
-              message={submitResult.message}
-              type={submitResult.success ? 'success' : 'error'}
-            />
-          )}
-
           {/* お問い合わせフォーム */}
           <form onSubmit={handleSubmit}>
             <ContactForm
@@ -116,4 +122,4 @@ const ContactPage: React.FC = () => {
   );
 };
 
-export default ContactPage;
+export default ContactPage; 
