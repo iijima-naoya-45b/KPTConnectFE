@@ -3,14 +3,17 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { fetcher } from '@/lib/api';
 
 const initialForm = {
   title: '',
   description: '',
   deadline: '',
+  action_plan: [''],
   progress: 0,
-  role: '',
-  experience: '',
+  status: 'not_started',
+  progress_check: '',
+  created_by_ai: false,
 };
 
 
@@ -33,10 +36,26 @@ const GoalNewPage: React.FC = () => {
   const [aiAnswers, setAiAnswers] = useState<any>({});
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [savedGoal, setSavedGoal] = useState<any>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleActionPlanChange = (index: number, value: string) => {
+    const newActionPlan = [...form.action_plan];
+    newActionPlan[index] = value;
+    setForm({ ...form, action_plan: newActionPlan });
+  };
+
+  const addActionPlan = () => {
+    setForm({ ...form, action_plan: [...form.action_plan, ''] });
+  };
+
+  const removeActionPlan = (index: number) => {
+    if (form.action_plan.length > 1) {
+      const newActionPlan = form.action_plan.filter((_, i) => i !== index);
+      setForm({ ...form, action_plan: newActionPlan });
+    }
   };
 
   const handleAIClick = () => {
@@ -53,7 +72,6 @@ const GoalNewPage: React.FC = () => {
     if (step < aiQuestions.length - 1) {
       setStep(step + 1);
     } else {
-      // 最終ステップなので、AI提案を実行する
       handleAiSuggest();
     }
   };
@@ -65,45 +83,23 @@ const GoalNewPage: React.FC = () => {
   const handleAiSuggest = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/v1/goals/ai_suggest', {
+      const suggestion = await fetcher('/api/v1/goals/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(aiAnswers),
       });
-      const data = await res.json();
-      console.log('[AIサジェスト直後] /api/v1/goals/ai_suggest data:', data);
-      // AI生成内容をai_goal_insightsテーブルに保存
-      const aiGoalInsightPayload = { ...aiAnswers };
-      delete aiGoalInsightPayload.deadline;
-      const saveRes = await fetch('/api/v1/ai_goal_insights', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ai_goal_insight: {
-            ...aiGoalInsightPayload,
-            title: data.title,
-            description: data.description,
-            milestone: data.milestone || '',
-            action_plan: Array.isArray(data.action_plan) ? data.action_plan : (data.action_plan ? [data.action_plan] : []),
-            progress_check: data.progress_check || ''
-          }
-        }),
+      
+      setForm({
+        ...initialForm, // フォームを初期化しつつ
+        title: suggestion.title || '',
+        description: suggestion.description || '',
+        deadline: suggestion.deadline || aiAnswers.deadline || '',
+        action_plan: suggestion.action_plan || [''],
+        progress_check: suggestion.progress_check || '',
+        created_by_ai: true, // AIフラグを立てる
       });
-      const saved = await saveRes.json();
-      console.log('[インサイト保存直後] /api/v1/ai_goal_insights saved:', saved);
-
-      // action_planが文字列の場合、JSONとしてパースする
-      if (saved && typeof saved.action_plan === 'string') {
-        try {
-          saved.action_plan = JSON.parse(saved.action_plan);
-        } catch (e) {
-          console.error("保存後のaction_planのパースに失敗", e);
-          // パースに失敗しても、エラーにしない
-        }
-      }
-
-      setSavedGoal(saved);
-      toast('AI目標インサイトが生成されました！', { description: '新しいAIインサイトが追加されました。' });
+      
+      toast.success('AIが目標を提案しました！', { description: '内容を確認・編集して保存してください。' });
       setShowModal(false);
     } catch (e) {
       toast.error('AI目標生成に失敗しました', { description: String(e) });
@@ -112,58 +108,134 @@ const GoalNewPage: React.FC = () => {
     }
   };
 
+  const handleSave = async () => {
+    // バリデーション
+    if (!form.title.trim() || !form.description.trim() || !form.deadline) {
+      toast.error('タイトル、内容、期日は必須です。');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const filteredActionPlan = form.action_plan.filter(action => action.trim() !== '');
+      
+      await fetcher('/api/v1/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          goal: { ...form, action_plan: filteredActionPlan }
+        }),
+      });
+
+      toast.success('目標が保存されました！');
+      setForm(initialForm);
+      window.location.href = '/dashboard/goals';
+    } catch (e) {
+      toast.error('目標の保存に失敗しました', { description: String(e) });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-xl mx-auto bg-white rounded-xl shadow p-8">
-        <div className="mb-6">
-          <Link href="/dashboard/goals" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            goals一覧に戻る
-          </Link>
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">目標を新規設定</h1>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">タイトル</label>
-            <input type="text" name="title" value={form.title} onChange={handleChange} className="w-full border rounded px-3 py-2" placeholder="例: Reactの基礎をマスターする" />
+      <div className="max-w-xl mx-auto">
+        {/* メインカード */}
+        <div className="bg-white rounded-xl shadow p-8 mb-6">
+          <div className="mb-6">
+            <Link href="/dashboard/goals" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              goals一覧に戻る
+            </Link>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">内容</label>
-            <textarea name="description" value={form.description} onChange={handleChange} className="w-full border rounded px-3 py-2" rows={3} placeholder="目標の詳細や達成基準など" />
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-1">
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">目標を新規設定</h1>
+          <form className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">タイトル</label>
+              <input type="text" name="title" value={form.title} onChange={handleChange} className="w-full border rounded px-3 py-2" placeholder="例: Reactの基礎をマスターする" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">内容</label>
+              <textarea name="description" value={form.description} onChange={handleChange} className="w-full border rounded px-3 py-2" rows={3} placeholder="目標の詳細や達成基準など" />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">期日</label>
               <input type="date" name="deadline" value={form.deadline} onChange={handleChange} className="w-full border rounded px-3 py-2" />
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">進捗（%）</label>
-              <input type="number" name="progress" value={form.progress} onChange={handleChange} min={0} max={100} className="w-full border rounded px-3 py-2" />
+            
+            {/* アクションプラン */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700">アクションプラン</label>
+                <button
+                  type="button"
+                  onClick={addActionPlan}
+                  className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+                >
+                  + 追加
+                </button>
+              </div>
+              <div className="space-y-2">
+                {form.action_plan.map((action, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <div className="flex-shrink-0 w-6 h-6 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-xs font-bold">
+                      {index + 1}
+                    </div>
+                    <input
+                      type="text"
+                      value={action}
+                      onChange={(e) => handleActionPlanChange(index, e.target.value)}
+                      className="flex-1 border rounded px-3 py-2 text-sm"
+                      placeholder={`アクション ${index + 1}（例: Reactの基礎を学習する）`}
+                    />
+                    {form.action_plan.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeActionPlan(index)}
+                        className="flex-shrink-0 text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">職種</label>
-              <select name="role" value={form.role} onChange={handleChange} className="w-full border rounded px-3 py-2">
-                <option value="">選択してください</option>
-                <option value="frontend">フロントエンド</option>
-                <option value="backend">バックエンド</option>
-                <option value="pm">PM</option>
-                <option value="other">その他</option>
-              </select>
+            
+            <div className="mt-6">
+              <button 
+                type="button" 
+                className="w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed" 
+                onClick={handleSave}
+                disabled={loading}
+              >
+                {loading ? '保存中...' : '目標を保存'}
+              </button>
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">経験年数</label>
-              <input type="number" name="experience" value={form.experience} onChange={handleChange} min={0} max={50} className="w-full border rounded px-3 py-2" placeholder="例: 2" />
+          </form>
+        </div>
+
+        {/* AI提案ボタン - カードの外側 */}
+        <div className="text-center">
+          <button 
+            type="button" 
+            className="bg-green-500 text-white py-3 px-8 rounded-lg font-semibold hover:bg-green-600 transition-colors shadow-lg"
+            onClick={handleAIClick}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <span>AIに提案してもらう</span>
             </div>
-          </div>
-          <div className="flex gap-4 mt-6">
-            <button type="button" className="flex-1 bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700">目標を保存（ダミー）</button>
-            <button type="button" className="flex-1 bg-green-500 text-white py-2 rounded font-semibold hover:bg-green-600" onClick={handleAIClick}>AIに提案してもらう</button>
-          </div>
-        </form>
+          </button>
+          <p className="text-sm text-gray-600 mt-2">AIがあなたの目標に最適なアクションプランを提案します</p>
+        </div>
+
         {/* AIモーダル */}
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
@@ -199,55 +271,6 @@ const GoalNewPage: React.FC = () => {
                     {loading ? '生成中...' : 'AI提案を生成'}
                   </button>
                 )}
-              </div>
-            </div>
-          </div>
-        )}
-        {savedGoal && (
-          <div className="mt-8">
-            <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-2 border border-gray-100">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-lg font-bold text-gray-900">{savedGoal.title}</h3>
-              </div>
-              <div className="text-gray-700 text-sm mb-2">{savedGoal.description}</div>
-              {savedGoal.milestone && (
-                <div className="text-xs text-purple-700 mb-1">マイルストーン: {savedGoal.milestone}</div>
-              )}
-              {savedGoal.deadline && (
-                <div className="text-xs text-gray-500 mb-1">期日: {savedGoal.deadline}</div>
-              )}
-              {savedGoal.progress_check && (
-                <div className="text-xs text-blue-700 mb-1">進捗管理方法: {savedGoal.progress_check}</div>
-              )}
-              {Array.isArray(savedGoal.action_plan) && savedGoal.action_plan.length > 0 && (
-                <div className="mt-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-lg p-6">
-                  <div className="font-bold text-blue-700 mb-4 text-lg flex items-center">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    アクションプラン
-                  </div>
-                  <div className="space-y-3">
-                    {savedGoal.action_plan.map((item: string, idx: number) => (
-                      <div key={idx} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-blue-100 shadow-sm">
-                        <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                          {idx + 1}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-gray-800 text-sm leading-relaxed">{item}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-4 text-xs text-blue-600 bg-blue-100 px-3 py-2 rounded-lg">
-                    <strong>合計 {savedGoal.action_plan.length} ステップ</strong>のアクションプランが設定されました
-                  </div>
-                </div>
-              )}
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <Link href="/dashboard/goals" className="inline-block px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
-                  goals一覧に戻る
-                </Link>
               </div>
             </div>
           </div>
