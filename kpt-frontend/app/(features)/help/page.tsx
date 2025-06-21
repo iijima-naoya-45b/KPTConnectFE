@@ -1,7 +1,6 @@
 import React from 'react';
 import { HelpHeader } from './components/HelpHeader';
 import { HelpContent } from './components/HelpContent';
-import HelpCenter from './components/HelpCenter';
 
 /**
  * ヘルプページ
