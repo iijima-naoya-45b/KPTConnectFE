@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // 統一されたGoalインターフェース
 interface Goal {
@@ -44,7 +44,9 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/goals/${id}`);
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals/${id}`, {
+        credentials: 'include',
+      });
       if (!response.ok) {
         throw new Error('目標の読み込みに失敗しました。');
       }
@@ -81,6 +83,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
       const response = await fetch(`${BACKEND_URL}/api/v1/goals/${goal.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ goal: { status: newStatus, progress: newProgress } }),
       });
       if (!response.ok) {
@@ -106,6 +109,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
       const response = await fetch(`${BACKEND_URL}/api/v1/goals/${goal.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ goal: { progress: newProgress, status: newStatus } }),
       });
       if (!response.ok) {

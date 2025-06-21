@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const initialForm = {
   title: '',
@@ -87,6 +87,7 @@ const GoalNewPage: React.FC = () => {
       const response = await fetch(`${BACKEND_URL}/api/v1/goals/suggest`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(aiAnswers),
       });
 
@@ -130,6 +131,7 @@ const GoalNewPage: React.FC = () => {
       const response = await fetch(`${BACKEND_URL}/api/v1/goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           goal: { ...form, action_plan: filteredActionPlan }
         }),

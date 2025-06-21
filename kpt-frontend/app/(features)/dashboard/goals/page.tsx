@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // 統一されたGoalインターフェース
 interface Goal {
@@ -42,7 +42,9 @@ const GoalsPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/v1/goals`);
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals`, {
+        credentials: 'include',
+      });
       if (!response.ok) {
         throw new Error('目標の読み込みに失敗しました');
       }
@@ -75,6 +77,7 @@ const GoalsPage: React.FC = () => {
       const response = await fetch(`${BACKEND_URL}/api/v1/goals/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ goal: { status: newStatus } }),
       });
       if (!response.ok) {
@@ -95,6 +98,7 @@ const GoalsPage: React.FC = () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/v1/goals/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
       if (!response.ok) {
         throw new Error('削除に失敗しました');
