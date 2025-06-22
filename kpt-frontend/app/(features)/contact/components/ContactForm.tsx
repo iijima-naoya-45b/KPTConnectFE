@@ -1,3 +1,4 @@
+import { Textarea } from '@/components/ui/textarea';
 import { ContactFormData } from './types';
 import { Input } from '@/components/ui/input/input';
 
@@ -73,7 +74,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <label htmlFor='message' className='block text-sm font-medium text-gray-700'>
           お問い合わせ内容 <span className='text-red-500'>*</span>
         </label>
-        <textarea
+        <Textarea
           id='message'
           name='message'
           value={formData.message}
