@@ -4,7 +4,7 @@ import { BarChart, Calendar, FileText,
 export const featuresData = [
   {
     icon: <FileText className='w-8 h-8 text-indigo-600' />,
-    title: 'Todo作成',
+    title: 'KPT作成',
     description: '新しいTodoを作成して管理',
     href: '/dashboard/new',
   },

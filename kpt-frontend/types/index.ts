@@ -137,22 +137,24 @@ export interface KptSession {
   title: string;
   /** 説明 */
   description?: string;
-  /** 開始日時 */
-  startDate: string;
-  /** 終了日時 */
-  endDate?: string;
+  /** セッション日付 */
+  session_date: string;
   /** ステータス */
   status: SessionStatus;
-  /** 参加者 */
-  participants: User[];
   /** KPTアイテム */
   items: KptItem[];
-  /** 作成者ID */
-  creatorId: string;
   /** 作成日時 */
-  createdAt: string;
+  created_at: string;
   /** 更新日時 */
-  updatedAt: string;
+  updated_at: string;
+  /** 項目数 */
+  items_count: {
+    keep: number;
+    problem: number;
+    try: number;
+  };
+  /** 進捗率 */
+  progress_rate: number;
 }
 
 /**

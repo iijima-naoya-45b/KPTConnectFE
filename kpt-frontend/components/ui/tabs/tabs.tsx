@@ -127,13 +127,14 @@ interface TabsContentProps {
   className?: string;
   children: React.ReactNode;
   currentValue?: string;
+  onValueChange?: (value: string) => void;
 }
 
 /**
  * タブのコンテンツコンポーネント
  */
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
-  ({ value, className, children, currentValue, ...props }, ref) => {
+  ({ value, className, children, currentValue, onValueChange, ...props }, ref) => {
     if (currentValue !== value) {
       return null;
     }

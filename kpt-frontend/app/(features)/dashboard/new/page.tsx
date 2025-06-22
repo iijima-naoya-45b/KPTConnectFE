@@ -23,7 +23,7 @@ const KPTReviewPage = () => {
     setLoading(true);
     try {
       const apiBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
-      const response = await fetch(`${apiBaseUrl}/api/v1/kpt_reviews`, {
+      const response = await fetch(`${apiBaseUrl}/api/v1/kpt_sessions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
