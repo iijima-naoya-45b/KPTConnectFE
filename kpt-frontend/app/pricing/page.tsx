@@ -69,13 +69,13 @@ const PricingPage = (): JSX.Element => {
                 <div
                   key={plan.id}
                   className={`relative rounded-2xl border-2 p-8 ${
-                    (plan as any).isPopular
+                    plan.isPopular
                       ? 'border-indigo-500 bg-white shadow-xl scale-105'
                       : 'border-gray-200 bg-white shadow-lg'
                   }`}
                 >
                   {/* 人気プランバッジ */}
-                  {(plan as any).isPopular && (
+                  {plan.isPopular && (
                     <div className='absolute -top-4 left-1/2 transform -translate-x-1/2'>
                       <span className='inline-flex items-center px-4 py-1 rounded-full text-sm font-medium bg-indigo-500 text-white'>
                         🔥 人気プラン
@@ -84,7 +84,7 @@ const PricingPage = (): JSX.Element => {
                   )}
 
                   {/* 推奨プランバッジ */}
-                  {(plan as any).isRecommended && (
+                  {plan.isRecommended && (
                     <div className='absolute -top-4 right-4'>
                       <span className='inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800'>
                         推奨
@@ -127,12 +127,12 @@ const PricingPage = (): JSX.Element => {
                         >
                           <Button
                             className={`w-full py-3 ${
-                              (plan as any).isPopular
+                              plan.isPopular
                                 ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
                                 : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'
                             }`}
                           >
-                            {(plan as any).isPopular
+                            {plan.isPopular
                               ? 'プロプランを始める'
                               : 'エンタープライズを選ぶ'}
                           </Button>
@@ -178,9 +178,9 @@ const PricingPage = (): JSX.Element => {
                                 className={`text-sm ${feature.included ? 'text-gray-700' : 'text-gray-400'}`}
                               >
                                 {feature.name}
-                                {(feature as any).limit && feature.included && (
+                                {'limit' in feature && feature.limit && feature.included && (
                                   <span className='text-xs text-gray-500 ml-1'>
-                                    (最大{(feature as any).limit}件)
+                                    (最大{feature.limit}件)
                                   </span>
                                 )}
                               </span>

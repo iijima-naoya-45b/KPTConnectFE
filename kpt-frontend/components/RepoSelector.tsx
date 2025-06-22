@@ -41,13 +41,13 @@ const RepoSelector: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   /** @type {githubRepository[]} リポジトリ一覧 */
-  const repositoryList = useRepoStore((state: any) => state.repositoryList) as GithubRepository[];
+  const repositoryList = useRepoStore((state) => state.repositoryList);
   /** @type {Function} リポジトリ一覧セット関数 */
-  const setRepositoryList = useRepoStore((state: any) => state.setRepositoryList) as (repos: GithubRepository[]) => void;
+  const setRepositoryList = useRepoStore((state) => state.setRepositoryList);
   /** @type {githubRepository | null} 選択中リポジトリ */
-  const selectedRepository = useRepoStore((state: any) => state.selectedRepository) as GithubRepository | null;
+  const selectedRepository = useRepoStore((state) => state.selectedRepository);
   /** @type {Function} 選択リポジトリセット関数 */
-  const setSelectedRepository = useRepoStore((state: any) => state.setSelectedRepository) as (repo: GithubRepository | null) => void;
+  const setSelectedRepository = useRepoStore((state) => state.setSelectedRepository);
 
   /**
    * リポジトリ一覧をAPIから取得
@@ -63,8 +63,9 @@ const RepoSelector: React.FC = () => {
       }
       const data = await res.json();
       setRepositoryList(data);
-    } catch (error: any) {
-      setErrorMessage(`リポジトリ一覧取得失敗: ${error.message}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setErrorMessage(`リポジトリ一覧取得失敗: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
