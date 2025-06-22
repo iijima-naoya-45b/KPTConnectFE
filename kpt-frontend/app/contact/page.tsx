@@ -79,8 +79,6 @@ const ContactPage: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error('お問い合わせ送信エラー:', error);
-      
       // ネットワークエラー時のトースト通知
       addToast({
         message: 'お問い合わせの送信に失敗しました。ネットワーク接続をご確認の上、もう一度お試しください。',
