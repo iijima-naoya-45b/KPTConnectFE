@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import GanttChartView from '../bk/calendar/GanttChartView';
+import GanttChartView from '../components/GanttChartView';
 import { Task } from 'gantt-task-react';
 
 // Todo項目の型定義（calendar/page.tsxと同じものを利用）
