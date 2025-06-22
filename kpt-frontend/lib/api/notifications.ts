@@ -165,7 +165,7 @@ class NotificationsApi {
             config.body = JSON.stringify(body);
         }
 
-        const response = await fetch(`/api/v1/notifications${endpoint}`, config);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/notifications${endpoint}`, config);
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
