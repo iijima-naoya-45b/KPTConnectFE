@@ -13,7 +13,7 @@ import { STRIPE_PRICE_IDS } from '@/lib/stripe';
  * Stripeインスタンス
  */
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51234567890abcdef', {
-  apiVersion: '2025-04-30.basil',
+  apiVersion: '2025-05-28.basil',
 });
 
 /**
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   } catch (error) {
     console.error('PaymentIntent作成エラー:', error);
-    
+
     if (error instanceof Stripe.errors.StripeError) {
       return NextResponse.json(
         { error: `Stripe エラー: ${error.message}` },

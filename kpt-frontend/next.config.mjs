@@ -46,18 +46,6 @@ const nextConfig = {
         ],
     },
     async rewrites() {
-        if (process.env.NODE_ENV === 'development') {
-            return [
-                {
-                    source: '/api/v1/calendar/:path*',
-                    destination: '/api/v1/calendar/:path*',
-                },
-                {
-                    source: '/api/:path*',
-                    destination: 'http://localhost:3001/api/:path*',
-                },
-            ];
-        }
         return [
             {
                 source: '/api/:path*',

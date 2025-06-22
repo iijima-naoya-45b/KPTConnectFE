@@ -11,7 +11,7 @@ export const APP_DESCRIPTION = 'チーム振り返りを効率化するKPTプラ
 
 /** APIベースURL */
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || ('http://localhost:3001/api' as const);
+  process.env.NEXT_PUBLIC_API_BASE_URL || ('' as const);
 
 /** APIタイムアウト時間（ミリ秒） */
 export const API_TIMEOUT = 30000 as const;

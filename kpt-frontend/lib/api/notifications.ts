@@ -1,5 +1,3 @@
-import { API_BASE_URL } from '@/lib/constants';
-
 /**
  * 通知の基本型定義
  */
@@ -146,11 +144,7 @@ interface ApiOptions {
  * 基本APIクライアント
  */
 class NotificationsApi {
-    private baseUrl: string;
-
-    constructor() {
-        this.baseUrl = `${API_BASE_URL}/v1/notifications`;
-    }
+    constructor() { }
 
     /**
      * API呼び出しの共通メソッド
@@ -171,7 +165,7 @@ class NotificationsApi {
             config.body = JSON.stringify(body);
         }
 
-        const response = await fetch(`${this.baseUrl}${endpoint}`, config);
+        const response = await fetch(`/api/v1/notifications${endpoint}`, config);
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));

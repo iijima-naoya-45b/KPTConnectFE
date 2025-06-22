@@ -33,13 +33,12 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
   };
 
   // ユーザーのイニシャルを取得
-  const getUserInitials = (username: string): string => {
-    return username
-      .split(' ')
-      .map(name => name.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+  const getUserInitials = (email: string): string => {
+    if (!email) return '';
+    const namePart = email.split('@')[0];
+    return namePart
+      .charAt(0)
+      .toUpperCase();
   };
 
   const headerClasses = `
@@ -75,7 +74,7 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
   const UserDropdown = () => (
     <div className='absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-gray-200 z-50'>
       <div className='px-4 py-3 border-b border-gray-200'>
-        <p className='font-medium text-gray-900'>{user?.username}</p>
+        <p className='font-medium text-gray-900'>{user?.email}</p>
         <p className='text-sm text-gray-500'>{user?.email}</p>
       </div>
       <div className='py-1'>
@@ -126,7 +125,7 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
               onClick={() => setShowUserMenu(!showUserMenu)}
               className='py-2 px-3 rounded hover:bg-indigo-50 flex items-center justify-between w-full'
             >
-              <span>プロフィール（{user.username}）</span>
+              <span>プロフィール（{user.email}）</span>
               <svg className={`h-4 w-4 ml-2 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
               </svg>
@@ -171,9 +170,9 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
                   className='flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors'
                 >
                   <div className='h-8 w-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-medium'>
-                    {getUserInitials(user.username)}
+                    {user?.email && getUserInitials(user.email)}
                   </div>
-                  <span className='text-sm font-medium text-gray-700'>{user.username}</span>
+                  <span className='text-sm font-medium text-gray-700'>{user?.email}</span>
                   <svg
                     className={`h-4 w-4 text-gray-500 transform transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
                     fill='none'
