@@ -27,7 +27,7 @@ const ProfilePage = () => {
       setLoading(true);
       setError('');
 
-      const response = await fetch('/api/v1/me', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/me`, {
         credentials: 'include'
       });
 

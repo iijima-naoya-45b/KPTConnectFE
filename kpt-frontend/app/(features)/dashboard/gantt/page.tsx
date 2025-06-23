@@ -37,7 +37,7 @@ const GanttPage = () => {
       setLoading(true);
       setError('');
       try {
-        const response = await fetch('/api/v1/kpt_items?type=todo');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/kpt_items?type=todo`);
         const result = await response.json();
         if (result.success) {
           setItems(result.data.items);

@@ -33,18 +33,24 @@ const FeedbackForm: React.FC = () => {
   // フォーム送信処理
   const onSubmit = async (data: FeedbackFormData) => {
     try {
-      const response = await fetch('/api/v1/feedbacks', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/feedbacks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           feedback: {
             type: data.type,
             title: data.title,
             description: data.description,
             priority: data.priority,
-            email: data.email
+            email: data.email || null,
+            metadata: {
+              page_url: window.location.href,
+              user_agent: navigator.userAgent,
+              timestamp: new Date().toISOString(),
+            }
           }
         })
       });

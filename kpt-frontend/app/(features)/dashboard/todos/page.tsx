@@ -35,7 +35,7 @@ export default function TodoListPage() {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await fetch('/api/v1/todos', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/todos`, {
           credentials: 'include',
         });
 
