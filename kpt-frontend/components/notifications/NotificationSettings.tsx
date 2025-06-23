@@ -18,7 +18,7 @@ interface ApiResponse {
 
 const apiClient = {
   get: async (url: string): Promise<ApiResponse> => {
-    const response = await fetch(`/api/v1${url}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1${url}`, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -30,7 +30,7 @@ const apiClient = {
     return { data };
   },
   put: async (url: string, body: unknown): Promise<ApiResponse> => {
-    const response = await fetch(`/api/v1${url}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1${url}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
