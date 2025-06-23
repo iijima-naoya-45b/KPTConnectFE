@@ -32,15 +32,12 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
         return;
       }
 
-      const response = await fetch('/api/v1/users/account', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users/account`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({
-          confirmation: confirmationEmail
-        })
       });
 
       const result = await response.json();
@@ -48,9 +45,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       if (result.success) {
         alert('アカウントが削除されました。ご利用ありがとうございました。');
         
-        await fetch('/api/v1/sessions/logout', {
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/sessions/logout`, {
           method: 'DELETE',
-          credentials: 'include'
+          credentials: 'include',
         });
 
         router.push('/login?message=account_deleted');
