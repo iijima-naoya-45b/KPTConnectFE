@@ -22,6 +22,7 @@ const apiClient = {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     });
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -35,6 +36,7 @@ const apiClient = {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(body),
     });
     if (!response.ok) {
