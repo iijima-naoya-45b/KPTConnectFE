@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
             const cookies = request.headers.get('cookie') || '';
 
             const response = await fetch(`${process.env.RAILS_API_URL}/api/v1/kpt_sessions${endpoint}`, {
+                credentials: 'include',
                 headers: {
                     'Authorization': request.headers.get('Authorization') || '',
                     'Cookie': cookies,

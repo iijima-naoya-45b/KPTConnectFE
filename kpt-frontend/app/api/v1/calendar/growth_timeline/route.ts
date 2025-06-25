@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     if (process.env.NODE_ENV === 'production') {
         try {
             const response = await fetch(`${process.env.RAILS_API_URL}/api/v1/calendar/growth_timeline?start_date=${startDate}&end_date=${endDate}`, {
+                credentials: 'include',
                 headers: {
                     'Authorization': request.headers.get('Authorization') || '',
                 },
