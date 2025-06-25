@@ -24,7 +24,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button/button";
-import { Pencil, Trash2, ArrowLeft } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 const ReactMarkdown = require("react-markdown").default;
 import remarkGfm from "remark-gfm";
 import { useToast } from "@/components/toast";
@@ -239,11 +239,8 @@ const KptDetailPage = () => {
   
     return (
       <div className={`rounded-lg border-2 ${colors.border} p-4`}>
-        <h3 className={`text-lg font-semibold ${colors.text} mb-3 flex items-center`}>
+        <h3 className={`text-lg font-semibold ${colors.text} mb-3`}>
           {title}
-          <span className="ml-2 bg-gray-200 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">
-            {items.length}
-          </span>
         </h3>
         <div className="space-y-3">
           {items.map((item) => (
@@ -344,16 +341,12 @@ const KptDetailPage = () => {
                 {session.title}
               </h1>
               <p className="mt-1 text-sm text-gray-500">
-                作成日: {new Date(session.created_at).toLocaleDateString()} | アイテム数: {session.kpt_items.length}
+                作成日: {new Date(session.created_at).toLocaleDateString()}
               </p>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
               <Button variant="outline" onClick={() => deleteSession()} className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700" disabled={saving}>
                 {saving ? '削除中...' : '削除'}
-              </Button>
-              <Button variant="ghost" onClick={() => router.back()} className="flex items-center space-x-2">
-                <ArrowLeft className="h-4 w-4" />
-                <span>戻る</span>
               </Button>
             </div>
           </div>
