@@ -22,16 +22,13 @@ const KptListPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const params = new URLSearchParams();
+        const { kptSessionsApi } = await import('@/lib/api/kpt-sessions');
+        const params: any = {};
         if (date) {
-          params.append("session_date", date);
+          params.session_date = date;
         }
         
-        const response = await fetch(`/api/v1/kpt_sessions?${params.toString()}`);
-        if (!response.ok) {
-          throw new Error("セッション一覧の取得に失敗しました");
-        }
-        const result = await response.json();
+        const result = await kptSessionsApi.getKptSessions(params);
         if (result.success) {
           setSessions(result.data.sessions);
         } else {

@@ -49,12 +49,7 @@ interface KptSessionDetail {
   tags: string[];
 }
 
-// APIレスポンスの型定義
-interface KptSessionDetailResponse {
-  success: boolean;
-  data: KptSessionDetail;
-  message?: string;
-}
+
 
 type KptItemType = "keep" | "problem" | "try";
 
@@ -89,8 +84,8 @@ const KptDetailPage = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await fetch(`/api/v1/kpt_sessions/${sessionId}`);
-      const result: KptSessionDetailResponse = await response.json();
+      const { kptSessionsApi } = await import('@/lib/api/kpt-sessions');
+      const result = await kptSessionsApi.getKptSession(sessionId);
       if (result.success) {
         setSession(result.data);
       } else {
@@ -129,11 +124,8 @@ const KptDetailPage = () => {
     try {
       setSaving(true);
       
-      const response = await fetch(`/api/v1/kpt_sessions/${sessionId}`, {
-        method: 'DELETE',
-      });
-
-      const result = await response.json();
+      const { kptSessionsApi } = await import('@/lib/api/kpt-sessions');
+      const result = await kptSessionsApi.deleteKptSession(sessionId!);
 
       if (result.success) {
         addToast({
@@ -143,14 +135,14 @@ const KptDetailPage = () => {
         router.push('/dashboard/kpt');
       } else {
         addToast({
-          message: result.error || "セッションの削除に失敗しました。",
+          message: result.message || "セッションの削除に失敗しました。",
           type: "error",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('セッション削除エラー:', error);
       addToast({
-        message: "セッションの削除中にエラーが発生しました。",
+        message: error.message || "セッションの削除中にエラーが発生しました。",
         type: "error",
       });
     } finally {

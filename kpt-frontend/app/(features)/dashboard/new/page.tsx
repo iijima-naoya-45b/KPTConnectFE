@@ -22,19 +22,24 @@ const KPTReviewPage = () => {
     setError('');
     setLoading(true);
     try {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '';
-      const response = await fetch(`${apiBaseUrl}/api/v1/kpt_sessions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      });
-      const resData = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(resData.message || '保存に失敗しました');
+      const { kptSessionsApi } = await import('@/lib/api/kpt-sessions');
+      const requestData = {
+        session: {
+          title: data.title,
+          description: data.description,
+        },
+        keep: data.keep,
+        problem: data.problem,
+        try: data.try,
+      };
+      
+      const result = await kptSessionsApi.createKptSession(requestData);
+      if (result.success) {
+        setFlashMessage(result.message || 'KPT振り返りを保存しました');
+        router.push('/dashboard');
+      } else {
+        throw new Error(result.message || '保存に失敗しました');
       }
-      setFlashMessage(resData.message || 'KPT振り返りを保存しました');
-      router.push('/dashboard');
     } catch (err: any) {
       setError(err.message || '予期せぬエラーが発生しました');
     } finally {

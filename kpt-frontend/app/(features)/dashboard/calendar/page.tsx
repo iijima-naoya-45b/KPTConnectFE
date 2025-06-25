@@ -51,26 +51,9 @@ interface PersonalStats {
   }>;
 }
 
-interface KptSessionsResponse {
-  success: boolean;
-  data: {
-    sessions: KptSession[];
-    pagination: {
-      current_page: number;
-      per_page: number;
-      total_pages: number;
-      total_count: number;
-    };
-  };
-  message: string;
-}
 
-interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message: string;
-  error?: string;
-}
+
+
 
 type ActiveTab = 'calendar' | 'timeline' | 'analytics';
 
@@ -89,8 +72,7 @@ const CalendarPageInner = () => {
   const [personalStats, setPersonalStats] = useState<PersonalStats | null>(null);
   const [sessions, setSessions] = useState<KptSession[]>([]);
 
-  // APIベースURL
-  const API_BASE_URL = '/api/v1/calendar';
+  // 注意: このAPI_BASE_URLは現在使用されていません（直接APIクライアントを使用）
 
   // タブ変更ハンドラー（URLも更新）
   const handleTabChange = (tab: ActiveTab) => {
@@ -137,8 +119,8 @@ const CalendarPageInner = () => {
       setLoading(true);
       setError('');
       
-      const response = await fetch('/api/v1/kpt_sessions');
-      const result: KptSessionsResponse = await response.json();
+      const { kptSessionsApi } = await import('@/lib/api/kpt-sessions');
+      const result = await kptSessionsApi.getKptSessions();
       
       if (result.success) {
         setSessions(result.data.sessions);
@@ -158,13 +140,13 @@ const CalendarPageInner = () => {
       const startDate = `${new Date().getFullYear()}-01-01`;
       const endDate = `${new Date().getFullYear()}-12-31`;
       
-      const response = await fetch(`${API_BASE_URL}/growth_timeline?start_date=${startDate}&end_date=${endDate}`);
-      const result: ApiResponse<{ timeline: TimelineItem[] }> = await response.json();
+      const { calendarApi } = await import('@/lib/api/calendar');
+      const result = await calendarApi.getGrowthTimeline(startDate, endDate);
       
       if (result.success) {
         setTimelineData(result.data.timeline);
       } else {
-        console.error('タイムラインデータ取得エラー:', result.error);
+        console.error('タイムラインデータ取得エラー:', result.message);
       }
     } catch (err) {
       console.error('タイムラインデータ取得エラー:', err);
@@ -173,13 +155,25 @@ const CalendarPageInner = () => {
 
   const fetchPersonalStats = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/personal_stats`);
-      const result: ApiResponse<PersonalStats> = await response.json();
+      const { calendarApi } = await import('@/lib/api/calendar');
+      const result = await calendarApi.getPersonalStats();
       
       if (result.success) {
-        setPersonalStats(result.data);
+        // API側のPersonalStatsを現在のPersonalStats型にマッピング
+        const mappedStats: PersonalStats = {
+          total_sessions: result.data.current_month?.kpt_sessions || 0,
+          total_items: 0, // APIから取得する必要があれば調整
+          completion_rate: result.data.growth_trends?.improvement_rate || 0,
+          current_streak: 0, // APIから取得する必要があれば調整
+          longest_streak: 0, // APIから取得する必要があれば調整
+          monthly_average: 0, // APIから取得する必要があれば調整
+          most_productive_day: 'Monday', // APIから取得する必要があれば調整
+          popular_tags: [],
+          recent_achievements: [],
+        };
+        setPersonalStats(mappedStats);
       } else {
-        console.error('個人統計取得エラー:', result.error);
+        console.error('個人統計取得エラー:', result.message);
       }
     } catch (err) {
       console.error('個人統計取得エラー:', err);
