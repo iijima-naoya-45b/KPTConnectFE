@@ -1,21 +1,3 @@
-/**
- * @file page.tsx
- * @description カレンダーページ（KPT管理・分析）
- * 
- * @overview
- * - 3タブ構成：カレンダー、タイムライン、分析
- * - カレンダー表示機能
- * - 成長タイムライン
- * - 成長分析グラフ
- * - 日付クリックでKPT作成機能
- * - レスポンシブ対応
- * 
- * @example
- * ```tsx
- * <CalendarPage />
- * ```
- */
-
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -695,9 +677,6 @@ const CalendarPageInner = () => {
   );
 };
 
-/**
- * @description useSearchParamsを利用するため、Suspenseでラップしたエクスポートコンポーネント
- */
 const CalendarPage = () => (
   <Suspense>
     <CalendarPageInner />

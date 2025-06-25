@@ -93,6 +93,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     if (process.env.NODE_ENV === 'production') {
         try {
             const response = await fetch(`${process.env.RAILS_API_URL}/api/v1/kpt_sessions/${id}`, {
+                credentials: 'include',
                 headers: {
                     'Authorization': request.headers.get('Authorization') || '',
                 },
@@ -129,6 +130,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
             const body = await request.json();
             const response = await fetch(`${process.env.RAILS_API_URL}/api/v1/kpt_sessions/${id}`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': request.headers.get('Authorization') || '',
@@ -181,6 +183,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         try {
             const response = await fetch(`${process.env.RAILS_API_URL}/api/v1/kpt_sessions/${id}`, {
                 method: 'DELETE',
+                credentials: 'include',
                 headers: {
                     'Authorization': request.headers.get('Authorization') || '',
                 },
