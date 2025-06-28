@@ -10,6 +10,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/hooks';
 import { Button } from '@/components/ui';
 
@@ -64,12 +65,7 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
       <header className={headerClasses}>
         <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
           <div className='flex items-center'>
-            <Link
-              href='/'
-              className='text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors'
-            >
-              KPT Connect
-            </Link>
+            <Image className='h-8 w-auto' src='/logo.svg' alt='Logo' width={32} height={32} />
           </div>
           <div className='flex items-center space-x-4'>
             <div className='h-8 w-20 bg-gray-200 rounded animate-pulse'></div>
@@ -111,21 +107,27 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
     </div>
   );
 
-  // SP用ドロワー（ハンバーガーメニュー）
   const MobileDrawer = () => (
     <div
-      className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      className={`fixed inset-0 bg-white shadow-lg z-50 transform transition-transform duration-300 ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
       style={{ transitionProperty: 'transform' }}
     >
-      <div className='flex items-center justify-between h-16 px-4 border-b'>
-        <span className='text-xl font-bold text-indigo-600'>KPT Connect</span>
-        <button onClick={() => setDrawerOpen(false)} aria-label='Close menu'>
+      <div className='flex items-center justify-between h-16 px-4 border-b bg-gray-100 transition-transform duration-1000 transform -translate-x-full'>
+        <style jsx>{`
+          .-translate-x-full {
+            transform: translateX(0);
+          }
+        `}</style>
+        <div className='flex items-center'>
+            <Image className='h-8 w-auto' src='/logo.svg' alt='Logo' width={32} height={32} />
+          </div>
+        <button onClick={() => setDrawerOpen(false)} aria-label='Close menu' className='absolute top-4 right-4'>
           <svg className='h-6 w-6 text-gray-700' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
           </svg>
         </button>
       </div>
-      <nav className='flex flex-col p-4 space-y-2'>
+      <nav className='flex flex-col p-4 space-y-2 bg-gray-50'>
         {isAuthenticated && user ? (
           <>
             <Link href='/dashboard' className='py-2 px-3 rounded hover:bg-indigo-50' onClick={() => setDrawerOpen(false)}>ダッシュボード</Link>
@@ -158,12 +160,7 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
         <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
           {/* ロゴ */}
           <div className='flex items-center'>
-            <Link
-              href='/'
-              className='text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors'
-            >
-              KPT Connect
-            </Link>
+            <Image className='h-8 w-auto' src='/logo.svg' alt='Logo' width={32} height={32} />
           </div>
 
           {/* PCナビゲーション（md以上で表示） */}
@@ -208,7 +205,7 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
 
           {/* ハンバーガーメニュー（md未満で表示） */}
           <div className='md:hidden flex items-center'>
-            <button onClick={() => setDrawerOpen(true)} aria-label='Open menu' className='p-2 rounded hover:bg-indigo-50'>
+            <button onClick={() => setDrawerOpen(!drawerOpen)} aria-label='Toggle menu'>
               <svg className='h-6 w-6 text-gray-700' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
               </svg>

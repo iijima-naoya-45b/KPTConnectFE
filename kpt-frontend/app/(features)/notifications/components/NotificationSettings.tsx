@@ -1,13 +1,3 @@
-/**
- * @file NotificationSettings.tsx
- * @description KPTの通知設定を管理するコンポーネント
- *
- * @example
- * ```tsx
- * <NotificationSettings />
- * ```
- */
-
 'use client';
 
 import React from 'react';
