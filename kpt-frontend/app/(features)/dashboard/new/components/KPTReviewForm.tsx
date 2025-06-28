@@ -19,6 +19,14 @@ interface KPTReviewFormProps {
   error?: string;
 }
 
+export interface KPTReviewFormValues {
+  title: string;
+  description: string;
+  keep: string;
+  problem: string;
+  try: string;
+}
+
 const KPTReviewForm: React.FC<KPTReviewFormProps> = ({
   initialTitle = '',
   initialDescription = '',

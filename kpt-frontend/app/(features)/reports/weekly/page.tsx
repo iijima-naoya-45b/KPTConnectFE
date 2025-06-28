@@ -276,49 +276,15 @@ const WeeklyReportPage: React.FC = () => {
       return sessionDate >= weekStart && sessionDate <= weekEnd;
     });
 
-    // 全アクションプランを収集
-    const allActionPlans = activeGoals.flatMap(goal => {
-      return normalizeActionPlan(goal.action_plan);
-    });
-
     // KPTアイテムを種類別に分類
     const weekKptItems = weekKptSessions.flatMap((session: KptSession) => session.kpt_items);
     const keepItems = weekKptItems.filter((item: KptItem) => item.type === 'keep');
     const problemItems = weekKptItems.filter((item: KptItem) => item.type === 'problem');
     const tryItems = weekKptItems.filter((item: KptItem) => item.type === 'try');
 
-    // アクションプラン関連のKPT項目を抽出
-    const actionRelatedKeep = keepItems.filter((item: KptItem) => 
-      allActionPlans.some(plan => {
-        const planName = plan.title.split('（')[0].toLowerCase();
-        return item.content.toLowerCase().includes(planName) || 
-               planName.includes(item.content.toLowerCase().substring(0, 3));
-      })
-    );
-    const actionRelatedProblems = problemItems.filter((item: KptItem) => 
-      allActionPlans.some(plan => {
-        const planName = plan.title.split('（')[0].toLowerCase();
-        return item.content.toLowerCase().includes(planName) || 
-               planName.includes(item.content.toLowerCase().substring(0, 3));
-      })
-    );
-    const actionRelatedTries = tryItems.filter((item: KptItem) => 
-      allActionPlans.some(plan => {
-        const planName = plan.title.split('（')[0].toLowerCase();
-        return item.content.toLowerCase().includes(planName) || 
-               planName.includes(item.content.toLowerCase().substring(0, 3));
-      })
-    );
-
-    const totalKeepItems = keepItems.length;
-    const totalProblemItems = problemItems.length;
-    const totalTryItems = tryItems.length;
-
-    // インサイト計算（1日1KPT想定に調整）
+    // アクションプランの効率を計算
     const actionPlanEfficiency = totalActionPlans > 0 ? 
       (completedActions / totalActionPlans) * 10 : 0;
-    const actionPlanFocusRate = totalKeepItems > 0 ? 
-      (actionRelatedKeep.length / totalKeepItems) * 10 : 0;
     
     // 1日1KPT想定（週7回が理想）の計算式
     // 生産性スコア: 目標達成 + アクションプラン効率 + 進捗の一貫性
@@ -330,14 +296,14 @@ const WeeklyReportPage: React.FC = () => {
     // 継続性スコア: KPT習慣の定着度 + 内容の質
     const kptFrequencyScore = Math.min(7, (weekKptSessions.length / 7) * 7); // 週7回で満点7点
     const contentQualityScore = weekKptSessions.length > 0 ? 
-      Math.min(3, ((totalKeepItems + totalProblemItems + totalTryItems) / weekKptSessions.length / 3) * 3) : 0; // 1セッション平均3項目で満点3点
+      Math.min(3, ((keepItems.length + problemItems.length + tryItems.length) / weekKptSessions.length / 3) * 3) : 0; // 1セッション平均3項目で満点3点
     const consistencyScore = kptFrequencyScore + contentQualityScore;
 
     // 挑戦レベル: 問題発見力 + 改善行動力 + バランス
-    const problemDiscoveryScore = Math.min(4, (totalProblemItems / 7) * 4); // 週平均1個で満点4点
-    const improvementActionScore = Math.min(4, (totalTryItems / 7) * 4); // 週平均1個で満点4点
-    const balanceScore = (totalProblemItems > 0 && totalTryItems > 0) ? 
-      Math.min(2, Math.min(totalProblemItems, totalTryItems) / Math.max(totalProblemItems, totalTryItems) * 2) : 0; // バランスボーナス最大2点
+    const problemDiscoveryScore = Math.min(4, (problemItems.length / 7) * 4); // 週平均1個で満点4点
+    const improvementActionScore = Math.min(4, (tryItems.length / 7) * 4); // 週平均1個で満点4点
+    const balanceScore = (problemItems.length > 0 && tryItems.length > 0) ? 
+      Math.min(2, Math.min(problemItems.length, tryItems.length) / Math.max(problemItems.length, tryItems.length) * 2) : 0; // バランスボーナス最大2点
     const challengeLevel = problemDiscoveryScore + improvementActionScore + balanceScore;
 
     const calculatedWeeklyData: WeeklyData = {
@@ -359,10 +325,10 @@ const WeeklyReportPage: React.FC = () => {
       },
       kpt: {
         sessions: weekKptSessions.length,
-        keepItems: totalKeepItems,
-        problemItems: totalProblemItems,
-        tryItems: totalTryItems,
-        problemSolvedFromPrevious: Math.floor(totalKeepItems * 0.3) // 推定値
+        keepItems: keepItems.length,
+        problemItems: problemItems.length,
+        tryItems: tryItems.length,
+        problemSolvedFromPrevious: Math.floor(keepItems.length * 0.3) // 推定値
       },
       insights: {
         productivityScore: Math.round(productivityScore * 10) / 10,
