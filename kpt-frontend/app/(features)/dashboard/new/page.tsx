@@ -3,26 +3,40 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import KPTReviewForm from './components/KPTReviewForm';
+import { KPTReviewFormValues } from './components/KPTReviewForm';
 import { useFlashMessageStore } from '../../../../store/useFlashMessageStore';
 
-const KPTReviewPage = () => {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const setFlashMessage = useFlashMessageStore((state: any) => state.setFlashMessage);
-
-  const handleSubmit = async (data: {
+// KPTセッションAPIの型定義（必要に応じて修正）
+type KptSessionRequest = {
+  session: {
     title: string;
     description: string;
-    keep: string;
-    problem: string;
-    try: string;
-  }) => {
+  };
+  keep: string;
+  problem: string;
+  try: string;
+};
+
+type KptSessionResult = {
+  success: boolean;
+  message?: string;
+};
+
+const KPTReviewPage: React.FC = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const setFlashMessage = useFlashMessageStore((state: any) => state.setFlashMessage);
+
+  // フォーム送信時の処理
+  const handleSubmit = async (data: KPTReviewFormValues) => {
     setError('');
     setLoading(true);
+
     try {
+      // APIモジュールの動的インポート
       const { kptSessionsApi } = await import('@/lib/api/kpt-sessions');
-      const requestData = {
+      const requestData: KptSessionRequest = {
         session: {
           title: data.title,
           description: data.description,
@@ -31,29 +45,37 @@ const KPTReviewPage = () => {
         problem: data.problem,
         try: data.try,
       };
-      
-      const result = await kptSessionsApi.createKptSession(requestData);
+
+      // API呼び出し
+      const result: KptSessionResult = await kptSessionsApi.createKptSession(requestData);
+
       if (result.success) {
         setFlashMessage(result.message || 'KPT振り返りを保存しました');
         router.push('/dashboard');
       } else {
-        throw new Error(result.message || '保存に失敗しました');
+        setError(result.message || '保存に失敗しました');
       }
     } catch (err: any) {
-      setError(err.message || '予期せぬエラーが発生しました');
+      setError(err?.message || '予期せぬエラーが発生しました');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
-      {/* メインコンテンツ */}
-      <main className='max-w-5xl mx-auto px-6 sm:px-10 lg:px-16 py-12'>
-        <KPTReviewForm onSubmit={handleSubmit} loading={loading} error={error} />
+    <div className="min-h-[calc(100vh-116px-64px)] bg-gray-100">
+      <main className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16 py-12">
+        {/* エラー表示 */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        {/* KPTレビュー入力フォーム */}
+        <KPTReviewForm onSubmit={handleSubmit} loading={loading} />
       </main>
     </div>
   );
 };
 
-export default KPTReviewPage; 
+export default KPTReviewPage;

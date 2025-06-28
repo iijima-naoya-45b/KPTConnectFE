@@ -164,62 +164,6 @@ const GanttPage: React.FC = () => {
     return isNaN(date.getTime()) ? fallback : date;
   };
 
-  // action_planの期間情報を抽出（例：「React学習（2週間）」→ 14）
-  const extractDurationFromAction = (actionTitle: string): number | null => {
-    const matches = actionTitle.match(/（(\d+)日間）$|（(\d+)週間）$|（(\d+)ヶ月）$/);
-    if (matches) {
-      if (matches[1]) return parseInt(matches[1]); // 日間
-      if (matches[2]) return parseInt(matches[2]) * 7; // 週間
-      if (matches[3]) return parseInt(matches[3]) * 30; // ヶ月
-    }
-    return null;
-  };
-
-  // アクション名から期間表記を除去
-  const cleanActionName = (actionTitle: string): string => {
-    return actionTitle.replace(/（\d+(日間|週間|ヶ月)）$/, '');
-  };
-
-  // カスタム期間またはデフォルト期間を取得
-  const getActionDuration = (goalId: string, actionIndex: number, actionText: string, defaultDuration: number): number => {
-    // 1. カスタム期間をチェック
-    const custom = customDurations.find(cd => cd.goalId === goalId && cd.actionIndex === actionIndex);
-    if (custom) return custom.duration;
-
-    // 2. action_planの期間情報をチェック
-    const extracted = extractDurationFromAction(actionText);
-    if (extracted) return extracted;
-
-    // 3. デフォルト期間
-    return defaultDuration;
-  };
-
-  // アクションプランの期間を計算
-  const calculateActionPlanDates = (goal: Goal, actionIndex: number) => {
-    const goalStartDate = safeDate(goal.created_at, new Date());
-    const goalEndDate = safeDate(goal.deadline, new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
-    const totalDays = Math.ceil((goalEndDate.getTime() - goalStartDate.getTime()) / (1000 * 60 * 60 * 24));
-    
-    const normalizedActionPlan = normalizeActionPlan(goal.action_plan);
-    const totalActions = normalizedActionPlan.length;
-    const defaultDaysPerAction = Math.floor(totalDays / totalActions);
-
-    const actionTitle = normalizedActionPlan[actionIndex]?.title || '';
-    const actualDuration = getActionDuration(goal.id.toString(), actionIndex, actionTitle, defaultDaysPerAction);
-
-    // 前のアクションの終了日を開始日とする
-    let startDate = new Date(goalStartDate);
-    for (let i = 0; i < actionIndex; i++) {
-      const prevActionTitle = normalizedActionPlan[i]?.title || '';
-      const prevDuration = getActionDuration(goal.id.toString(), i, prevActionTitle, defaultDaysPerAction);
-      startDate = new Date(startDate.getTime() + prevDuration * 24 * 60 * 60 * 1000);
-    }
-
-    const endDate = new Date(startDate.getTime() + actualDuration * 24 * 60 * 60 * 1000);
-    
-    return { startDate, endDate, duration: actualDuration };
-  };
-
   // ガントチャート用のアクションデータを生成（目標とアクションプランを統合）
   const generateGanttActions = (): GanttAction[] => {
     if (!goals || goals.length === 0) return [];
@@ -318,36 +262,19 @@ const GanttPage: React.FC = () => {
     return Math.round(deltaX / dayWidth);
   };
 
-  // ドラッグ開始
-  const handleDragStart = (e: React.MouseEvent, actionId: string, currentEndDate: Date) => {
-    if (!isEditMode) return;
-    
-    setDragState({
-      isDragging: true,
-      actionId,
-      startX: e.clientX,
-      originalEndDate: currentEndDate,
-    });
-  };
-
   // ドラッグ中
-  const handleDragMove = (e: React.MouseEvent) => {
+  const handleDragMove = () => {
     if (!dragState.isDragging || !dragState.actionId || !dragState.originalEndDate) return;
     
-    const deltaX = e.clientX - dragState.startX;
-    const dayWidth = periodConfig.dayWidth;
-    const daysDelta = convertDragToDays(deltaX, dayWidth);
-    
+    // const dayWidth = periodConfig.dayWidth;
     // TODO: リアルタイムでバーの幅を更新（実装可能）
   };
 
   // ドラッグ終了
-  const handleDragEnd = (e: React.MouseEvent) => {
+  const handleDragEnd = () => {
     if (!dragState.isDragging || !dragState.actionId || !dragState.originalEndDate) return;
     
-    const deltaX = e.clientX - dragState.startX;
-    const dayWidth = periodConfig.dayWidth;
-    const daysDelta = convertDragToDays(deltaX, dayWidth);
+    // const dayWidth = periodConfig.dayWidth;
     
     // アクションを特定して期間を更新
     const actionParts = dragState.actionId.split('-');
@@ -357,7 +284,7 @@ const GanttPage: React.FC = () => {
       const currentAction = actions.find(a => a.id === dragState.actionId);
       
       if (currentAction && !isNaN(actionIndex)) {
-        const newDuration = Math.max(1, currentAction.duration + daysDelta);
+        const newDuration = Math.max(1, currentAction.duration + convertDragToDays(dragState.startX, periodConfig.dayWidth));
         saveCustomDuration(goalId, actionIndex, newDuration);
       }
     }
@@ -681,10 +608,9 @@ const GanttPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 {/* ガントバー */}
                 <div className="divide-y divide-slate-200">
-                  {actions.map((action, actionIndex) => {
+                  {actions.map((action) => {
                     const leftOffset = Math.ceil((action.startDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) * periodConfig.dayWidth;
                     const width = Math.max(action.duration * periodConfig.dayWidth, 200); // 最小幅を200pxに設定
                     const isCustomized = action.originalIndex !== undefined && 
@@ -712,8 +638,6 @@ const GanttPage: React.FC = () => {
                                     <span>•</span>
                                     <span>{action.startDate.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })} - {action.endDate.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}</span>
                                   </div>
-                                  
-
                                 </div>
                               </div>
                             ) : (
@@ -838,48 +762,9 @@ const GanttPage: React.FC = () => {
                                 <div className="absolute -top-6 left-0 right-0 text-xs font-bold text-slate-700 truncate bg-white/80 px-2 py-1 rounded shadow-sm">
                                   {action.name}
                                 </div>
-                                
-                                {/* 進捗インジケーター */}
-                                {(() => {
-                                  const progress = goal ? goal.progress : 0;
-                                  return (
-                                    <div className="absolute -bottom-2 left-0 right-0 px-1">
-                                      <div className="h-1 bg-slate-300 rounded-full overflow-hidden">
-                                        <div 
-                                          className="h-full bg-purple-600 rounded-full transition-all duration-500"
-                                          style={{ width: `${Math.min(progress, 100)}%` }}
-                                        />
-                                      </div>
-                                    </div>
-                                  );
-                                })()}
                               </div>
                             );
-                          })() : (
-                            // 通常のタスク表示（念のため残しておく）
-                            <div
-                              className={`relative rounded-lg shadow-lg border-2 transition-all duration-200 hover:shadow-xl transform hover:scale-105 overflow-hidden
-                                ${isCustomized
-                                ? 'bg-gradient-to-r from-green-500 via-green-600 to-green-700 border-green-300 shadow-green-200'
-                                : 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 border-blue-300 shadow-blue-200'
-                                }`}
-                              style={{
-                                marginLeft: `${leftOffset}px`,
-                                width: `${width}px`,
-                                height: '65px',
-                                minWidth: '200px'
-                              }}
-                            >
-                              <div className="p-3 h-full flex flex-col justify-center text-white">
-                                <div className="font-bold text-sm mb-1 truncate">
-                                  {action.name}
-                                </div>
-                                <div className="text-xs opacity-80">
-                                  {action.duration}日間
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                          })() : null}
                         </div>
                       </div>
                     );
@@ -887,23 +772,8 @@ const GanttPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="p-16 text-center bg-gradient-to-br from-purple-50 to-indigo-50">
-                <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                  <svg className="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-3">AI目標が登録されていません</h3>
-                <p className="text-slate-600 mb-8 text-lg max-w-md mx-auto">まずはAIに学習目標を提案してもらい、ガントチャートで進捗を可視化しましょう</p>
-                <a
-                  href="/dashboard/goals/new"
-                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-200 font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
-                  <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  🤖 AI目標を作成
-                </a>
+              <div className="p-8 text-center text-slate-600">
+                現在、目標がありません。
               </div>
             )}
           </div>
@@ -913,4 +783,4 @@ const GanttPage: React.FC = () => {
   );
 };
 
-export default GanttPage; 
+export default GanttPage;
