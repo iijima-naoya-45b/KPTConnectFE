@@ -7,12 +7,18 @@ import { toast } from 'sonner';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // 統一されたGoalインターフェース
+interface ActionPlan {
+  id: string;
+  title: string;
+  progress: number;
+}
+
 interface Goal {
   id: number;
   title: string;
   description: string;
   deadline?: string;
-  action_plan: string[];
+  action_plan: ActionPlan[] | string[]; // 両方の形式に対応
   progress: number;
   status: string;
   progress_check?: string;
@@ -33,6 +39,23 @@ const GoalsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+
+  // アクションプランを正規化する関数
+  const normalizeActionPlan = (actionPlan: ActionPlan[] | string[]): ActionPlan[] => {
+    if (!Array.isArray(actionPlan)) return [];
+    
+    // 新形式（オブジェクト配列）の場合
+    if (actionPlan.length > 0 && typeof actionPlan[0] === 'object') {
+      return actionPlan as ActionPlan[];
+    }
+    
+    // 旧形式（文字列配列）の場合は変換
+    return (actionPlan as string[]).map((title, index) => ({
+      id: `action_${index + 1}`,
+      title,
+      progress: 0
+    }));
+  };
 
   useEffect(() => {
     fetchGoals();
@@ -136,11 +159,11 @@ const GoalsPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-10">
       <div className="max-w-4xl mx-auto">
         {/* ヘッダー */}
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-0">目標一覧</h1>
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-0">目標一覧</h1>
           <Link href="/dashboard/goals/new" className="w-full sm:w-auto">
             <button className="w-full bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">
               + 新規目標を設定
@@ -149,10 +172,10 @@ const GoalsPage: React.FC = () => {
         </div>
 
         {/* フィルタ */}
-        <div className="mb-6 bg-white rounded-lg shadow-sm p-2 flex space-x-2">
+        <div className="mb-6 sm:mb-8 bg-white rounded-lg shadow-sm p-2 sm:p-3 flex space-x-1 sm:space-x-2 overflow-x-auto">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
               filter === 'all' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -160,7 +183,7 @@ const GoalsPage: React.FC = () => {
           </button>
           <button
             onClick={() => setFilter('active')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
               filter === 'active' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -168,7 +191,7 @@ const GoalsPage: React.FC = () => {
           </button>
           <button
             onClick={() => setFilter('completed')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
               filter === 'completed' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -187,18 +210,18 @@ const GoalsPage: React.FC = () => {
             <p>{error}</p>
           </div>
         ) : filteredGoals.length > 0 ? (
-          <div className="space-y-6">
+          <div className="space-y-6 sm:space-y-8 lg:space-y-12">
             {filteredGoals.map((goal) => (
               <Link key={goal.id} href={`/dashboard/goals/${goal.id}`} passHref>
-                <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-3 border border-transparent hover:border-blue-500 hover:shadow-lg transition-all duration-300 cursor-pointer">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-lg font-bold text-gray-900 flex items-center">
-                      {goal.title}
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6 lg:p-8 flex flex-col gap-3 sm:gap-4 border border-transparent hover:border-blue-500 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2 sm:gap-0">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 flex items-center flex-wrap">
+                      <span className="mr-2">{goal.title}</span>
                       {goal.created_by_ai && (
-                        <span className="ml-2 text-xs bg-cyan-100 text-cyan-700 font-semibold px-2 py-0.5 rounded-full">AI</span>
+                        <span className="text-xs bg-cyan-100 text-cyan-700 font-semibold px-2 py-0.5 rounded-full">AI</span>
                       )}
                     </h3>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 flex-shrink-0">
                       <div className="relative">
                         <select
                           value={goal.status}
@@ -211,7 +234,7 @@ const GoalsPage: React.FC = () => {
                             e.stopPropagation();
                             e.preventDefault();
                           }}
-                          className={`appearance-none rounded px-3 py-1 text-xs font-semibold transition-colors ${getStatusColor(goal.status)}`}
+                          className={`appearance-none rounded px-2 sm:px-3 py-1 text-xs font-semibold transition-colors ${getStatusColor(goal.status)}`}
                         >
                           {statusOptions.map(opt => (
                             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -257,20 +280,20 @@ const GoalsPage: React.FC = () => {
                   </div>
 
                   {Array.isArray(goal.action_plan) && goal.action_plan.length > 0 && (
-                    <div className="mt-2 bg-gray-50 border-l-4 border-gray-300 rounded-r-lg p-3">
+                    <div className="mt-4 bg-gray-50 border-l-4 border-gray-300 rounded-r-lg p-4">
                       <p className="font-bold text-gray-700 text-sm mb-2 flex items-center">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 8h.01M12 16h.01" /></svg>
-                        アクションプラン ({goal.action_plan.length} ステップ)
+                        アクションプラン ({normalizeActionPlan(goal.action_plan).length} ステップ)
                       </p>
                       <div className="space-y-1 text-sm text-gray-600">
-                        {goal.action_plan.slice(0, 2).map((item, idx) => (
+                        {normalizeActionPlan(goal.action_plan).slice(0, 2).map((item, idx) => (
                           <div key={idx} className="flex items-center">
                             <span className="flex-shrink-0 w-4 h-4 bg-gray-300 text-white rounded-full flex items-center justify-center text-xs mr-2">{idx + 1}</span>
-                            <span className="truncate">{item}</span>
+                            <span className="truncate">{item.title}</span>
                           </div>
                         ))}
-                        {goal.action_plan.length > 2 && (
-                          <p className="text-xs text-gray-500 pt-1">他{goal.action_plan.length - 2}ステップ...</p>
+                        {normalizeActionPlan(goal.action_plan).length > 2 && (
+                          <p className="text-xs text-gray-500 pt-1">他{normalizeActionPlan(goal.action_plan).length - 2}ステップ...</p>
                         )}
                       </div>
                     </div>

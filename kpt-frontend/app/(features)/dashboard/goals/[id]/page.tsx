@@ -7,12 +7,18 @@ import { toast } from 'sonner';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // 統一されたGoalインターフェース
+interface ActionPlan {
+  id: string;
+  title: string;
+  progress: number;
+}
+
 interface Goal {
   id: number;
   title: string;
   description: string;
   deadline?: string;
-  action_plan: string[];
+  action_plan: ActionPlan[] | string[]; // 両方の形式に対応
   progress: number;
   status: string;
   progress_check?: string;
@@ -38,6 +44,25 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
   const [goal, setGoal] = useState<Goal | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingActionId, setEditingActionId] = useState<string | null>(null);
+  const [tempProgress, setTempProgress] = useState<number>(0);
+
+  // アクションプランを正規化する関数
+  const normalizeActionPlan = (actionPlan: ActionPlan[] | string[]): ActionPlan[] => {
+    if (!Array.isArray(actionPlan)) return [];
+    
+    // 新形式（オブジェクト配列）の場合
+    if (actionPlan.length > 0 && typeof actionPlan[0] === 'object') {
+      return actionPlan as ActionPlan[];
+    }
+    
+    // 旧形式（文字列配列）の場合は変換
+    return (actionPlan as string[]).map((title, index) => ({
+      id: `action_${index + 1}`,
+      title,
+      progress: 0
+    }));
+  };
 
   const fetchGoal = useCallback(async () => {
     if (!id) return;
@@ -123,6 +148,84 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
     }
   }, [goal]);
 
+  // アクションプランの進捗を更新する関数
+  const updateActionPlanProgress = async (actionId: string, progress: number) => {
+    if (!goal) return;
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/v1/goals/${goal.id}/action_plans/${actionId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ progress }),
+      });
+
+      if (!response.ok) {
+        throw new Error('進捗の更新に失敗しました');
+      }
+
+      const data = await response.json();
+      
+      // ローカル状態を更新
+      setGoal(prevGoal => {
+        if (!prevGoal) return prevGoal;
+        
+        const normalizedActionPlan = normalizeActionPlan(prevGoal.action_plan);
+        const updatedActionPlan = normalizedActionPlan.map(action => 
+          action.id === actionId ? { ...action, progress } : action
+        );
+        
+        return {
+          ...prevGoal,
+          action_plan: updatedActionPlan,
+          progress: data.action_plan_progress || prevGoal.progress
+        };
+      });
+
+      toast.success('アクションプランの進捗を更新しました');
+      setEditingActionId(null);
+    } catch (error: any) {
+      toast.error('進捗の更新に失敗しました', { description: error.message });
+    }
+  };
+
+  // 進捗編集を開始
+  const startEditProgress = (actionId: string, currentProgress: number) => {
+    setEditingActionId(actionId);
+    setTempProgress(currentProgress);
+  };
+
+  // 進捗編集をキャンセル
+  const cancelEditProgress = () => {
+    setEditingActionId(null);
+    setTempProgress(0);
+  };
+
+  // 進捗を保存
+  const saveProgress = () => {
+    if (editingActionId) {
+      updateActionPlanProgress(editingActionId, tempProgress);
+    }
+  };
+
+  // 進捗色を取得
+  const getProgressColor = (progress: number) => {
+    if (progress === 0) return 'bg-gray-300';
+    if (progress < 30) return 'bg-red-500';
+    if (progress < 70) return 'bg-yellow-500';
+    if (progress < 100) return 'bg-blue-500';
+    return 'bg-green-500';
+  };
+
+  // 進捗ラベルを取得
+  const getProgressLabel = (progress: number) => {
+    if (progress === 0) return '未着手';
+    if (progress < 100) return '進行中';
+    return '完了';
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'not_started':
@@ -197,26 +300,185 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
         
         {Array.isArray(goal.action_plan) && goal.action_plan.length > 0 && (
           <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-lg p-6">
-            <div className="font-bold text-blue-700 mb-4 text-lg flex items-center">
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-              アクションプラン
+            <div className="font-bold text-blue-700 mb-4 text-lg flex items-center justify-between">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                アクションプラン
+              </div>
+              <div className="text-sm font-normal text-blue-600">
+                {normalizeActionPlan(goal.action_plan).filter(item => item.progress === 100).length} / {normalizeActionPlan(goal.action_plan).length} 完了
+              </div>
             </div>
-            <div className="space-y-3">
-              {goal.action_plan.map((item: string, idx: number) => (
-                <div key={idx} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-blue-100 shadow-sm">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                    {idx + 1}
+            <div className="space-y-4">
+              {normalizeActionPlan(goal.action_plan).map((item, idx) => (
+                <div key={item.id} className="bg-white rounded-lg border border-blue-100 shadow-sm p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start space-x-3 flex-1">
+                      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white ${item.progress === 100 ? 'bg-green-500' : 'bg-blue-500'}`}>
+                        {item.progress === 100 ? '✓' : idx + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className={`text-gray-800 text-sm leading-relaxed ${item.progress === 100 ? 'line-through text-gray-500' : ''}`}>
+                          {item.title}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                        item.progress === 100 ? 'bg-green-100 text-green-700' :
+                        item.progress > 0 ? 'bg-blue-100 text-blue-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {getProgressLabel(item.progress)}
+                      </span>
+                      <button
+                        onClick={() => startEditProgress(item.id, item.progress)}
+                        className="text-blue-600 hover:text-blue-800 text-xs font-medium hover:underline transition-colors"
+                      >
+                        編集
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-gray-800 text-sm leading-relaxed">{item}</p>
+                  
+                  {/* 進捗バー */}
+                  <div className="mb-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs font-medium text-gray-600">進捗率</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-bold text-gray-800">{item.progress}%</span>
+                        {item.progress > 0 && (
+                          <span className="text-xs text-gray-500">
+                            ({item.progress === 100 ? '完了' : `残り${100 - item.progress}%`})
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3 relative overflow-hidden">
+                      <div 
+                        className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(item.progress)} relative`}
+                        style={{ width: `${item.progress}%` }}
+                      >
+                        {/* 進捗バー内のテキスト */}
+                        {item.progress >= 20 && (
+                          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
+                            {item.progress}%
+                          </span>
+                        )}
+                      </div>
+                      {/* グリッドライン */}
+                      <div className="absolute inset-0 flex">
+                        {[25, 50, 75].map(mark => (
+                          <div
+                            key={mark}
+                            className="border-r border-gray-300 opacity-30"
+                            style={{ marginLeft: `${mark}%` }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* 進捗の詳細情報 */}
+                    <div className="flex justify-between items-center mt-1 text-xs text-gray-500">
+                      <span>
+                        {item.progress === 0 && '未着手'}
+                        {item.progress > 0 && item.progress < 25 && '開始段階'}
+                        {item.progress >= 25 && item.progress < 50 && '初期段階'}
+                        {item.progress >= 50 && item.progress < 75 && '中間段階'}
+                        {item.progress >= 75 && item.progress < 100 && '最終段階'}
+                        {item.progress === 100 && '完了'}
+                      </span>
+                      {item.progress > 0 && item.progress < 100 && (
+                        <span>進行中</span>
+                      )}
+                    </div>
                   </div>
+
+                  {/* 進捗編集フォーム */}
+                  {editingActionId === item.id && (
+                    <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-sm font-medium text-blue-800">進捗率を更新</label>
+                        <div className="text-sm text-blue-600 font-medium">{tempProgress}%</div>
+                      </div>
+                      
+                      {/* クイック設定ボタン */}
+                      <div className="mb-3">
+                        <div className="text-xs text-blue-700 mb-2">クイック設定:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {[5, 25, 50, 75, 100].map(percentage => (
+                            <button
+                              key={percentage}
+                              onClick={() => setTempProgress(percentage)}
+                              className={`px-3 py-1 text-xs rounded-full font-medium transition-colors ${
+                                tempProgress === percentage
+                                  ? 'bg-blue-600 text-white'
+                                  : 'bg-white text-blue-600 border border-blue-200 hover:bg-blue-50'
+                              }`}
+                            >
+                              {percentage === 5 ? '着手中 5%' : 
+                               percentage === 25 ? '初期 25%' :
+                               percentage === 50 ? '半分 50%' :
+                               percentage === 75 ? '終盤 75%' :
+                               '完了 100%'}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value={tempProgress}
+                        onChange={(e) => setTempProgress(parseInt(e.target.value))}
+                        className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
+                      />
+                      
+                      <div className="flex items-center justify-end mt-3">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={cancelEditProgress}
+                            className="text-sm text-gray-600 hover:text-gray-800 hover:underline transition-colors"
+                          >
+                            キャンセル
+                          </button>
+                          <button
+                            onClick={saveProgress}
+                            className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                          >
+                            保存
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
-            <div className="mt-4 text-xs text-blue-600 bg-blue-100 px-3 py-2 rounded-lg">
-              <strong>合計 {goal.action_plan.length} ステップ</strong>のアクションプランが設定されています
+            
+            {/* 全体統計 */}
+            <div className="mt-6 grid grid-cols-3 gap-4">
+              <div className="bg-white rounded-lg p-3 border border-blue-100">
+                <div className="text-xs text-gray-600 mb-1">完了済み</div>
+                <div className="text-lg font-bold text-green-600">
+                  {normalizeActionPlan(goal.action_plan).filter(item => item.progress === 100).length}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-blue-100">
+                <div className="text-xs text-gray-600 mb-1">進行中</div>
+                <div className="text-lg font-bold text-blue-600">
+                  {normalizeActionPlan(goal.action_plan).filter(item => item.progress > 0 && item.progress < 100).length}
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-3 border border-blue-100">
+                <div className="text-xs text-gray-600 mb-1">未着手</div>
+                <div className="text-lg font-bold text-gray-600">
+                  {normalizeActionPlan(goal.action_plan).filter(item => item.progress === 0).length}
+                </div>
+              </div>
             </div>
           </div>
         )}
