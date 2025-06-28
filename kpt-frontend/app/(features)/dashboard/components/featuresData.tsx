@@ -1,5 +1,5 @@
 import { BarChart, Calendar, FileText,
-   Bell, List, Target } from 'lucide-react';
+   Bell, List, Target, TrendingUp } from 'lucide-react';
 
 export const featuresData = [
   {
@@ -27,10 +27,10 @@ export const featuresData = [
     href: '/dashboard/todos',
   },
   {
-    icon: <BarChart className='w-8 h-8 text-indigo-600' />,
-    title: 'レポート',
-    description: '成長の軌跡と傾向を分析',
-    href: '/reports',
+    icon: <TrendingUp className='w-8 h-8 text-indigo-600' />,
+    title: '週次レポート',
+    description: '週単位での目標達成状況とKPT分析',
+    href: '/reports/weekly',
   },
   {
     icon: <Target className='w-8 h-8 text-indigo-600' />,

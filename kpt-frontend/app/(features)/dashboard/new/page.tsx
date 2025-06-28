@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import KPTReviewForm from './components/KPTReviewForm';
-import HeaderBar from './components/HeaderBar';
 import { useFlashMessageStore } from '../../../../store/useFlashMessageStore';
 
 const KPTReviewPage = () => {
@@ -49,7 +48,7 @@ const KPTReviewPage = () => {
 
   return (
     <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
-      <HeaderBar title='本日のKPT振り返り' cancelHref='/' />
+      {/* メインコンテンツ */}
       <main className='max-w-5xl mx-auto px-6 sm:px-10 lg:px-16 py-12'>
         <KPTReviewForm onSubmit={handleSubmit} loading={loading} error={error} />
       </main>

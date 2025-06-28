@@ -18,11 +18,21 @@ interface AuthenticatedHeaderProps {
   variant?: 'default' | 'transparent';
   /** 追加のCSSクラス */
   className?: string;
+  /** ページタイトル（オプション） */
+  pageTitle?: string;
+  /** アクションボタン（オプション） */
+  actionButton?: {
+    label: string;
+    href: string;
+    variant?: 'default' | 'outline';
+  };
 }
 
 const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
   variant = 'default',
   className = '',
+  pageTitle,
+  actionButton,
 }) => {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -119,8 +129,6 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
         {isAuthenticated && user ? (
           <>
             <Link href='/dashboard' className='py-2 px-3 rounded hover:bg-indigo-50' onClick={() => setDrawerOpen(false)}>ダッシュボード</Link>
-            <Link href='/calendar' className='py-2 px-3 rounded hover:bg-indigo-50' onClick={() => setDrawerOpen(false)}>カレンダー</Link>
-            <Link href='/reports' className='py-2 px-3 rounded hover:bg-indigo-50' onClick={() => setDrawerOpen(false)}>レポート</Link>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
               className='py-2 px-3 rounded hover:bg-indigo-50 flex items-center justify-between w-full'
@@ -145,75 +153,100 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
   );
 
   return (
-    <header className={headerClasses}>
-      <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
-        {/* ロゴ */}
-        <div className='flex items-center'>
-          <Link
-            href='/'
-            className='text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors'
-          >
-            KPT Connect
-          </Link>
-        </div>
+    <>
+      <header className={headerClasses}>
+        <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
+          {/* ロゴ */}
+          <div className='flex items-center'>
+            <Link
+              href='/'
+              className='text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors'
+            >
+              KPT Connect
+            </Link>
+          </div>
 
-        {/* PCナビゲーション（md以上で表示） */}
-        <div className='hidden md:flex items-center space-x-4'>
-          {isAuthenticated && user ? (
-            <>
-              <Link href='/dashboard' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>ダッシュボード</Link>
-              <Link href='/calendar' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>カレンダー</Link>
-              <Link href='/reports' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>レポート</Link>
-              <div className='relative'>
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className='flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors'
-                >
-                  <div className='h-8 w-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-medium'>
-                    {user?.email && getUserInitials(user.email)}
-                  </div>
-                  <span className='text-sm font-medium text-gray-700'>{user?.email}</span>
-                  <svg
-                    className={`h-4 w-4 text-gray-500 transform transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
+          {/* PCナビゲーション（md以上で表示） */}
+          <div className='hidden md:flex items-center space-x-4'>
+            {isAuthenticated && user ? (
+              <>
+                <Link href='/dashboard' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>ダッシュボード</Link>
+                <div className='relative'>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className='flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors'
                   >
-                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
-                  </svg>
-                </button>
-                {showUserMenu && <UserDropdown />}
-              </div>
-            </>
-          ) : (
-            <>
-              <Link href='/pricing' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>料金プラン</Link>
-              <Link href='/help' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>ヘルプ</Link>
-              <Link href='/login'>
-                <Button variant='outline' className='text-gray-600 hover:text-gray-900'>ログイン</Button>
-              </Link>
-              <Link href='/signup'>
-                <Button className='bg-indigo-600 text-white hover:bg-indigo-700'>新規登録</Button>
-              </Link>
-            </>
-          )}
-        </div>
+                    <div className='h-8 w-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-medium'>
+                      {user?.email && getUserInitials(user.email)}
+                    </div>
+                    <span className='text-sm font-medium text-gray-700'>{user?.email}</span>
+                    <svg
+                      className={`h-4 w-4 text-gray-500 transform transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
+                    </svg>
+                  </button>
+                  {showUserMenu && <UserDropdown />}
+                </div>
+              </>
+            ) : (
+              <>
+                <Link href='/pricing' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>料金プラン</Link>
+                <Link href='/help' className='text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors'>ヘルプ</Link>
+                <Link href='/login'>
+                  <Button variant='outline' className='text-gray-600 hover:text-gray-900'>ログイン</Button>
+                </Link>
+                <Link href='/signup'>
+                  <Button className='bg-indigo-600 text-white hover:bg-indigo-700'>新規登録</Button>
+                </Link>
+              </>
+            )}
+          </div>
 
-        {/* ハンバーガーメニュー（md未満で表示） */}
-        <div className='md:hidden flex items-center'>
-          <button onClick={() => setDrawerOpen(true)} aria-label='Open menu' className='p-2 rounded hover:bg-indigo-50'>
-            <svg className='h-6 w-6 text-gray-700' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
-            </svg>
-          </button>
+          {/* ハンバーガーメニュー（md未満で表示） */}
+          <div className='md:hidden flex items-center'>
+            <button onClick={() => setDrawerOpen(true)} aria-label='Open menu' className='p-2 rounded hover:bg-indigo-50'>
+              <svg className='h-6 w-6 text-gray-700' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
+              </svg>
+            </button>
+          </div>
+        </nav>
+        {/* モバイルドロワー */}
+        {drawerOpen && <>
+          <div className='fixed inset-0 bg-black bg-opacity-30 z-40' onClick={() => setDrawerOpen(false)}></div>
+          <MobileDrawer />
+        </>}
+      </header>
+
+      {/* ページタイトルセクション（オプション） */}
+      {pageTitle && (
+        <div className='bg-white shadow-md border-b border-gray-200 mt-16'>
+          <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
+            <div className='flex justify-between items-center'>
+              <div className='bg-indigo-50 px-4 py-2 rounded-lg border border-indigo-200'>
+                <h1 className='text-2xl font-bold text-indigo-900'>{pageTitle}</h1>
+              </div>
+              {actionButton && (
+                <Link 
+                  href={actionButton.href}
+                  className={`px-4 py-2 rounded-md transition-colors duration-200 font-medium border ${
+                    actionButton.variant === 'outline' 
+                      ? 'bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 border-gray-300'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 border-gray-300'
+                  }`}
+                >
+                  {actionButton.label}
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
-      </nav>
-      {/* モバイルドロワー */}
-      {drawerOpen && <>
-        <div className='fixed inset-0 bg-black bg-opacity-30 z-40' onClick={() => setDrawerOpen(false)}></div>
-        <MobileDrawer />
-      </>}
-    </header>
+      )}
+    </>
   );
 };
 

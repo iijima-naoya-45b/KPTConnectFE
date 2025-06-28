@@ -17,7 +17,6 @@ const initialForm = {
   created_by_ai: false,
 };
 
-
 const aiQuestions = [
   { name: 'role', label: '職種', type: 'select', options: ['フロントエンド', 'バックエンド', 'PM', 'インフラ', 'データサイエンティスト', 'その他'] },
   { name: 'experience', label: '経験年数', type: 'number', placeholder: '例: 2' },
@@ -37,6 +36,7 @@ const GoalNewPage: React.FC = () => {
   const [aiAnswers, setAiAnswers] = useState<any>({});
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [actionDurations, setActionDurations] = useState<{[key: number]: string}>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -48,6 +48,13 @@ const GoalNewPage: React.FC = () => {
     setForm({ ...form, action_plan: newActionPlan });
   };
 
+  const handleActionDurationChange = (index: number, duration: string) => {
+    setActionDurations(prev => ({
+      ...prev,
+      [index]: duration
+    }));
+  };
+
   const addActionPlan = () => {
     setForm({ ...form, action_plan: [...form.action_plan, ''] });
   };
@@ -56,6 +63,21 @@ const GoalNewPage: React.FC = () => {
     if (form.action_plan.length > 1) {
       const newActionPlan = form.action_plan.filter((_, i) => i !== index);
       setForm({ ...form, action_plan: newActionPlan });
+      
+      // Remove duration setting for deleted action
+      const newDurations = { ...actionDurations };
+      delete newDurations[index];
+      // Reindex remaining durations
+      const reindexedDurations: {[key: number]: string} = {};
+      Object.keys(newDurations).forEach(key => {
+        const numKey = parseInt(key);
+        if (numKey > index) {
+          reindexedDurations[numKey - 1] = newDurations[numKey];
+        } else {
+          reindexedDurations[numKey] = newDurations[numKey];
+        }
+      });
+      setActionDurations(reindexedDurations);
     }
   };
 
@@ -108,6 +130,9 @@ const GoalNewPage: React.FC = () => {
         created_by_ai: true, // AIフラグを立てる
       });
       
+      // AIが生成したアクションプランの期間情報をクリア
+      setActionDurations({});
+      
       toast.success('AIが目標を提案しました！', { description: '内容を確認・編集して保存してください。' });
       setShowModal(false);
     } catch (e: any) {
@@ -115,6 +140,21 @@ const GoalNewPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatActionPlanWithDuration = () => {
+    return form.action_plan.map((action, index) => {
+      const duration = actionDurations[index];
+      if (duration && duration !== 'auto') {
+        const durationText = duration === '7' ? '1週間' :
+                           duration === '14' ? '2週間' :
+                           duration === '21' ? '3週間' :
+                           duration === '30' ? '1ヶ月' :
+                           duration === '60' ? '2ヶ月' : `${duration}日間`;
+        return `${action}（${durationText}）`;
+      }
+      return action;
+    });
   };
 
   const handleSave = async () => {
@@ -126,14 +166,14 @@ const GoalNewPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const filteredActionPlan = form.action_plan.filter(action => action.trim() !== '');
+      const formattedActionPlan = formatActionPlanWithDuration().filter(action => action.trim() !== '');
       
       const response = await fetch(`${BACKEND_URL}/api/v1/goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          goal: { ...form, action_plan: filteredActionPlan }
+          goal: { ...form, action_plan: formattedActionPlan }
         }),
       });
 
@@ -144,6 +184,7 @@ const GoalNewPage: React.FC = () => {
 
       toast.success('目標が保存されました！');
       setForm(initialForm);
+      setActionDurations({});
       window.location.href = '/dashboard/goals';
     } catch (e: any) {
       toast.error('目標の保存に失敗しました', { description: e.message });
@@ -152,50 +193,80 @@ const GoalNewPage: React.FC = () => {
     }
   };
 
+  const getDurationLabel = (duration: string) => {
+    switch(duration) {
+      case '7': return '1週間';
+      case '14': return '2週間';
+      case '21': return '3週間';
+      case '30': return '1ヶ月';
+      case '60': return '2ヶ月';
+      default: return '自動計算';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-xl mx-auto">
-        {/* メインカード */}
-        <div className="bg-white rounded-xl shadow p-8 mb-6">
-          <div className="mb-6">
-            <Link href="/dashboard/goals" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              goals一覧に戻る
-            </Link>
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8">
+        <div className="flex items-center mb-6">
+          <Link href="/dashboard/goals" className="text-blue-600 hover:text-blue-800 mr-3">
+            ← goals一覧に戻る
+          </Link>
+        </div>
+
+        <h1 className="text-2xl font-bold text-gray-900 mb-8">目標を新規設定</h1>
+
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">タイトル</label>
+            <input
+              type="text"
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2"
+              placeholder="例: Reactの基礎をマスターする"
+            />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">目標を新規設定</h1>
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">タイトル</label>
-              <input type="text" name="title" value={form.title} onChange={handleChange} className="w-full border rounded px-3 py-2" placeholder="例: Reactの基礎をマスターする" />
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              rows={4}
+              className="w-full border rounded-lg px-3 py-2"
+              placeholder="目標の詳細や達成基準など"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">期日</label>
+            <input
+              type="date"
+              name="deadline"
+              value={form.deadline}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-medium text-gray-700">アクションプラン</label>
+              <button
+                type="button"
+                onClick={addActionPlan}
+                className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+              >
+                + 追加
+              </button>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">内容</label>
-              <textarea name="description" value={form.description} onChange={handleChange} className="w-full border rounded px-3 py-2" rows={3} placeholder="目標の詳細や達成基準など" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">期日</label>
-              <input type="date" name="deadline" value={form.deadline} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-            </div>
-            
-            {/* アクションプラン */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-700">アクションプラン</label>
-                <button
-                  type="button"
-                  onClick={addActionPlan}
-                  className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
-                >
-                  + 追加
-                </button>
-              </div>
-              <div className="space-y-2">
-                {form.action_plan.map((action, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <div className="flex-shrink-0 w-6 h-6 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-xs font-bold">
+            <div className="space-y-3">
+              {form.action_plan.map((action, index) => (
+                <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
                       {index + 1}
                     </div>
                     <input
@@ -217,80 +288,133 @@ const GoalNewPage: React.FC = () => {
                       </button>
                     )}
                   </div>
-                ))}
-              </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-600 min-w-0">推定期間:</span>
+                    <select
+                      value={actionDurations[index] || 'auto'}
+                      onChange={(e) => handleActionDurationChange(index, e.target.value)}
+                      className="flex-1 text-xs border rounded px-2 py-1 bg-white"
+                    >
+                      <option value="auto">自動計算</option>
+                      <option value="7">1週間</option>
+                      <option value="14">2週間</option>
+                      <option value="21">3週間</option>
+                      <option value="30">1ヶ月</option>
+                      <option value="60">2ヶ月</option>
+                    </select>
+                    {actionDurations[index] && actionDurations[index] !== 'auto' && (
+                      <span className="text-xs text-blue-600 font-medium">
+                        {getDurationLabel(actionDurations[index])}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-            
-            <div className="mt-6">
-              <button 
-                type="button" 
-                className="w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed" 
-                onClick={handleSave}
-                disabled={loading}
-              >
-                {loading ? '保存中...' : '目標を保存'}
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* AI提案ボタン - カードの外側 */}
-        <div className="text-center">
-          <button 
-            type="button" 
-            className="bg-green-500 text-white py-3 px-8 rounded-lg font-semibold hover:bg-green-600 transition-colors shadow-lg"
-            onClick={handleAIClick}
-          >
-            <div className="flex items-center justify-center space-x-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-              <span>AIに提案してもらう</span>
-            </div>
-          </button>
-          <p className="text-sm text-gray-600 mt-2">AIがあなたの目標に最適なアクションプランを提案します</p>
-        </div>
-
-        {/* AIモーダル */}
-        {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-            <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative animate-fade-in">
-              <button className="absolute top-2 right-2 text-gray-400 hover:text-gray-600" onClick={() => setShowModal(false)}>&times;</button>
-              <h2 className="text-lg font-bold text-gray-900 mb-4">AI目標提案のための質問 {step + 1}/{aiQuestions.length}</h2>
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">{aiQuestions[step].label}</label>
-                {aiQuestions[step].type === 'select' ? (
-                  <select name={aiQuestions[step].name} value={aiAnswers[aiQuestions[step].name] || ''} onChange={handleAiAnswer} className="w-full border rounded px-3 py-2">
-                    <option value="">選択してください</option>
-                    {aiQuestions[step].options?.map((opt: string) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type={aiQuestions[step].type}
-                    name={aiQuestions[step].name}
-                    value={aiAnswers[aiQuestions[step].name] || ''}
-                    onChange={handleAiAnswer}
-                    className="w-full border rounded px-3 py-2"
-                    placeholder={aiQuestions[step].placeholder || ''}
-                  />
-                )}
-              </div>
-              <div className="flex justify-between">
-                <button type="button" className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold" onClick={handlePrev} disabled={step === 0}>戻る</button>
-                {step < aiQuestions.length - 1 ? (
-                  <button type="button" className="px-4 py-2 rounded bg-indigo-600 text-white font-semibold" onClick={handleNext}>次へ</button>
-                ) : (
-                  <button type="button" className="px-4 py-2 rounded bg-green-600 text-white font-semibold" onClick={handleAiSuggest} disabled={loading}>
-                    {loading ? '生成中...' : 'AI提案を生成'}
-                  </button>
-                )}
-              </div>
+            <div className="mt-2 text-xs text-gray-500">
+              💡 期間を設定するとガントチャートでより正確なスケジュールが表示されます
             </div>
           </div>
-        )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">進捗管理方法</label>
+            <textarea
+              name="progress_check"
+              value={form.progress_check}
+              onChange={handleChange}
+              rows={3}
+              className="w-full border rounded-lg px-3 py-2"
+              placeholder="どのように進捗を確認・管理するか（例: 週次レビュー、成果物チェック）"
+            />
+          </div>
+        </div>
+
+        <div className="flex space-x-4 mt-8">
+          <button
+            onClick={handleAIClick}
+            className="flex-1 bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+          >
+            🤖 AIに目標を提案してもらう
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-colors ${
+              loading
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            {loading ? '保存中...' : '目標を保存'}
+          </button>
+        </div>
       </div>
+
+      {/* AI提案モーダル */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              🤖 AI目標提案 ({step + 1}/{aiQuestions.length})
+            </h2>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {aiQuestions[step].label}
+              </label>
+              {aiQuestions[step].type === 'select' ? (
+                <select
+                  value={aiAnswers[aiQuestions[step].name] || ''}
+                  onChange={handleAiAnswer}
+                  className="w-full border rounded px-3 py-2"
+                >
+                  <option value="">選択してください</option>
+                  {aiQuestions[step].options?.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={aiQuestions[step].type}
+                  value={aiAnswers[aiQuestions[step].name] || ''}
+                  onChange={handleAiAnswer}
+                  placeholder={aiQuestions[step].placeholder}
+                  className="w-full border rounded px-3 py-2"
+                />
+              )}
+            </div>
+
+            <div className="flex space-x-3">
+              {step > 0 && (
+                <button
+                  onClick={handlePrev}
+                  className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+                >
+                  戻る
+                </button>
+              )}
+              <button
+                onClick={handleNext}
+                disabled={loading}
+                className={`flex-1 py-2 px-4 rounded transition-colors ${
+                  loading
+                    ? 'bg-gray-400 text-white cursor-not-allowed'
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                }`}
+              >
+                {loading ? '生成中...' : (step === aiQuestions.length - 1 ? '提案生成' : '次へ')}
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+              >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

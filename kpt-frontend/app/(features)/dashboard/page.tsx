@@ -19,7 +19,7 @@ const DashboardPage: React.FC = () => {
   }, [flashMessage, clearFlashMessage]);
 
   return (
-    <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100'>
+    <div className='min-h-[calc(100vh-116px-64px)] bg-gray-100 py-12'>
       {/* 機能グリッドセクション */}
       <div className='mt-12 lg:mt-16'>
         <FeatureGrid features={featuresData} columns={{ sm: 1, md: 2, lg: 3 }} />

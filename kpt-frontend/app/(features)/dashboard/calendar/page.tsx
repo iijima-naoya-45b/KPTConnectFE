@@ -236,13 +236,7 @@ const CalendarPageInner = () => {
     return days;
   };
 
-  // アイテム数のフォーマット
-  const formatItemsCount = (items_count: number | { keep: number; problem: number; try: number; total: number }): string => {
-    if (typeof items_count === 'number') {
-      return `${items_count}個`;
-    }
-    return `K:${items_count.keep} P:${items_count.problem} T:${items_count.try}`;
-  };
+
 
   // 月の変更
   const changeMonth = (increment: number) => {
@@ -466,82 +460,32 @@ const CalendarPageInner = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className='overflow-x-auto'>
-                        <table className='min-w-full divide-y divide-gray-200'>
-                          <thead className='bg-gray-50'>
-                            <tr>
-                              <th className='px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                                タイトル
-                              </th>
-                              <th className='px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                                日付
-                              </th>
-                              <th className='hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                                ステータス
-                              </th>
-                              <th className='hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                                項目数
-                              </th>
-                              <th className='hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                                進捗
-                              </th>
-                              <th className='px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                                操作
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className='bg-white divide-y divide-gray-200'>
-                            {sessions.map(session => (
-                              <tr key={session.id} className='hover:bg-gray-50'>
-                                <td className='px-3 sm:px-6 py-4'>
-                                  <div className='text-sm font-medium text-gray-900'>{session.title}</div>
-                                  {session.description && (
-                                    <div className='text-sm text-gray-500 truncate'>{session.description}</div>
-                                  )}
-                                  {/* モバイル表示用の追加情報 */}
-                                  <div className='sm:hidden mt-1'>
-                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(session.status)} mr-2`}>
-                                      {session.status}
-                                    </span>
-                                    <span className='text-xs text-gray-500'>
-                                      {formatItemsCount(session.items_count)}
-                                    </span>
-                                  </div>
-                                </td>
-                                <td className='px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                      <div className='space-y-4'>
+                        {sessions.map(session => (
+                          <div
+                            key={session.id}
+                            className='bg-white rounded-lg shadow-md border border-gray-200 p-6 cursor-pointer hover:shadow-lg hover:border-indigo-300 transition-all duration-200'
+                            onClick={() => router.push(`/dashboard/kpt/${session.id}`)}
+                          >
+                            <div className='flex justify-between items-start'>
+                              <div className='flex-1 min-w-0'>
+                                <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+                                  {session.title}
+                                </h3>
+                                {session.description && (
+                                  <p className='text-sm text-gray-600 mb-3 line-clamp-2'>
+                                    {session.description}
+                                  </p>
+                                )}
+                              </div>
+                              <div className='ml-4 flex-shrink-0'>
+                                <span className='text-sm text-gray-500'>
                                   {session.session_date}
-                                </td>
-                                <td className='hidden sm:table-cell px-6 py-4 whitespace-nowrap'>
-                                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(session.status)}`}>
-                                    {session.status}
-                                  </span>
-                                </td>
-                                <td className='hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                                  {formatItemsCount(session.items_count)}
-                                </td>
-                                <td className='hidden lg:table-cell px-6 py-4 whitespace-nowrap'>
-                                  <div className='flex items-center'>
-                                    <div className='flex-1 bg-gray-200 rounded-full h-2 mr-2'>
-                                      <div
-                                        className='bg-indigo-600 h-2 rounded-full'
-                                        style={{ width: `${session.progress_rate}%` }}
-                                      ></div>
-                                    </div>
-                                    <span className='text-sm text-gray-500'>{session.progress_rate}%</span>
-                                  </div>
-                                </td>
-                                <td className='px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium'>
-                                  <Link
-                                    href={`/dashboard/kpt/${session.id}`}
-                                    className='text-indigo-600 hover:text-indigo-900'
-                                  >
-                                    詳細
-                                  </Link>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
