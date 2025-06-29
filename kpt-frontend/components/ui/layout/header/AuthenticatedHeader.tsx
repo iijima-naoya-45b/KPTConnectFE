@@ -1,16 +1,7 @@
-/**
- * @file AuthenticatedHeader.tsx
- * @description 認証状態対応ヘッダーコンポーネント（SP用ハンバーガーメニュー対応・ユーザーメニュー強化）
- *
- * httpOnlyCookieベースの認証状態を判定し、
- * ログイン/ログアウト状態に応じてヘッダーの表示を切り替えます。
- */
-
 'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useAuth } from '@/hooks';
 import { Button } from '@/components/ui';
 
@@ -65,7 +56,7 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
       <header className={headerClasses}>
         <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
           <div className='flex items-center'>
-            <Image className='h-8 w-auto' src='/logo.svg' alt='Logo' width={32} height={32} />
+            <span className='text-4xl font-bold' style={{ color: '#4B0082' }}>KPT Connect</span>
           </div>
           <div className='flex items-center space-x-4'>
             <div className='h-8 w-20 bg-gray-200 rounded animate-pulse'></div>
@@ -119,8 +110,8 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
           }
         `}</style>
         <div className='flex items-center'>
-            <Image className='h-8 w-auto' src='/logo.svg' alt='Logo' width={32} height={32} />
-          </div>
+          <span className='text-4xl font-bold text-indigo-600'>KPT Connect</span>
+        </div>
         <button onClick={() => setDrawerOpen(false)} aria-label='Close menu' className='absolute top-4 right-4'>
           <svg className='h-6 w-6 text-gray-700' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
@@ -160,7 +151,7 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
         <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
           {/* ロゴ */}
           <div className='flex items-center'>
-            <Image className='h-8 w-auto' src='/logo.svg' alt='Logo' width={32} height={32} />
+            <span className='text-4xl font-bold text-indigo-600'>KPT Connect</span>
           </div>
 
           {/* PCナビゲーション（md以上で表示） */}
