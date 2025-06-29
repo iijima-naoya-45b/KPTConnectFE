@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useAuth } from '@/hooks';
 import { Button } from '@/components/ui';
 
