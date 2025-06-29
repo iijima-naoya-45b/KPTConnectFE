@@ -1,10 +1,3 @@
-/**
- * @fileoverview プランアップグレード決済ページ
- * @description Stripe決済を使用したプランアップグレード処理
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -17,9 +10,6 @@ import { Button } from '@/components/ui';
 import Link from 'next/link';
 import type { Plan } from '@/types';
 
-/**
- * 決済ページの内部コンポーネント
- */
 const UpgradePageContent: React.FC = () => {
   /** ルーター */
   const router = useRouter();
@@ -46,7 +36,7 @@ const UpgradePageContent: React.FC = () => {
      */
     if (!searchParams) return;
     const planId = searchParams.get('plan');
-    const cycle = searchParams.get('cycle') as 'monthly' | 'yearly' | null;
+    const cycle = 'monthly'; // 単月決済のみ
 
     if (!planId) {
       setError('プランが選択されていません。');
@@ -63,24 +53,32 @@ const UpgradePageContent: React.FC = () => {
     }
 
     setSelectedPlan(plan as Plan);
-    setBillingCycle(cycle || 'monthly');
+    setBillingCycle(cycle);
 
     // PaymentIntentを作成
-    createPaymentIntent(plan, cycle || 'monthly');
+    createPaymentIntent(plan, cycle);
   }, [searchParams]);
+
+  /**
+   * デフォルトプラン設定
+   */
+  useEffect(() => {
+    if (!selectedPlan) {
+      setSelectedPlan(PRICING_PLANS['PRO']); // デフォルトでプロプランを選択
+    }
+  }, [selectedPlan]);
 
   /**
    * PaymentIntentを作成
    * @param {Plan} plan - プラン情報
    * @param {'monthly' | 'yearly'} cycle - 請求サイクル
    */
-  const createPaymentIntent = async (plan: Plan, cycle: 'monthly' | 'yearly'): Promise<void> => {
+  const createPaymentIntent = async (plan: Plan, cycle: 'monthly'): Promise<void> => {
     try {
-      const amount = cycle === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
+      const amount = plan.monthlyPrice;
 
-      // 実際の実装では、バックエンドAPIを呼び出してPaymentIntentを作成
-      // ここではダミーのクライアントシークレットを使用
-      const response = await fetch('/api/create-payment-intent', {
+      // NEXT_PUBLIC_BACKEND_URLを使用してバックエンドと通信
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,6 +88,7 @@ const UpgradePageContent: React.FC = () => {
           billingCycle: cycle,
           amount: amount * 100, // Stripeは最小通貨単位で処理
           currency: 'jpy',
+          user_id: 'example_user_id' // ユーザーIDを追加
         }),
       });
 
@@ -101,8 +100,7 @@ const UpgradePageContent: React.FC = () => {
       setClientSecret(data.clientSecret);
     } catch (err) {
       console.error('PaymentIntent作成エラー:', err);
-      // デモ用のダミークライアントシークレット
-      setClientSecret('pi_test_1234567890_secret_test');
+      setError('決済の準備に失敗しました。');
     } finally {
       setIsLoading(false);
     }
