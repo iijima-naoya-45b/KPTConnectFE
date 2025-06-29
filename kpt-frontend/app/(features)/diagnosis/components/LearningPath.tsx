@@ -148,8 +148,7 @@ const LearningPath: React.FC<LearningPathProps> = ({ learningPath }) => {
                     <div className='mb-4'>
                       <div className='w-full bg-gray-200 rounded-full h-2'>
                         <div
-                          className='bg-indigo-600 h-2 rounded-full transition-all duration-500'
-                          style={{ width: `${progress}%` }}
+                          className={`bg-indigo-600 h-2 rounded-full transition-all duration-500 w-[${progress}%]`}
                         ></div>
                       </div>
                     </div>

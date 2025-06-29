@@ -538,11 +538,11 @@ const GanttPage: React.FC = () => {
           {/* ガントチャート */}
           <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
             {goals.length > 0 ? (
-              <div className="overflow-x-auto" style={{ maxHeight: '80vh' }}>
+              <div className="overflow-x-auto max-h-[80vh]">
                 {/* ヘッダー */}
                 <div className="border-b-2 border-slate-300 bg-gradient-to-r from-slate-100 to-slate-50 sticky top-0 z-10">
                   {/* 月ヘッダー（最上部） */}
-                  <div className="flex" style={{ minWidth: `${Math.max(1200, days * periodConfig.dayWidth + 400)}px` }}>
+                  <div className={`flex min-w-[${Math.max(1200, days * periodConfig.dayWidth + 400)}px]`}>
                     <div className="w-96 p-3 font-bold text-slate-800 border-r-2 border-slate-300 bg-gradient-to-r from-slate-200 to-slate-100 sticky left-0 z-20">
                       <div className="text-center text-sm text-slate-600">期間</div>
                     </div>
@@ -617,7 +617,7 @@ const GanttPage: React.FC = () => {
                       customDurations.some(cd => cd.goalId === action.goalId && cd.actionIndex === action.originalIndex);
                     
                     return (
-                      <div key={action.id} className="flex items-center hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50 transition-all duration-200 group" style={{ minWidth: `${Math.max(1200, days * periodConfig.dayWidth + 400)}px` }}>
+                      <div key={action.id} className={`flex items-center hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50 transition-all duration-200 group min-w-[${Math.max(1200, days * periodConfig.dayWidth + 400)}px]`}>
                         {/* タスク名（固定列） */}
                         <div className="w-96 p-6 border-r-2 border-slate-200 bg-white group-hover:bg-slate-50 transition-colors duration-200 sticky left-0 z-10">
                           <div className={`flex items-center ${action.isGoal ? '' : 'ml-8'}`}>
@@ -710,7 +710,7 @@ const GanttPage: React.FC = () => {
                             const segmentWidth = normalizedActionPlans.length > 0 ? totalWidth / normalizedActionPlans.length : totalWidth;
                             
                             return (
-                              <div className="relative flex" style={{ marginLeft: `${leftOffset}px`, width: `${totalWidth}px` }}>
+                              <div className={`relative flex ml-[${leftOffset}px] w-[${totalWidth}px]`}>
                                 {normalizedActionPlans.length > 0 ? (
                                   normalizedActionPlans.map((plan, planIndex) => (
                                     <div

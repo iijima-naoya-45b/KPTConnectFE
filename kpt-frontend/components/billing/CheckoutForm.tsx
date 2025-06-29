@@ -1,10 +1,3 @@
-/**
- * @fileoverview Stripe決済フォームコンポーネント
- * @description クレジットカード情報入力と決済処理を行うフォーム
- * @version 1.0.0
- * @author KPT Connect Team
- */
-
 'use client';
 
 import React, { useState } from 'react';
@@ -12,48 +5,25 @@ import { useStripe, useElements, PaymentElement, AddressElement } from '@stripe/
 import { Button } from '@/components/ui';
 import type { Plan } from '@/types';
 
-/**
- * 決済フォームのプロパティ
- */
 interface CheckoutFormProps {
-  /** 選択されたプラン */
   plan: Plan;
-  /** 請求サイクル */
   billingCycle: 'monthly' | 'yearly';
-  /** 決済完了時のコールバック */
   onSuccess?: () => void;
-  /** エラー時のコールバック */
   onError?: (error: string) => void;
 }
 
-/**
- * Stripe決済フォームコンポーネント
- * @param {CheckoutFormProps} props - プロパティ
- * @returns {JSX.Element} 決済フォーム
- */
+
 const CheckoutForm: React.FC<CheckoutFormProps> = ({ plan, billingCycle, onSuccess, onError }) => {
-  /** Stripeインスタンス */
   const stripe = useStripe();
-  /** Stripe Elements */
   const elements = useElements();
 
-  /** 処理中フラグ */
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  /** エラーメッセージ */
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  /**
-   * 価格計算
-   * @returns {number} 価格
-   */
   const getPrice = (): number => {
     return billingCycle === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
   };
 
-  /**
-   * フォーム送信処理
-   * @param {React.FormEvent} event - フォームイベント
-   */
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -66,7 +36,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ plan, billingCycle, onSucce
     setErrorMessage('');
 
     try {
-      // 決済確認
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {

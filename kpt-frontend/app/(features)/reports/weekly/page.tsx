@@ -469,8 +469,7 @@ const WeeklyReportPage: React.FC = () => {
                           </div>
                           <div className="w-full bg-slate-200 rounded-full h-2">
                             <div 
-                              className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${weeklyData.actionPlans.completionRate}%` }}
+                              className={`bg-emerald-500 h-2 rounded-full transition-all duration-500 w-[${weeklyData.actionPlans.completionRate}%]`}
                             />
                           </div>
                         </div>
@@ -632,9 +631,8 @@ const WeeklyReportPage: React.FC = () => {
                   <div className="text-slate-600 font-medium">生産性スコア</div>
                   <div className="mt-2 bg-slate-200 rounded-full h-2">
                     <div 
-                      className="bg-purple-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${weeklyData.insights.productivityScore * 10}%` }}
-                    />
+                      className={`bg-purple-600 h-2 rounded-full w-[${weeklyData.insights.productivityScore * 10}%]`}
+                    ></div>
                   </div>
                 </div>
                 
@@ -645,9 +643,8 @@ const WeeklyReportPage: React.FC = () => {
                   <div className="text-slate-600 font-medium">継続性スコア</div>
                   <div className="mt-2 bg-slate-200 rounded-full h-2">
                     <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${weeklyData.insights.consistencyScore * 10}%` }}
-                    />
+                      className={`bg-blue-600 h-2 rounded-full w-[${weeklyData.insights.consistencyScore * 10}%]`}
+                    ></div>
                   </div>
                 </div>
                 
@@ -658,9 +655,8 @@ const WeeklyReportPage: React.FC = () => {
                   <div className="text-slate-600 font-medium">挑戦レベル</div>
                   <div className="mt-2 bg-slate-200 rounded-full h-2">
                     <div 
-                      className="bg-orange-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${weeklyData.insights.challengeLevel * 10}%` }}
-                    />
+                      className={`bg-orange-600 h-2 rounded-full w-[${weeklyData.insights.challengeLevel * 10}%]`}
+                    ></div>
                   </div>
                 </div>
               </div>

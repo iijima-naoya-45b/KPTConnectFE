@@ -114,7 +114,7 @@ const GanttChartView: React.FC<GanttChartViewProps> = ({ items, viewType }) => {
           </p>
         </div>
         
-        <div style={{ height: 600, overflow: 'auto' }}>
+        <div className='h-[600px] overflow-auto'>
           <Gantt
             tasks={items}
             viewMode={viewMode}

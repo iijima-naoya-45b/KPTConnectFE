@@ -42,8 +42,7 @@ export function EmotionTrends({ data }: EmotionTrendsProps) {
                     <span className="text-sm text-green-600 w-16">ポジティブ</span>
                     <div className="flex-1 bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-green-500 h-2 rounded-full" 
-                        style={{ width: `${trend.positive}%` }}
+                        className={`bg-green-500 h-2 rounded-full w-[${trend.positive}%]`}
                       ></div>
                     </div>
                     <span className="text-sm font-medium">{trend.positive}%</span>
@@ -54,8 +53,7 @@ export function EmotionTrends({ data }: EmotionTrendsProps) {
                     <span className="text-sm text-gray-600 w-16">ニュートラル</span>
                     <div className="flex-1 bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-gray-500 h-2 rounded-full" 
-                        style={{ width: `${trend.neutral}%` }}
+                        className={`bg-gray-500 h-2 rounded-full w-[${trend.neutral}%]`}
                       ></div>
                     </div>
                     <span className="text-sm font-medium">{trend.neutral}%</span>
@@ -66,8 +64,7 @@ export function EmotionTrends({ data }: EmotionTrendsProps) {
                     <span className="text-sm text-red-600 w-16">ネガティブ</span>
                     <div className="flex-1 bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-red-500 h-2 rounded-full" 
-                        style={{ width: `${trend.negative}%` }}
+                        className={`bg-red-500 h-2 rounded-full w-[${trend.negative}%]`}
                       ></div>
                     </div>
                     <span className="text-sm font-medium">{trend.negative}%</span>

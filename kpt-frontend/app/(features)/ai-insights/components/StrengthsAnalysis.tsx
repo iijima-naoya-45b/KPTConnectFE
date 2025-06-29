@@ -42,8 +42,7 @@ export function StrengthsAnalysis({ data }: StrengthsAnalysisProps) {
                 <span className="text-sm text-gray-600">信頼度:</span>
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-green-500 h-2 rounded-full" 
-                    style={{ width: `${strength.confidence * 100}%` }}
+                    className={`bg-green-500 h-2 rounded-full w-[${strength.confidence * 100}%]`}
                   ></div>
                 </div>
                 <span className="text-sm font-medium">{Math.round(strength.confidence * 100)}%</span>

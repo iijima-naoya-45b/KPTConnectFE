@@ -151,8 +151,7 @@ const ProgressTracking: React.FC<ProgressTrackingProps> = ({ technicalAreas }) =
               <div className='flex items-center space-x-4'>
                 <div className='w-32 bg-gray-200 rounded-full h-2'>
                   <div
-                    className='bg-indigo-600 h-2 rounded-full transition-all duration-500'
-                    style={{ width: `${category?.progress}%` }}
+                    className={`bg-indigo-600 h-2 rounded-full transition-all duration-500 w-[${category?.progress}%]`}
                   ></div>
                 </div>
                 <span className='text-lg font-bold text-indigo-600 w-12 text-right'>
@@ -204,8 +203,7 @@ const ProgressTracking: React.FC<ProgressTrackingProps> = ({ technicalAreas }) =
                 
                 <div className='w-full bg-gray-200 rounded-full h-2 mb-3'>
                   <div
-                    className='bg-indigo-600 h-2 rounded-full transition-all duration-500'
-                    style={{ width: `${progress}%` }}
+                    className={`bg-indigo-600 h-2 rounded-full transition-all duration-500 w-[${progress}%]`}
                   ></div>
                 </div>
                 

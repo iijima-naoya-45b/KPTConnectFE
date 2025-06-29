@@ -102,8 +102,7 @@ export function LearningPathway({ data, onUpdateProgress }: LearningPathwayProps
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-blue-600 h-2 rounded-full" 
-                style={{ width: `${data.estimatedProgress * 100}%` }}
+                className={`bg-blue-600 h-2 rounded-full w-[${data.estimatedProgress * 100}%]`}
               ></div>
             </div>
             <div className="text-sm text-gray-600">
