@@ -151,7 +151,9 @@ const AuthenticatedHeader: React.FC<AuthenticatedHeaderProps> = ({
         <nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
           {/* ロゴ */}
           <div className='flex items-center'>
-            <span className='text-4xl font-bold text-indigo-600'>KPT Connect</span>
+            <Link href='/'>
+              <span className='text-4xl font-bold text-indigo-600'>KPT Connect</span>
+            </Link>
           </div>
 
           {/* PCナビゲーション（md以上で表示） */}

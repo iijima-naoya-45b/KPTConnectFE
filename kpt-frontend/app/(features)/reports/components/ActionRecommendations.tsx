@@ -291,8 +291,7 @@ const ActionRecommendations = ({ recommendations }: ActionRecommendationsProps) 
                           : recommendation.estimatedImpact >= 60
                             ? 'bg-yellow-500'
                             : 'bg-red-500'
-                      }`}
-                      style={{ width: `${recommendation.estimatedImpact}%` }}
+                      } w-[${recommendation.estimatedImpact}%]`}
                     ></div>
                   </div>
                 </div>

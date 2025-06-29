@@ -276,10 +276,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
             <span className="text-lg font-bold text-indigo-600">{goal.progress}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
-            <div 
-              className="bg-gradient-to-r from-indigo-500 to-blue-500 h-3 rounded-full transition-all duration-300 ease-in-out" 
-              style={{ width: `${goal.progress}%` }}
-            ></div>
+            <div className="bg-gradient-to-r from-indigo-500 to-blue-500 h-3 rounded-full transition-all duration-300 ease-in-out w-[${goal.progress}%]"></div>
           </div>
           <input
             type="range"
@@ -357,8 +354,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3 relative overflow-hidden">
                       <div 
-                        className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(item.progress)} relative`}
-                        style={{ width: `${item.progress}%` }}
+                        className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(item.progress)} relative w-[${item.progress}%]`}
                       >
                         {/* 進捗バー内のテキスト */}
                         {item.progress >= 20 && (
@@ -372,8 +368,7 @@ const GoalDetailPage: React.FC<PageProps> = ({ params }) => {
                         {[25, 50, 75].map(mark => (
                           <div
                             key={mark}
-                            className="border-r border-gray-300 opacity-30"
-                            style={{ marginLeft: `${mark}%` }}
+                            className="border-r border-gray-300 opacity-30 ml-[${mark}%]"
                           />
                         ))}
                       </div>

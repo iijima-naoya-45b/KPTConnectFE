@@ -169,8 +169,7 @@ const PeriodComparison: React.FC<PeriodComparisonProps> = ({
                 </div>
                 <div className='w-full bg-gray-200 rounded-full h-2'>
                   <div
-                    className={`bg-${item.color}-500 h-2 rounded-full transition-all duration-500`}
-                    style={{ width: `${item.current}%` }}
+                    className={`bg-${item.color}-500 h-2 rounded-full transition-all duration-500 w-[${item.current}%]`}
                   ></div>
                 </div>
               </div>
@@ -182,8 +181,7 @@ const PeriodComparison: React.FC<PeriodComparisonProps> = ({
                 </div>
                 <div className='w-full bg-gray-200 rounded-full h-1'>
                   <div
-                    className='bg-gray-400 h-1 rounded-full transition-all duration-500'
-                    style={{ width: `${item.previous}%` }}
+                    className={`bg-gray-400 h-1 rounded-full transition-all duration-500 w-[${item.previous}%]`}
                   ></div>
                 </div>
               </div>

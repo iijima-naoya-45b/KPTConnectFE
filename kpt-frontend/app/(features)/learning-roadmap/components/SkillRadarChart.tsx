@@ -45,14 +45,7 @@ export function SkillRadarChart({ data }: SkillRadarChartProps) {
               {[1, 2, 3, 4, 5].map((level) => (
                 <div
                   key={level}
-                  className="absolute border border-gray-100 rounded-full"
-                  style={{
-                    width: `${(level / 5) * 100}%`,
-                    height: `${(level / 5) * 100}%`,
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)'
-                  }}
+                  className={`absolute border border-gray-100 rounded-full w-[${(level / 5) * 100}%] h-[${(level / 5) * 100}%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}
                 />
               ))}
               
@@ -71,21 +64,11 @@ export function SkillRadarChart({ data }: SkillRadarChartProps) {
                   <div key={skill.skill}>
                     {/* 目標値点 */}
                     <div
-                      className="absolute w-2 h-2 bg-blue-300 rounded-full"
-                      style={{
-                        left: `${targetX}%`,
-                        top: `${targetY}%`,
-                        transform: 'translate(-50%, -50%)'
-                      }}
+                      className={`absolute w-2 h-2 bg-blue-300 rounded-full left-[${targetX}%] top-[${targetY}%] transform -translate-x-1/2 -translate-y-1/2`}
                     />
                     {/* 現在値点 */}
                     <div
-                      className="absolute w-3 h-3 bg-blue-600 rounded-full"
-                      style={{
-                        left: `${currentX}%`,
-                        top: `${currentY}%`,
-                        transform: 'translate(-50%, -50%)'
-                      }}
+                      className={`absolute w-3 h-3 bg-blue-600 rounded-full left-[${currentX}%] top-[${currentY}%] transform -translate-x-1/2 -translate-y-1/2`}
                     />
                   </div>
                 );
@@ -102,12 +85,7 @@ export function SkillRadarChart({ data }: SkillRadarChartProps) {
               return (
                 <div
                   key={skill.skill}
-                  className="absolute text-xs font-medium text-gray-700"
-                  style={{
-                    left: `${labelX}%`,
-                    top: `${labelY}%`,
-                    transform: 'translate(-50%, -50%)'
-                  }}
+                  className={`absolute text-xs font-medium text-gray-700 left-[${labelX}%] top-[${labelY}%] transform -translate-x-1/2 -translate-y-1/2`}
                 >
                   {skill.skill}
                 </div>

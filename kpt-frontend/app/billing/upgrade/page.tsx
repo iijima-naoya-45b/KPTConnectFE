@@ -11,32 +11,17 @@ import Link from 'next/link';
 import type { Plan } from '@/types';
 
 const UpgradePageContent: React.FC = () => {
-  /** ルーター */
   const router = useRouter();
-  /** URLパラメータ */
   const searchParams = useSearchParams();
-
-  /** 選択されたプラン */
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  /** 請求サイクル */
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  /** クライアントシークレット */
+  const [billingCycle] = useState<'monthly'>('monthly');
   const [clientSecret, setClientSecret] = useState<string>('');
-  /** ローディング状態 */
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  /** エラーメッセージ */
   const [error, setError] = useState<string>('');
 
-  /**
-   * 初期化処理
-   */
   useEffect(() => {
-    /**
-     * @description searchParamsがnullの場合は何もしない。
-     */
     if (!searchParams) return;
     const planId = searchParams.get('plan');
-    const cycle = 'monthly'; // 単月決済のみ
 
     if (!planId) {
       setError('プランが選択されていません。');
@@ -44,7 +29,6 @@ const UpgradePageContent: React.FC = () => {
       return;
     }
 
-    // プラン情報を取得
     const plan = Object.values(PRICING_PLANS).find(p => p.id === planId);
     if (!plan) {
       setError('無効なプランが選択されました。');
@@ -53,31 +37,31 @@ const UpgradePageContent: React.FC = () => {
     }
 
     setSelectedPlan(plan as Plan);
-    setBillingCycle(cycle);
 
-    // PaymentIntentを作成
-    createPaymentIntent(plan, cycle);
+    createPaymentIntent(plan);
   }, [searchParams]);
 
-  /**
-   * デフォルトプラン設定
-   */
   useEffect(() => {
     if (!selectedPlan) {
-      setSelectedPlan(PRICING_PLANS['PRO']); // デフォルトでプロプランを選択
+      setSelectedPlan(PRICING_PLANS['PRO']);
     }
   }, [selectedPlan]);
 
-  /**
-   * PaymentIntentを作成
-   * @param {Plan} plan - プラン情報
-   * @param {'monthly' | 'yearly'} cycle - 請求サイクル
-   */
-  const createPaymentIntent = async (plan: Plan, cycle: 'monthly'): Promise<void> => {
+  const createPaymentIntent = async (plan: Plan): Promise<void> => {
     try {
       const amount = plan.monthlyPrice;
 
-      // NEXT_PUBLIC_BACKEND_URLを使用してバックエンドと通信
+      console.log('Creating PaymentIntent with plan:', plan, 'and cycle:', billingCycle);
+      
+      console.log('Sending request to:', `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/create-payment-intent`);
+      
+      console.log('Request body:', {
+        planId: plan.id,
+        billingCycle: billingCycle,
+        amount: amount * 100,
+        currency: 'jpy',
+      });
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/create-payment-intent`, {
         method: 'POST',
         headers: {
@@ -85,21 +69,24 @@ const UpgradePageContent: React.FC = () => {
         },
         body: JSON.stringify({
           planId: plan.id,
-          billingCycle: cycle,
-          amount: amount * 100, // Stripeは最小通貨単位で処理
+          billingCycle: billingCycle,
+          amount: amount * 100,
           currency: 'jpy',
-          user_id: 'example_user_id' // ユーザーIDを追加
         }),
       });
 
       if (!response.ok) {
+        console.error('Failed to create PaymentIntent:', response.status, response.statusText);
         throw new Error('決済の準備に失敗しました。');
       }
 
       const data = await response.json();
       setClientSecret(data.clientSecret);
-    } catch (err) {
-      console.error('PaymentIntent作成エラー:', err);
+
+      console.log('PaymentIntent created successfully:', data);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : '予期しないエラーが発生しました。';
+      console.error('PaymentIntent作成エラー:', errorMsg);
       setError('決済の準備に失敗しました。');
     } finally {
       setIsLoading(false);
@@ -110,6 +97,7 @@ const UpgradePageContent: React.FC = () => {
    * 決済成功時の処理
    */
   const handlePaymentSuccess = (): void => {
+    console.log('Payment succeeded, redirecting to success page!!!.');
     router.push('/billing/success');
   };
 
@@ -174,9 +162,9 @@ const UpgradePageContent: React.FC = () => {
           <p className='text-gray-600'>安全な決済でKPT Connectをさらに活用しましょう</p>
         </div>
 
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+        <div className='flex flex-col lg:flex-row gap-8'>
           {/* プラン詳細 */}
-          <div className='bg-white rounded-lg shadow-lg p-6'>
+          <div className='bg-white rounded-lg shadow-lg p-6 flex-1'>
             <h2 className='text-xl font-semibold text-gray-900 mb-4'>選択されたプラン</h2>
 
             <div className='border-2 border-indigo-200 rounded-lg p-4 mb-6'>
@@ -194,122 +182,80 @@ const UpgradePageContent: React.FC = () => {
 
               <div className='flex items-baseline mb-4'>
                 <span className='text-3xl font-bold text-indigo-600'>
-                  ¥
-                  {(billingCycle === 'yearly'
-                    ? selectedPlan.yearlyPrice
-                    : selectedPlan.monthlyPrice
-                  ).toLocaleString()}
+                  ¥{selectedPlan.monthlyPrice.toLocaleString()}
                 </span>
-                <span className='text-gray-500 ml-1'>
-                  /{billingCycle === 'yearly' ? '年' : '月'}
-                </span>
+                <span className='text-gray-500 ml-1'>/月</span>
               </div>
 
-              {billingCycle === 'yearly' && selectedPlan.monthlyPrice > 0 && (
-                <p className='text-sm text-green-600 mb-4'>
-                  月額プランより
-                  {Math.round(
-                    ((selectedPlan.monthlyPrice * 12 - selectedPlan.yearlyPrice) /
-                      (selectedPlan.monthlyPrice * 12)) *
-                      100
-                  )}
-                  %お得！
-                </p>
-              )}
-            </div>
+              {/* 機能一覧 */}
+              <div>
+                <h4 className='text-sm font-semibold text-gray-900 mb-3'>含まれる機能:</h4>
+                <ul className='space-y-2'>
+                  {selectedPlan.features
+                    .filter(f => f.included)
+                    .map((feature, index) => (
+                      <li key={index} className='flex items-start'>
+                        <svg
+                          className='h-4 w-4 text-green-500 mt-0.5 mr-2 flex-shrink-0'
+                          fill='currentColor'
+                          viewBox='0 0 20 20'
+                        >
+                          <path
+                            fillRule='evenodd'
+                            d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                            clipRule='evenodd'
+                          />
+                        </svg>
+                        <div>
+                          <span className='text-sm text-gray-700'>{feature.name}</span>
+                          {(feature as any).limit && (
+                            <span className='text-xs text-gray-500 ml-1'>
+                              (最大{(feature as any).limit}件)
+                            </span>
+                          )}
+                          <p className='text-xs text-gray-500'>{feature.description}</p>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
 
-            {/* 機能一覧 */}
-            <div>
-              <h4 className='text-sm font-semibold text-gray-900 mb-3'>含まれる機能:</h4>
-              <ul className='space-y-2'>
-                {selectedPlan.features
-                  .filter(f => f.included)
-                  .map((feature, index) => (
-                    <li key={index} className='flex items-start'>
-                      <svg
-                        className='h-4 w-4 text-green-500 mt-0.5 mr-2 flex-shrink-0'
-                        fill='currentColor'
-                        viewBox='0 0 20 20'
-                      >
-                        <path
-                          fillRule='evenodd'
-                          d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
-                          clipRule='evenodd'
-                        />
-                      </svg>
-                      <div>
-                        <span className='text-sm text-gray-700'>{feature.name}</span>
-                        {(feature as any).limit && (
-                          <span className='text-xs text-gray-500 ml-1'>
-                            (最大{(feature as any).limit}件)
-                          </span>
-                        )}
-                        <p className='text-xs text-gray-500'>{feature.description}</p>
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-
-            {/* 請求サイクル変更 */}
-            <div className='mt-6 pt-6 border-t border-gray-200'>
-              <h4 className='text-sm font-semibold text-gray-900 mb-3'>請求サイクル:</h4>
-              <div className='flex space-x-4'>
-                <button
-                  onClick={() => setBillingCycle('monthly')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    billingCycle === 'monthly'
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  月額
-                </button>
-                <button
-                  onClick={() => setBillingCycle('yearly')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    billingCycle === 'yearly'
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  年額
-                </button>
+              {/* 請求サイクル変更 */}
+              <div className='mt-6 pt-6 border-t border-gray-200'>
+                <h4 className='text-sm font-semibold text-gray-900 mb-3'>請求サイクル:</h4>
+                <div className='flex space-x-4'>
+                  <button
+                    className='px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-600 text-white'
+                  >
+                    月額
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 決済フォーム */}
-          <div>
-            {clientSecret && (
-              <Elements
-                stripe={stripePromise}
-                options={{
-                  clientSecret,
-                  appearance: {
-                    theme: 'stripe',
-                    variables: {
-                      colorPrimary: '#4f46e5',
-                    },
+          <div className='bg-white rounded-lg shadow-lg p-6 flex-1'>
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret,
+                appearance: {
+                  theme: 'stripe',
+                  variables: {
+                    colorPrimary: '#4f46e5',
                   },
-                }}
-              >
-                <CheckoutForm
-                  plan={selectedPlan}
-                  billingCycle={billingCycle}
-                  onSuccess={handlePaymentSuccess}
-                  onError={handlePaymentError}
-                />
-              </Elements>
-            )}
+                },
+              }}
+            >
+              <CheckoutForm
+                plan={selectedPlan}
+                billingCycle={billingCycle}
+                onSuccess={handlePaymentSuccess}
+                onError={handlePaymentError}
+              />
+            </Elements>
           </div>
-        </div>
-
-        {/* キャンセルリンク */}
-        <div className='text-center mt-8'>
-          <Link href='/pricing' className='text-gray-500 hover:text-gray-700 text-sm'>
-            ← 料金プランに戻る
-          </Link>
         </div>
       </div>
     </div>

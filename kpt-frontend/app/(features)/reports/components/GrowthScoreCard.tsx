@@ -118,8 +118,7 @@ const GrowthScoreCard: React.FC<GrowthScoreCardProps> = ({ growthScore }) => {
           <div className='flex-1'>
             <div className='w-full bg-gray-200 rounded-full h-4'>
               <div
-                className={`h-4 rounded-full transition-all duration-500 ${getProgressColor(growthScore.overall)}`}
-                style={{ width: `${growthScore.overall}%` }}
+                className={`h-4 rounded-full transition-all duration-500 ${getProgressColor(growthScore.overall)} w-[${growthScore.overall}%]`}
               ></div>
             </div>
             <div className='flex justify-between text-xs text-gray-500 mt-2'>
@@ -156,8 +155,7 @@ const GrowthScoreCard: React.FC<GrowthScoreCardProps> = ({ growthScore }) => {
 
           <div className='w-full bg-blue-200 rounded-full h-3 mb-3'>
             <div
-              className='bg-blue-500 h-3 rounded-full transition-all duration-500'
-              style={{ width: `${growthScore.keep}%` }}
+              className={`bg-blue-500 h-3 rounded-full transition-all duration-500 w-[${growthScore.keep}%]`}
             ></div>
           </div>
 
@@ -189,8 +187,7 @@ const GrowthScoreCard: React.FC<GrowthScoreCardProps> = ({ growthScore }) => {
 
           <div className='w-full bg-red-200 rounded-full h-3 mb-3'>
             <div
-              className='bg-red-500 h-3 rounded-full transition-all duration-500'
-              style={{ width: `${growthScore.problem}%` }}
+              className={`bg-red-500 h-3 rounded-full transition-all duration-500 w-[${growthScore.problem}%]`}
             ></div>
           </div>
 
@@ -220,8 +217,7 @@ const GrowthScoreCard: React.FC<GrowthScoreCardProps> = ({ growthScore }) => {
 
           <div className='w-full bg-green-200 rounded-full h-3 mb-3'>
             <div
-              className='bg-green-500 h-3 rounded-full transition-all duration-500'
-              style={{ width: `${growthScore.try}%` }}
+              className={`bg-green-500 h-3 rounded-full transition-all duration-500 w-[${growthScore.try}%]`}
             ></div>
           </div>
 
