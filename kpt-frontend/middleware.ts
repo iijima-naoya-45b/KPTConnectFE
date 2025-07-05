@@ -16,8 +16,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    console.log('JWT value:', jwt.value);
-
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/me`, {
             method: 'GET',

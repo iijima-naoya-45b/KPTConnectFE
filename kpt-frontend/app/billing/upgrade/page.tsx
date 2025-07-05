@@ -67,6 +67,7 @@ const UpgradePageContent: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           planId: plan.id,
           billingCycle: billingCycle,
