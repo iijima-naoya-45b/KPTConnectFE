@@ -16,8 +16,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    console.log('JWT value:', jwt.value);
-
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/me`, {
             method: 'GET',
@@ -29,7 +27,6 @@ export async function middleware(request: NextRequest) {
         });
 
         if (!response.ok) {
-            console.log('Failed to authenticate, response not ok');
             throw new Error('Failed to authenticate');
         }
     } catch (error) {
