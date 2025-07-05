@@ -4,24 +4,27 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
     const url = new URL(request.url);
 
+    const jwt = request.cookies.get('jwt');
+
     // Skip authentication for the root path
     if (url.pathname === '/' || url.pathname === '/dashboard' || url.pathname === '/onboarding' || url.pathname === '/pricing') {
         return NextResponse.next();
     }
 
-    const jwt = request.cookies.get('jwt');
 
-    if (!jwt) {
+    if (!jwt || !jwt.value) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
+
+    console.log('JWT value:', jwt.value);
 
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/me`, {
             method: 'GET',
-            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                Cookie: `jwt=${encodeURIComponent(jwt.value)}`
             },
         });
 
@@ -30,7 +33,6 @@ export async function middleware(request: NextRequest) {
             throw new Error('Failed to authenticate');
         }
     } catch (error) {
-        console.error('Middleware: Authentication failed', error);
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
