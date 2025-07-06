@@ -1,19 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { formatJapaneseDate } from '@/utils';
-import { toast, ToastContainer } from 'react-toastify';
+import { RepoInput } from './components/RepoInput';
+import { useIssues } from './hooks/useIssues';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-interface Issue {
-  id: number;
-  title: string;
-  body: string;
-  state: 'open' | 'closed';
-  created_at: string;
-  updated_at: string;
-  html_url: string;
-}
+import { Issue } from './types';
 
 const statusLabels = {
   open: 'オープン',
@@ -26,117 +19,12 @@ const statusColors = {
 };
 
 export default function IssueListPage() {
-  const [issues, setIssues] = useState<Issue[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [repoUrl, setRepoUrl] = useState('');
+  const { issues, loading, error, fetchIssues, saveIssues } = useIssues(repoUrl);
 
   const handleRepoUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRepoUrl(event.target.value);
   };
-
-  const getCookie = (name: string) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift();
-  };
-
-  const extractRepoPath = (url: string) => {
-    const match = url.match(/github\.com\/(.+)\/(.+)/);
-    return match ? `${match[1]}/${match[2]}` : '';
-  };
-
-  const fetchIssues = async () => {
-    const repoPath = extractRepoPath(repoUrl);
-    if (!repoPath) {
-      setError('リポジトリのパスを正しく入力してください');
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/github/issues?repo=${encodeURIComponent(repoPath)}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        credentials: 'include', // Include credentials in the request
-      });
-
-      if (!response.ok) {
-        throw new Error('Issueの取得に失敗しました');
-      }
-
-      const data = await response.json();
-      setIssues(data.issues);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const saveIssues = async (issues: Issue[]) => {
-    const filteredIssues = issues.map(issue => ({
-      title: issue.title,
-      body: issue.body,
-      state: issue.state
-    }));
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/github/save_issues`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ issues: filteredIssues }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Issueの保存に失敗しました');
-      }
-
-      toast.success('Issueが保存されました');
-    } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error('予期せぬエラーが発生しました');
-      }
-    }
-  };
-
-  useEffect(() => {
-    const fetchSavedIssues = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/github/index`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error('Issueの取得に失敗しました');
-        }
-
-        const data = await response.json();
-        setIssues(data.issues);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSavedIssues();
-  }, []);
 
   if (error) {
     return (
@@ -162,37 +50,24 @@ export default function IssueListPage() {
         </div>
 
         {/* リポジトリURL入力フィールドとボタン */}
-        <div className="mb-6">
-          <label htmlFor="repoUrl" className="block text-sm font-medium text-gray-700">
-            GitHubリポジトリのURL
-          </label>
-          <input
-            type="text"
-            name="repoUrl"
-            id="repoUrl"
-            value={repoUrl}
-            onChange={handleRepoUrlChange}
-            className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-            placeholder="https://api.github.com/repos/your-username/your-repo"
-          />
-          <button
-            onClick={fetchIssues}
-            className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Issueを取得
-          </button>
-          <button
-            onClick={() => saveIssues(issues)}
-            className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-          >
-            Issueを保存
-          </button>
-        </div>
+        <RepoInput
+          repoUrl={repoUrl}
+          onRepoUrlChange={handleRepoUrlChange}
+          onFetchIssues={fetchIssues}
+          onSaveIssues={saveIssues}
+        />
+
+        {/* Loading Spinner */}
+        {loading && (
+          <div className='flex justify-center items-center h-64'>
+            <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600'></div>
+          </div>
+        )}
 
         {/* Issue一覧 */}
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul className="divide-y divide-gray-200">
-            {issues.map((issue) => (
+            {issues.map((issue: Issue) => (
               <li key={issue.id}>
                 <div className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
