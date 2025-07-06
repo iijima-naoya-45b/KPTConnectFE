@@ -51,4 +51,6 @@ export const saveIssuesToRepo = async (issues: Issue[]) => {
     if (!response.ok) {
         throw new Error('Issueの保存に失敗しました');
     }
+
+    return response.json();
 }; 

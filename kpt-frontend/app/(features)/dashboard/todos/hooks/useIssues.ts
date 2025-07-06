@@ -9,7 +9,8 @@ const extractRepoPath = (url: string) => {
 };
 
 export const useIssues = (repoUrl: string) => {
-    const [issues, setIssues] = useState<Issue[]>([]);
+    const [savedIssues, setSavedIssues] = useState<Issue[]>([]);
+    const [fetchedIssues, setFetchedIssues] = useState<Issue[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -18,7 +19,7 @@ export const useIssues = (repoUrl: string) => {
             setLoading(true);
             try {
                 const data = await fetchSavedIssues();
-                setIssues(data.issues);
+                setSavedIssues(data.issues);
             } catch (err) {
                 setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
             } finally {
@@ -42,7 +43,7 @@ export const useIssues = (repoUrl: string) => {
 
         try {
             const data = await fetchIssuesFromRepo(repoPath);
-            setIssues(data.issues);
+            setFetchedIssues(data.issues);
         } catch (err) {
             setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
         } finally {
@@ -52,12 +53,13 @@ export const useIssues = (repoUrl: string) => {
 
     const saveIssues = async () => {
         try {
-            await saveIssuesToRepo(issues);
+            const savedIssuesData = await saveIssuesToRepo(fetchedIssues);
             toast.success('Issueが保存されました');
+            setSavedIssues(savedIssuesData.issues);
         } catch (err) {
             toast.error(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
         }
     };
 
-    return { issues, loading, error, fetchIssues, saveIssues };
+    return { savedIssues, fetchedIssues, loading, error, fetchIssues, saveIssues };
 }; 

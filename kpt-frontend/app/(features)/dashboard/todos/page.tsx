@@ -20,21 +20,17 @@ const statusColors = {
 
 export default function IssueListPage() {
   const [repoUrl, setRepoUrl] = useState('');
-  const { issues, loading, error, fetchIssues, saveIssues } = useIssues(repoUrl);
+  const { savedIssues, fetchedIssues, loading, error, fetchIssues, saveIssues } = useIssues(repoUrl);
 
   const handleRepoUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRepoUrl(event.target.value);
   };
 
-  if (error) {
-    return (
-      <div className="min-h-[calc(100vh-116px-64px)] bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600">{error}</p>
-        </div>
-      </div>
-    );
-  }
+  const handleSaveIssues = async () => {
+    await saveIssues();
+    console.log('Fetched Issues:', fetchedIssues);
+    console.log('Saved Issues:', savedIssues);
+  };
 
   return (
     <div className="min-h-[calc(100vh-116px-64px)] bg-gray-50 py-12">
@@ -54,8 +50,13 @@ export default function IssueListPage() {
           repoUrl={repoUrl}
           onRepoUrlChange={handleRepoUrlChange}
           onFetchIssues={fetchIssues}
-          onSaveIssues={saveIssues}
+          onSaveIssues={handleSaveIssues} // Use the new save handler
         />
+
+        {/* Error Message */}
+        {error && (
+          <div className="text-red-600 px-4 py-2">{error}</div> // Display error below URL input
+        )}
 
         {/* Loading Spinner */}
         {loading && (
@@ -64,10 +65,61 @@ export default function IssueListPage() {
           </div>
         )}
 
-        {/* Issue一覧 */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
+        {/* Saved Issues */}
+        <div className="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+          <h2 className="text-xl font-bold text-gray-900 px-4 py-2">取得Issue</h2>
           <ul className="divide-y divide-gray-200">
-            {issues.map((issue: Issue) => (
+            {fetchedIssues && fetchedIssues.map((issue: Issue) => (
+              <li key={issue.id}>
+                <div className="px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-medium text-gray-900 truncate">
+                        {issue.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-600">
+                        {issue.body}
+                      </p>
+                    </div>
+                    <div className="ml-4 flex-shrink-0">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[issue.state]}`}
+                      >
+                        {statusLabels[issue.state]}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-2 sm:flex sm:justify-between">
+                    <div className="sm:flex">
+                      <p className="flex items-center text-sm text-gray-500">
+                        作成日: {formatJapaneseDate(issue.created_at)}
+                      </p>
+                    </div>
+                    <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                      <p>
+                        更新日: {formatJapaneseDate(issue.updated_at)}
+                      </p>
+                      <a
+                        href={issue.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-4 text-blue-500 hover:underline"
+                      >
+                        View on GitHub
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Fetched Issues */}
+        <div className="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+          <h2 className="text-xl font-bold text-gray-900 px-4 py-2">保存Issue</h2>
+          <ul className="divide-y divide-gray-200">
+            {savedIssues && savedIssues.map((issue: Issue) => (
               <li key={issue.id}>
                 <div className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
