@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Elements } from '@stripe/react-stripe-js';
 import { getStripe } from '@/lib/stripe';
 import { PRICING_PLANS } from '@/lib/constants';
-import CheckoutForm from '@/components/billing/CheckoutForm';
+import CheckoutForm from '@/app/(features)/billing/CheckoutForm';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 import type { Plan } from '@/types';
@@ -14,10 +14,44 @@ const UpgradePageContent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [billingCycle] = useState<'monthly'>('monthly');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+
+  const createPaymentIntent = useCallback(async (plan: Plan): Promise<void> => {
+    try {
+      const amount = plan.monthlyPrice;
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/create-subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          planId: plan.id,
+          amount: amount * 100,
+          currency: 'jpy',
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('createPaymentIntent: Failed to create PaymentIntent:', response.status, response.statusText);
+        throw new Error(`createPaymentIntent: 決済の準備に失敗しました。ステータス: ${response.status}, ステータステキスト: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setClientSecret(data.clientSecret);
+
+      console.log('createPaymentIntent: PaymentIntent created successfully:', data);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : '予期しないエラーが発生しました。';
+      console.error('createPaymentIntent: PaymentIntent作成エラー:', errorMsg);
+      setError(`createPaymentIntent: 決済の準備に失敗しました。エラーメッセージ: ${errorMsg}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!searchParams) return;
@@ -29,70 +63,25 @@ const UpgradePageContent: React.FC = () => {
       return;
     }
 
-    const plan = Object.values(PRICING_PLANS).find(p => p.id === planId);
-    if (!plan) {
+    const foundPlan = Object.values(PRICING_PLANS).find(p => p.id === planId);
+    if (!foundPlan) {
       setError('無効なプランが選択されました。');
       setIsLoading(false);
       return;
     }
 
-    setSelectedPlan(plan as Plan);
+    const plan: Plan = foundPlan;
+
+    setSelectedPlan(plan);
 
     createPaymentIntent(plan);
-  }, [searchParams]);
+  }, [searchParams, createPaymentIntent]);
 
   useEffect(() => {
     if (!selectedPlan) {
       setSelectedPlan(PRICING_PLANS['PRO']);
     }
   }, [selectedPlan]);
-
-  const createPaymentIntent = async (plan: Plan): Promise<void> => {
-    try {
-      const amount = plan.monthlyPrice;
-
-      console.log('Creating PaymentIntent with plan:', plan, 'and cycle:', billingCycle);
-      
-      console.log('Sending request to:', `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/create-payment-intent`);
-      
-      console.log('Request body:', {
-        planId: plan.id,
-        billingCycle: billingCycle,
-        amount: amount * 100,
-        currency: 'jpy',
-      });
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/create-payment-intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          planId: plan.id,
-          billingCycle: billingCycle,
-          amount: amount * 100,
-          currency: 'jpy',
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('Failed to create PaymentIntent:', response.status, response.statusText);
-        throw new Error('決済の準備に失敗しました。');
-      }
-
-      const data = await response.json();
-      setClientSecret(data.clientSecret);
-
-      console.log('PaymentIntent created successfully:', data);
-    } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : '予期しないエラーが発生しました。';
-      console.error('PaymentIntent作成エラー:', errorMsg);
-      setError('決済の準備に失敗しました。');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   /**
    * 決済成功時の処理
@@ -251,7 +240,6 @@ const UpgradePageContent: React.FC = () => {
             >
               <CheckoutForm
                 plan={selectedPlan}
-                billingCycle={billingCycle}
                 onSuccess={handlePaymentSuccess}
                 onError={handlePaymentError}
               />

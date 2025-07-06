@@ -7,13 +7,11 @@ import type { Plan } from '@/types';
 
 interface CheckoutFormProps {
   plan: Plan;
-  billingCycle: 'monthly' | 'yearly';
   onSuccess?: () => void;
   onError?: (error: string) => void;
 }
 
-
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ plan, billingCycle, onSuccess, onError }) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ plan, onSuccess, onError }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -21,7 +19,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ plan, billingCycle, onSucce
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const getPrice = (): number => {
-    return billingCycle === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
+    return plan.monthlyPrice;
   };
 
   const handleSubmit = async (event: React.FormEvent): Promise<void> => {
@@ -67,17 +65,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ plan, billingCycle, onSucce
         <p className='text-sm text-gray-600 mb-3'>{plan.description}</p>
         <div className='flex justify-between items-center'>
           <span className='text-2xl font-bold text-indigo-600'>¥{getPrice().toLocaleString()}</span>
-          <span className='text-sm text-gray-500'>/{billingCycle === 'yearly' ? '年' : '月'}</span>
+          <span className='text-sm text-gray-500'>/月</span>
         </div>
-        {billingCycle === 'yearly' && plan.monthlyPrice > 0 && (
-          <p className='text-xs text-green-600 mt-1'>
-            月額プランより
-            {Math.round(
-              ((plan.monthlyPrice * 12 - plan.yearlyPrice) / (plan.monthlyPrice * 12)) * 100
-            )}
-            %お得
-          </p>
-        )}
       </div>
 
       <form onSubmit={handleSubmit} className='space-y-6'>

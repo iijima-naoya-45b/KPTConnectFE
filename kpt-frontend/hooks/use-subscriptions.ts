@@ -45,7 +45,12 @@ export interface Plan {
     description: string;
     price_monthly: number;
     price_yearly: number;
-    features: string[];
+    features: readonly {
+        name: string;
+        description: string;
+        included: boolean;
+        limit?: number;
+    }[];
     limitations: {
         max_kpt_sessions?: number;
         max_work_logs?: number;
@@ -63,6 +68,8 @@ export interface Plan {
     price_monthly_formatted?: string;
     price_yearly_formatted?: string;
     yearly_discount_percentage?: number;
+    monthlyPrice: number;
+    yearlyPrice: number;
 }
 
 /**

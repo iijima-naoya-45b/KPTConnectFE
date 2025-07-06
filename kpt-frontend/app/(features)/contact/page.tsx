@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ContactForm, ContactSubmitButton, type ContactFormData } from '../(features)/contact/components';
-import { PageHeader } from '../(features)/shared/components';
+import { ContactForm, ContactSubmitButton, type ContactFormData } from './components';
+import { PageHeader } from '../shared/components';
 import { useToast } from '@/components/toast';
 
 const ContactPage: React.FC = () => {

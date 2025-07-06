@@ -1,6 +1,3 @@
-/** アプリケーション名 */
-export const APP_NAME = 'KPT Connect' as const;
-
 /** アプリケーションバージョン */
 export const APP_VERSION = '1.0.0' as const;
 
@@ -13,19 +10,7 @@ export const APP_DESCRIPTION = 'チーム振り返りを効率化するKPTプラ
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || ('' as const);
 
-/** APIタイムアウト時間（ミリ秒） */
-export const API_TIMEOUT = 30000 as const;
-
-/** APIリトライ回数 */
-export const API_RETRY_COUNT = 3 as const;
-
 // ===== ページネーション関連定数 =====
-
-/** デフォルトページサイズ */
-export const DEFAULT_PAGE_SIZE = 20 as const;
-
-/** 最大ページサイズ */
-export const MAX_PAGE_SIZE = 100 as const;
 
 /** ページサイズオプション */
 export const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const;
@@ -265,14 +250,6 @@ export const TIMEZONE = 'Asia/Tokyo' as const;
 
 // ===== ファイル関連定数 =====
 
-/** 許可されるファイル形式 */
-export const ALLOWED_FILE_TYPES = {
-  /** 画像ファイル */
-  IMAGES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-  /** ドキュメントファイル */
-  DOCUMENTS: ['application/pdf', 'text/plain', 'application/msword'],
-} as const;
-
 /** ファイルサイズ制限（バイト） */
 export const FILE_SIZE_LIMITS = {
   /** プロフィール画像 */
@@ -328,6 +305,7 @@ export const PRICING_PLANS = {
   FREE: {
     id: 'free',
     name: 'フリープラン',
+    display_name: 'フリープラン',
     type: 'free' as const,
     monthlyPrice: 0,
     yearlyPrice: 0,
@@ -341,12 +319,16 @@ export const PRICING_PLANS = {
       { name: 'API連携', description: '外部サービスとの連携', included: false },
       { name: '優先サポート', description: '24時間以内の回答保証', included: false },
     ],
+    limitations: {},
+    stripe_price_id_monthly: '',
+    stripe_price_id_yearly: '',
     isPopular: false,
     isRecommended: false,
   },
   PRO: {
     id: 'pro',
     name: 'プロプラン',
+    display_name: 'プロプラン',
     type: 'pro' as const,
     monthlyPrice: 980,
     yearlyPrice: 9800,
@@ -360,6 +342,9 @@ export const PRICING_PLANS = {
       { name: 'API連携', description: '外部サービスとの連携', included: true, limit: 3 },
       { name: '優先サポート', description: '24時間以内の回答保証', included: false },
     ],
+    limitations: {},
+    stripe_price_id_monthly: 'price_pro_monthly_test',
+    stripe_price_id_yearly: 'price_pro_yearly_test',
     isPopular: true,
     isRecommended: false,
   },

@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import KPTReviewForm from './components/KPTReviewForm';
 import { KPTReviewFormValues } from './components/KPTReviewForm';
-import { useFlashMessageStore } from '../../../../store/useFlashMessageStore';
 
 // KPTセッションAPIの型定義（必要に応じて修正）
 type KptSessionRequest = {
@@ -26,7 +25,6 @@ const KPTReviewPage: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
-  const setFlashMessage = useFlashMessageStore((state: any) => state.setFlashMessage);
 
   // フォーム送信時の処理
   const handleSubmit = async (data: KPTReviewFormValues) => {
@@ -50,7 +48,6 @@ const KPTReviewPage: React.FC = () => {
       const result: KptSessionResult = await kptSessionsApi.createKptSession(requestData);
 
       if (result.success) {
-        setFlashMessage(result.message || 'KPT振り返りを保存しました');
         router.push('/dashboard');
       } else {
         setError(result.message || '保存に失敗しました');

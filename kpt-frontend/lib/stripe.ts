@@ -25,21 +25,3 @@ export const STRIPE_PRICE_IDS = {
   ENTERPRISE_MONTHLY: 'price_enterprise_monthly_test',
   ENTERPRISE_YEARLY: 'price_enterprise_yearly_test',
 } as const;
-
-/**
- * Stripe設定
- */
-export const STRIPE_CONFIG = {
-  /** 通貨 */
-  currency: 'jpy',
-  /** 支払い方法 */
-  paymentMethods: ['card'],
-  /** 自動税計算 */
-  automaticTax: {
-    enabled: true,
-  },
-  /** 請求先住所収集 */
-  billingAddressCollection: 'required' as const,
-  /** 顧客作成 */
-  customerCreation: 'always' as const,
-} as const; 
