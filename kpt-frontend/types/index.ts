@@ -33,15 +33,6 @@ export interface PaginationInfo {
   hasPrevious: boolean;
 }
 
-/**
- * ページネーション付きレスポンス
- * @template T - データの型
- */
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
-  /** ページネーション情報 */
-  pagination: PaginationInfo;
-}
-
 // ===== ユーザー関連型定義 =====
 
 /**
@@ -72,18 +63,6 @@ export interface User {
  * ユーザーロール
  */
 export type UserRole = 'admin' | 'moderator' | 'member' | 'guest';
-
-/**
- * ユーザープロフィール更新データ
- */
-export interface UserProfileUpdateData {
-  /** 表示名 */
-  displayName?: string;
-  /** プロフィール画像URL */
-  avatarUrl?: string;
-  /** 自己紹介 */
-  bio?: string;
-}
 
 // ===== KPT関連型定義 =====
 
@@ -163,49 +142,6 @@ export interface KptSession {
 export type SessionStatus = 'draft' | 'active' | 'completed' | 'archived';
 
 // ===== UI関連型定義 =====
-
-/**
- * ボタンのバリアント
- */
-export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
-
-/**
- * ボタンのサイズ
- */
-export type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
-
-/**
- * 入力フィールドのバリアント
- */
-export type InputVariant = 'default' | 'error' | 'success';
-
-/**
- * 通知のタイプ
- */
-export type NotificationType = 'info' | 'success' | 'warning' | 'error';
-
-/**
- * 通知データ
- */
-export interface NotificationData {
-  /** 通知ID */
-  id: string;
-  /** タイプ */
-  type: NotificationType;
-  /** タイトル */
-  title: string;
-  /** メッセージ */
-  message: string;
-  /** 自動削除時間（ミリ秒） */
-  duration?: number;
-  /** アクション */
-  action?: {
-    /** ラベル */
-    label: string;
-    /** クリックハンドラー */
-    onClick: () => void;
-  };
-}
 
 // ===== フォーム関連型定義 =====
 
@@ -308,122 +244,6 @@ export interface ValidationError {
 }
 
 // ===== ユーティリティ型 =====
-
-/**
- * 部分的にオプショナルな型
- * @template T - 元の型
- * @template K - オプショナルにするキー
- */
-export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
-/**
- * 部分的に必須な型
- * @template T - 元の型
- * @template K - 必須にするキー
- */
-export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>>;
-
-/**
- * 深い部分型
- * @template T - 元の型
- */
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-/**
- * 非null型
- * @template T - 元の型
- */
-export type NonNullable<T> = T extends null | undefined ? never : T;
-
-// ===== 課金・プラン関連型定義 =====
-
-/**
- * プランタイプ
- */
-export type PlanType = 'free' | 'pro' | 'enterprise';
-
-/**
- * 課金プラン
- */
-export interface Plan {
-  /** プランID */
-  id: string;
-  /** プラン名 */
-  name: string;
-  /** プランタイプ */
-  type: PlanType;
-  /** 月額料金（円） */
-  monthlyPrice: number;
-  /** 年額料金（円） */
-  yearlyPrice: number;
-  /** 説明 */
-  description: string;
-  /** 機能一覧 */
-  features: readonly PlanFeature[];
-  /** 人気プランフラグ */
-  isPopular?: boolean;
-  /** 推奨プランフラグ */
-  isRecommended?: boolean;
-}
-
-/**
- * プラン機能
- */
-export interface PlanFeature {
-  /** 機能名 */
-  name: string;
-  /** 説明 */
-  description: string;
-  /** 利用可能フラグ */
-  included: boolean;
-  /** 制限値（数値制限がある場合） */
-  limit?: number;
-}
-
-/**
- * ユーザーサブスクリプション
- */
-export interface UserSubscription {
-  /** サブスクリプションID */
-  id: string;
-  /** ユーザーID */
-  userId: string;
-  /** プランID */
-  planId: string;
-  /** プラン情報 */
-  plan: Plan;
-  /** ステータス */
-  status: SubscriptionStatus;
-  /** 開始日 */
-  startDate: string;
-  /** 終了日 */
-  endDate?: string;
-  /** 次回請求日 */
-  nextBillingDate?: string;
-  /** 請求サイクル */
-  billingCycle: BillingCycle;
-  /** 作成日時 */
-  createdAt: string;
-  /** 更新日時 */
-  updatedAt: string;
-}
-
-/**
- * サブスクリプションステータス
- */
-export type SubscriptionStatus =
-  | 'active'
-  | 'canceled'
-  | 'past_due'
-  | 'unpaid'
-  | 'trialing';
-
-/**
- * 請求サイクル
- */
-export type BillingCycle = 'monthly' | 'yearly';
 
 /**
  * 詳細レポートデータ
@@ -545,3 +365,18 @@ export type RecommendationCategory =
   | 'follow_up'
   | 'goal_setting'
   | 'reflection_depth';
+
+// Plan type definition
+export interface Plan {
+  id: string;
+  name: string;
+  yearlyPrice: number;
+  monthlyPrice: number;
+  description: string;
+  features: ReadonlyArray<{
+    name: string;
+    description: string;
+    included: boolean;
+    limit?: number;
+  }>;
+}

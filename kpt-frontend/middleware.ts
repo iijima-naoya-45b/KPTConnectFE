@@ -6,7 +6,6 @@ export async function middleware(request: NextRequest) {
 
     const jwt = request.cookies.get('jwt');
 
-    // Skip authentication for the root path
     if (url.pathname === '/' || url.pathname === '/dashboard' || url.pathname === '/onboarding' || url.pathname === '/pricing') {
         return NextResponse.next();
     }

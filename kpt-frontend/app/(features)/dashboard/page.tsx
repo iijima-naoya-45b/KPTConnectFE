@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FeatureGrid, featuresData } from './components';
-import { useFlashMessageStore } from '../../../store/useFlashMessageStore';
 import { toast } from "sonner";
 
 const DashboardPage: React.FC = () => {
-  const { flashMessage, clearFlashMessage } = useFlashMessageStore();
+  const [flashMessage, setFlashMessage] = useState<string | null>(null);
+
+  const clearFlashMessage = useCallback(() => setFlashMessage(null), []);
 
   useEffect(() => {
     if (flashMessage) {
