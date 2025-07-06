@@ -3,6 +3,18 @@ import { BarChart, Calendar, FileText,
 
 export const featuresData = [
   {
+    icon: <Target className='w-8 h-8 text-indigo-600' />,
+    title: '目標設定',
+    description: '学習目標や達成状況を確認',
+    href: '/dashboard/goals',
+  },
+  {
+    icon: <Bell className='w-8 h-8 text-indigo-600' />,
+    title: '通知設定',
+    description: '学習リマインダーと成長アラート',
+    href: '/notifications',
+  },
+  {
     icon: <FileText className='w-8 h-8 text-indigo-600' />,
     title: 'KPT作成',
     description: '新しいTodoを作成して管理',
@@ -31,17 +43,5 @@ export const featuresData = [
     title: '週次レポート',
     description: '週単位での目標達成状況とKPT分析',
     href: '/reports/weekly',
-  },
-  {
-    icon: <Target className='w-8 h-8 text-indigo-600' />,
-    title: '目標設定',
-    description: '学習目標や達成状況を確認',
-    href: '/dashboard/goals',
-  },
-  {
-    icon: <Bell className='w-8 h-8 text-indigo-600' />,
-    title: '通知設定',
-    description: '学習リマインダーと成長アラート',
-    href: '/notifications',
   },
 ];
