@@ -95,13 +95,6 @@ const tabContents = [
       >
         <div className="space-y-6">
           <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: KPTの記録は誰でも見られますか？</h3>
-            <p className="text-gray-700 leading-relaxed">
-              A: デフォルトではプライベートに設定されています。必要に応じて共有設定を変更できます。チーム開発の場合は、プロジェクトメンバーとの共有も可能です。
-            </p>
-          </div>
-          
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: 過去のKPT記録は編集できますか？</h3>
             <p className="text-gray-700 leading-relaxed">
               A: はい、過去の記録も編集可能です。ただし、編集履歴は保持されます。振り返りの内容をより正確に記録するために、いつでも更新できます。
@@ -111,49 +104,13 @@ const tabContents = [
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: KPTの振り返りはどのくらいの頻度で行うべきですか？</h3>
             <p className="text-gray-700 leading-relaxed">
-              A: 個人の開発スタイルに応じて調整してください。一般的には週1回、またはプロジェクトのマイルストーンごとに行うことをお勧めします。継続的な改善のためには、定期的な振り返りが効果的です。
+              A: 個人の開発スタイルに応じて調整してください。一般的には週1回ですが、毎日行うと良いです。
             </p>
           </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: GitHubとの連携は必須ですか？</h3>
-            <p className="text-gray-700 leading-relaxed">
-              A: いいえ、必須ではありません。KPT Connectは単体でも使用できます。GitHub連携は、IssueやPull RequestとKPTを紐付けて管理したい場合のオプション機能です。
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: 複数のプロジェクトを管理できますか？</h3>
-            <p className="text-gray-700 leading-relaxed">
-              A: はい、複数のプロジェクトを同時に管理できます。各プロジェクトごとにKPTの振り返りを作成し、プロジェクト別に進捗や課題を追跡できます。
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: データのエクスポートは可能ですか？</h3>
-            <p className="text-gray-700 leading-relaxed">
-              A: はい、KPTの記録をCSVやJSON形式でエクスポートできます。バックアップや他のツールとの連携にご利用いただけます。
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: 無料プランと有料プランの違いは何ですか？</h3>
-            <p className="text-gray-700 leading-relaxed">
-              A: 無料プランでは基本的なKPT機能とGitHub連携が利用できます。有料プランでは、高度な分析機能、チーム管理、優先サポートなどの追加機能をご利用いただけます。
-            </p>
-          </div>
-
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: アカウントを削除した場合、データはどうなりますか？</h3>
             <p className="text-gray-700 leading-relaxed">
               A: アカウント削除後、データは30日間保持されます。この期間内であれば、アカウントの復旧とデータの復元が可能です。30日経過後は、データが完全に削除され復旧できなくなります。削除前に必ずデータのエクスポートをお勧めします。
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Q: モバイルアプリはありますか？</h3>
-            <p className="text-gray-700 leading-relaxed">
-              A: 現在はWebアプリケーションのみの提供となっています。スマートフォンやタブレットからもブラウザでアクセスしてご利用いただけます。モバイルアプリの開発も検討中です。
             </p>
           </div>
         </div>

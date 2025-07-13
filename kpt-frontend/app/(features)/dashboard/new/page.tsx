@@ -48,6 +48,31 @@ const KPTReviewPage: React.FC = () => {
       const result: KptSessionResult = await kptSessionsApi.createKptSession(requestData);
 
       if (result.success) {
+        try {
+          // AI提案を取得するAPIを呼び出し
+          const aiRequestData = {
+            todo: {
+              keep: data.keep,
+              problem: data.problem,
+              try: data.try,
+              // 他の必要な情報を追加
+            }
+          };
+
+          const aiResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/todos/suggest`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(aiRequestData), // 必要なデータを含める
+          });
+          const aiData = await aiResponse.json();
+          // 提案をUIに反映する処理
+          console.log('AI提案:', aiData);
+        } catch (error) {
+          console.error('AI提案の取得に失敗しました:', error);
+        }
         router.push('/dashboard');
       } else {
         setError(result.message || '保存に失敗しました');
