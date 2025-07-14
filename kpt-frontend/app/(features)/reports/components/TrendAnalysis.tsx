@@ -14,7 +14,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
+import {  
   Chart as ChartJS,
   CategoryScale,
   LinearScale,

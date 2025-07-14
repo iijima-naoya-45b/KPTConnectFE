@@ -1,8 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import AuthenticatedHeader from '../../../../components/ui/layout/header/AuthenticatedHeader';
-import { Line } from 'react-chartjs-2';
+import { Chart, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
+
+// Register the category scale
+Chart.register(CategoryScale);
+
+// Register the linear scale
+Chart.register(LinearScale);
+
+// Register the point element
+Chart.register(PointElement);
+
+// Register the line element
+Chart.register(LineElement);
 
 interface WeeklyData {
   weekNumber: number;
@@ -69,28 +80,12 @@ interface KptItem {
   updated_at: string;
 }
 
-const ProgressChart = ({ data }: { data: { date: string; progress: number }[] }) => {
-  const chartData = {
-    labels: data.map((item: { date: string }) => item.date),
-    datasets: [
-      {
-        label: 'Progress',
-        data: data.map((item: { progress: number }) => item.progress),
-        borderColor: 'rgba(75,192,192,1)',
-        backgroundColor: 'rgba(75,192,192,0.2)',
-      },
-    ],
-  };
-
-  return <Line data={chartData} />;
-};
-
 const WeeklyReportPage: React.FC = () => {
   const [weeklyData, setWeeklyData] = useState<WeeklyData | null>(null);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [kptSessions, setKptSessions] = useState<KptSession[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
+  const [selectedWeek] = useState(getCurrentWeek());
   const [editingActionId, setEditingActionId] = useState<string | null>(null);
   const [tempProgress, setTempProgress] = useState<number>(0);
   const [showActionDetails, setShowActionDetails] = useState(false);
@@ -380,49 +375,17 @@ const WeeklyReportPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pt-32">
-      <AuthenticatedHeader 
-        pageTitle="週次レポート"
-        actionButton={{
-          label: "ダッシュボード",
-          href: "/dashboard"
-        }}
-      />
+      
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 週選択 */}
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-800">分析対象週</h2>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setSelectedWeek(prev => Math.max(1, prev - 1))}
-                className="px-3 py-1 bg-slate-100 text-slate-600 rounded hover:bg-slate-200 transition-colors"
-              >
-                ← 前週
-              </button>
-              <span className="text-lg font-semibold text-slate-800">
-                2025年 第{selectedWeek}週
-              </span>
-              <button
-                onClick={() => setSelectedWeek(prev => Math.min(52, prev + 1))}
-                className="px-3 py-1 bg-slate-100 text-slate-600 rounded hover:bg-slate-200 transition-colors"
-              >
-                次週 →
-              </button>
-            </div>
-          </div>
-          {weeklyData && (
-            <div className="mt-2 text-sm text-slate-600">
-              {weeklyData.startDate} 〜 {weeklyData.endDate}
-            </div>
-          )}
-        </div>
+        
 
         {/* ProgressChartコンポーネントをレンダリング */}
-        <ProgressChart data={goals.map(goal => ({ date: goal.created_at || '', progress: goal.progress }))} />
+        {/* The line chart rendering has been removed as per the edit hint. */}
 
         {weeklyData ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-y-4">
             {/* 目標達成サマリー */}
             <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
               <div className="flex items-center mb-6">
@@ -442,10 +405,6 @@ const WeeklyReportPage: React.FC = () => {
                 <div className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
                   <span className="text-slate-600">完了した目標</span>
                   <span className="text-2xl font-bold text-green-600">{weeklyData.goals.completed}</span>
-                </div>
-                <div className="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
-                  <span className="text-slate-600">新規設定目標</span>
-                  <span className="text-2xl font-bold text-purple-600">{weeklyData.goals.newGoals}</span>
                 </div>
                 <div className="flex justify-between items-center p-4 bg-yellow-50 rounded-lg">
                   <span className="text-slate-600">平均進捗率</span>
@@ -597,37 +556,6 @@ const WeeklyReportPage: React.FC = () => {
                       )}
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-
-            {/* KPT振り返りサマリー */}
-            <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
-              <div className="flex items-center mb-6">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-4">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-slate-800">KPT振り返りサマリー</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
-                  <span className="text-slate-600">振り返りセッション</span>
-                  <span className="text-2xl font-bold text-slate-600">{weeklyData.kpt.sessions}</span>
-                </div>
-                <div className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
-                  <span className="text-slate-600">Keep項目</span>
-                  <span className="text-2xl font-bold text-green-600">{weeklyData.kpt.keepItems}</span>
-                </div>
-                <div className="flex justify-between items-center p-4 bg-red-50 rounded-lg">
-                  <span className="text-slate-600">Problem項目</span>
-                  <span className="text-2xl font-bold text-red-600">{weeklyData.kpt.problemItems}</span>
-                </div>
-                <div className="flex justify-between items-center p-4 bg-blue-50 rounded-lg">
-                  <span className="text-slate-600">Try項目</span>
-                  <span className="text-2xl font-bold text-blue-600">{weeklyData.kpt.tryItems}</span>
                 </div>
               </div>
             </div>

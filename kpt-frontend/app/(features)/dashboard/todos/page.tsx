@@ -11,7 +11,7 @@ interface Todo {
   title: string;
   description: string;
   deadline: string;
-  status: 'open' | 'pending' | 'close'; // Update to match enum values
+  status: 'open' | 'pending' | 'close';
 }
 
 export default function TodoSuggestionPage() {
@@ -20,7 +20,7 @@ export default function TodoSuggestionPage() {
   const [error, setError] = useState<string | null>(null);
   const [newTodo, setNewTodo] = useState<Todo>({ title: '', description: '', deadline: '', status: "open" });
   const [showModal, setShowModal] = useState(false);
-  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  const [activeTab, setActiveTab] = useState<'open' | 'pending' | 'close'>('open');
 
   const fetchSuggestions = async () => {
     setLoading(true);
@@ -50,24 +50,13 @@ export default function TodoSuggestionPage() {
     fetchSuggestions();
   }, []);
 
-  const handleApprove = (todo: Todo) => {
-    setSelectedTodo(todo);
-    setShowModal(true);
-  };
-
   const confirmSave = () => {
-    if (selectedTodo) {
-      toast.success(`Todo '${selectedTodo.title}' を承認しました。`);
-      setShowModal(false);
-    }
+    toast.success(`Todo '${newTodo.title}' を承認しました。`);
+    setShowModal(false);
   };
 
   const cancelSave = () => {
     setShowModal(false);
-  };
-
-  const handleEdit = (todo: Todo) => {
-    toast.info(`Todo '${todo.title}' を編集します。`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -98,6 +87,78 @@ export default function TodoSuggestionPage() {
     }
   };
 
+  const handleStatusChange = async (todoId: string, newStatus: 'open' | 'pending' | 'close') => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/todos/${todoId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+        credentials: 'include',
+      });
+      if (response.ok) {
+        setSuggestions((prevSuggestions) =>
+          prevSuggestions.map((todo) =>
+            todo.id === todoId ? { ...todo, status: newStatus } : todo
+          )
+        );
+        toast.success('ステータスが更新されました。');
+      } else {
+        toast.error('ステータスの更新に失敗しました。');
+      }
+    } catch (err) {
+      toast.error('ステータスの更新中にエラーが発生しました。');
+    }
+  };
+
+  const handleDelete = async (todoId: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/todos/${todoId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (response.ok) {
+        setSuggestions((prevSuggestions) => prevSuggestions.filter((t) => t.id !== todoId));
+        toast.success('Todoが削除されました。');
+      } else {
+        toast.error('Todoの削除に失敗しました。');
+      }
+    } catch (err) {
+      toast.error('Todoの削除中にエラーが発生しました。');
+    }
+  };
+
+  const statusColors = {
+    open: 'text-blue-500',
+    pending: 'text-yellow-500',
+    close: 'text-red-500',
+  };
+
+  const TodoItem = ({ todo }: { todo: Todo }) => {
+    return (
+      <div>
+        <select
+          value={todo.status}
+          onChange={(e) => handleStatusChange(todo.id!, e.target.value as 'open' | 'pending' | 'close')}
+          className={`border rounded-md p-1 ${statusColors[todo.status]}`}
+        >
+          <option value="open" className="text-blue-500">Open</option>
+          <option value="pending" className="text-yellow-500">Pending</option>
+          <option value="close" className="text-red-500">Close</option>
+        </select>
+        <button
+          onClick={() => handleDelete(todo.id!)}
+          className="bg-red-500 text-white px-3 py-1 rounded-md ml-2"
+        >
+          削除
+        </button>
+      </div>
+    );
+  };
+
+  const filteredTodos = suggestions.filter(todo => todo.status === activeTab);
+
   return (
     <div className="min-h-[calc(100vh-116px-64px)] bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,12 +168,6 @@ export default function TodoSuggestionPage() {
             <p className="mt-1 text-sm text-gray-600">
               AIからの提案を確認し、承認または編集してください。
             </p>
-            <button
-              onClick={fetchSuggestions}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
-            >
-              提案を取得
-            </button>
           </div>
         </div>
 
@@ -174,8 +229,13 @@ export default function TodoSuggestionPage() {
           </div>
         ) : (
           <div className="bg-white shadow overflow-hidden sm:rounded-md mt-6">
+            <div className="flex space-x-4 mb-4">
+              <button onClick={() => setActiveTab('open')} className={`px-4 py-2 ${activeTab === 'open' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>Open</button>
+              <button onClick={() => setActiveTab('pending')} className={`px-4 py-2 ${activeTab === 'pending' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}`}>Pending</button>
+              <button onClick={() => setActiveTab('close')} className={`px-4 py-2 ${activeTab === 'close' ? 'bg-red-500 text-white' : 'bg-gray-200'}`}>Close</button>
+            </div>
             <ul className="divide-y divide-gray-200">
-              {suggestions.map((todo, index) => (
+              {filteredTodos.map((todo, index) => (
                 <li key={index} className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
@@ -189,18 +249,7 @@ export default function TodoSuggestionPage() {
                       </p>
                     </div>
                     <div className="ml-4 flex-shrink-0">
-                      <button
-                        onClick={() => handleApprove(todo)}
-                        className="bg-green-500 text-white px-3 py-1 rounded-md mr-2"
-                      >
-                        承認
-                      </button>
-                      <button
-                        onClick={() => handleEdit(todo)}
-                        className="bg-yellow-500 text-white px-3 py-1 rounded-md"
-                      >
-                        編集
-                      </button>
+                      <TodoItem todo={todo} />
                     </div>
                   </div>
                   <div className="mt-2 sm:flex sm:justify-between">

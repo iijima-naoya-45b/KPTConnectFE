@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 // 型定義をインポート
 interface KptSession {
@@ -21,81 +21,23 @@ interface KptSession {
   completed_at: string | null;
 }
 
-interface TimelineItem {
-  date: string;
-  type: 'kpt_session' | 'work_log';
-  title: string;
-  description?: string;
-  status?: string;
-  items_count?: number;
-  progress_rate?: number;
-  emotion_score?: number;
-  impact_score?: number;
-  url: string;
-}
-
-interface PersonalStats {
-  total_sessions: number;
-  total_items: number;
-  completion_rate: number;
-  current_streak: number;
-  longest_streak: number;
-  monthly_average: number;
-  most_productive_day: string;
-  popular_tags: Array<{ tag: string; count: number }>;
-  recent_achievements: Array<{
-    type: string;
-    title: string;
-    date: string;
-    description: string;
-  }>;
-}
-
-
-
-
-
-type ActiveTab = 'calendar' | 'timeline' | 'analytics';
 
 const CalendarPageInner = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   
   // 状態管理
-  const [activeTab, setActiveTab] = useState<ActiveTab>('calendar');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
+  // Add state for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   // データ状態
-  const [timelineData, setTimelineData] = useState<TimelineItem[]>([]);
-  const [personalStats, setPersonalStats] = useState<PersonalStats | null>(null);
   const [sessions, setSessions] = useState<KptSession[]>([]);
 
   // 注意: このAPI_BASE_URLは現在使用されていません（直接APIクライアントを使用）
-
-  // タブ変更ハンドラー（URLも更新）
-  const handleTabChange = (tab: ActiveTab) => {
-    setActiveTab(tab);
-    /**
-     * @description searchParamsがnullの場合は空のURLSearchParamsを使う。
-     */
-    const params = new URLSearchParams((searchParams as any)?.toString?.() || '');
-    params.set('tab', tab);
-    router.replace(`/calendar?${params.toString()}`);
-  };
-
-  // URLパラメータからタブを設定
-  useEffect(() => {
-    /**
-     * @description searchParamsがnullの場合は何もしない。
-     */
-    if (!searchParams) return;
-    const tabParam = searchParams.get('tab') as ActiveTab;
-    if (tabParam && ['calendar', 'timeline', 'analytics'].includes(tabParam)) {
-      setActiveTab(tabParam);
-    }
-  }, [searchParams]);
 
   // カレンダー日付クリック時のKPT作成ハンドラー
   const handleCalendarDateClick = (date: Date) => {
@@ -114,16 +56,17 @@ const CalendarPageInner = () => {
   };
 
   // APIリクエスト関数
-  const fetchSessions = async () => {
+  const fetchSessions = async (page = 1) => {
     try {
       setLoading(true);
       setError('');
       
       const { kptSessionsApi } = await import('@/lib/api/kpt-sessions');
-      const result = await kptSessionsApi.getKptSessions();
+      const result = await kptSessionsApi.getKptSessions({ page, per_page: 10 });
       
       if (result.success) {
         setSessions(result.data.sessions);
+        setTotalPages(result.data.pagination.total_pages);
       } else {
         setError(result.message || 'セッションの取得に失敗しました');
       }
@@ -132,51 +75,6 @@ const CalendarPageInner = () => {
       setError('セッションの取得中にエラーが発生しました');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchTimelineData = async () => {
-    try {
-      const startDate = `${new Date().getFullYear()}-01-01`;
-      const endDate = `${new Date().getFullYear()}-12-31`;
-      
-      const { calendarApi } = await import('@/lib/api/calendar');
-      const result = await calendarApi.getGrowthTimeline(startDate, endDate);
-      
-      if (result.success) {
-        setTimelineData(result.data.timeline);
-      } else {
-        console.error('タイムラインデータ取得エラー:', result.message);
-      }
-    } catch (err) {
-      console.error('タイムラインデータ取得エラー:', err);
-    }
-  };
-
-  const fetchPersonalStats = async () => {
-    try {
-      const { calendarApi } = await import('@/lib/api/calendar');
-      const result = await calendarApi.getPersonalStats();
-      
-      if (result.success) {
-        // API側のPersonalStatsを現在のPersonalStats型にマッピング
-        const mappedStats: PersonalStats = {
-          total_sessions: result.data.current_month?.kpt_sessions || 0,
-          total_items: 0, // APIから取得する必要があれば調整
-          completion_rate: result.data.growth_trends?.improvement_rate || 0,
-          current_streak: 0, // APIから取得する必要があれば調整
-          longest_streak: 0, // APIから取得する必要があれば調整
-          monthly_average: 0, // APIから取得する必要があれば調整
-          most_productive_day: 'Monday', // APIから取得する必要があれば調整
-          popular_tags: [],
-          recent_achievements: [],
-        };
-        setPersonalStats(mappedStats);
-      } else {
-        console.error('個人統計取得エラー:', result.message);
-      }
-    } catch (err) {
-      console.error('個人統計取得エラー:', err);
     }
   };
 
@@ -196,11 +94,6 @@ const CalendarPageInner = () => {
       case 'archived': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
-  };
-
-  const formatDateDisplay = (dateString: string): string => {
-    const date = new Date(dateString);
-    return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
   // セッションを日付別にマップ化
@@ -245,14 +138,8 @@ const CalendarPageInner = () => {
 
   // 初期化とデータ取得
   useEffect(() => {
-    if (activeTab === 'calendar') {
-      fetchSessions();
-    } else if (activeTab === 'timeline') {
-      fetchTimelineData();
-    } else if (activeTab === 'analytics') {
-      fetchPersonalStats();
-    }
-  }, [activeTab]);
+    fetchSessions();
+  }, []);
 
   const sessionsMap = createSessionsMap(sessions);
   const calendarDays = generateCalendarDays();
@@ -289,44 +176,6 @@ const CalendarPageInner = () => {
         </div>
       </header>
 
-      {/* タブナビゲーション */}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
-        <div className='border-b border-gray-200'>
-          <nav className='-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto'>
-            <button
-              onClick={() => handleTabChange('calendar')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                activeTab === 'calendar'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              📅 カレンダー
-            </button>
-            <button
-              onClick={() => handleTabChange('timeline')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                activeTab === 'timeline'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              📊 タイムライン
-            </button>
-            <button
-              onClick={() => handleTabChange('analytics')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                activeTab === 'analytics'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              📈 分析
-            </button>
-          </nav>
-        </div>
-      </div>
-
       {/* メインコンテンツ */}
       <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {error && (
@@ -341,273 +190,179 @@ const CalendarPageInner = () => {
           </div>
         ) : (
           <>
-            {/* カレンダータブ */}
-            {activeTab === 'calendar' && (
-              <div className='space-y-6'>
-                {/* 月次ナビゲーション */}
-                <div className='flex justify-between items-center'>
-                  <button
-                    onClick={() => changeMonth(-1)}
-                    className='flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'
-                  >
-                    ← 前月
-                  </button>
-                  <h2 className='text-xl font-semibold text-gray-900'>
-                    {currentDate.getFullYear()}年{currentDate.getMonth() + 1}月
-                  </h2>
-                  <button
-                    onClick={() => changeMonth(1)}
-                    className='flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'
-                  >
-                    次月 →
-                  </button>
+            {/* Render only the calendar view */}
+            <div className='space-y-6'>
+              {/* 月次ナビゲーション */}
+              <div className='flex justify-between items-center'>
+                <button
+                  onClick={() => changeMonth(-1)}
+                  className='flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'
+                >
+                  ← 前月
+                </button>
+                <h2 className='text-xl font-semibold text-gray-900'>
+                  {currentDate.getFullYear()}年{currentDate.getMonth() + 1}月
+                </h2>
+                <button
+                  onClick={() => changeMonth(1)}
+                  className='flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'
+                >
+                  次月 →
+                </button>
+              </div>
+
+              {/* カレンダーグリッド */}
+              <div className='bg-white rounded-lg shadow p-4 sm:p-6'>
+                <div className='mb-4 text-sm text-gray-600 text-center'>
+                  💡 日付をクリックすると、その日のKPTセッションを作成できます
                 </div>
+                <div className='grid grid-cols-7 gap-1 sm:gap-2'>
+                  {/* 曜日ヘッダー */}
+                  {['日', '月', '火', '水', '木', '金', '土'].map((day, index) => (
+                    <div key={index} className='p-2 text-center text-sm font-medium text-gray-500'>
+                      {day}
+                    </div>
+                  ))}
+                  {/* カレンダー日付 */}
+                  {calendarDays.map((day, index) => {
+                    const dateKey = formatDate(day);
+                    const daySessions = sessionsMap.get(dateKey) || [];
+                    const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+                    const isToday = formatDate(day) === formatDate(new Date());
 
-                {/* カレンダーグリッド */}
-                <div className='bg-white rounded-lg shadow p-4 sm:p-6'>
-                  <div className='mb-4 text-sm text-gray-600 text-center'>
-                    💡 日付をクリックすると、その日のKPTセッションを作成できます
-                  </div>
-                  <div className='grid grid-cols-7 gap-1 sm:gap-2'>
-                    {/* 曜日ヘッダー */}
-                    {['日', '月', '火', '水', '木', '金', '土'].map((day, index) => (
-                      <div key={index} className='p-2 text-center text-sm font-medium text-gray-500'>
-                        {day}
-                      </div>
-                    ))}
-                    
-                    {/* カレンダー日付 */}
-                    {calendarDays.map((day, index) => {
-                      const dateKey = formatDate(day);
-                      const daySessions = sessionsMap.get(dateKey) || [];
-                      const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-                      const isToday = formatDate(day) === formatDate(new Date());
-
-                      return (
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => handleCalendarDateClick(day)}
+                        className={`min-h-[80px] sm:min-h-[100px] p-1 border border-gray-200 cursor-pointer transition-colors duration-200 ${
+                          isCurrentMonth ? 'bg-white hover:bg-indigo-50' : 'bg-gray-50 hover:bg-indigo-50'
+                        } ${isToday ? 'bg-blue-50 border-blue-200' : ''} ${daySessions.length > 0 ? 'bg-blue-50' : ''} hover:border-indigo-300`}
+                        title={`${day.getMonth() + 1}/${day.getDate()} のKPTを作成`}
+                      >
                         <div
-                          key={index}
-                          onClick={() => handleCalendarDateClick(day)}
-                          className={`min-h-[80px] sm:min-h-[100px] p-1 border border-gray-200 cursor-pointer transition-colors duration-200 ${
-                            isCurrentMonth ? 'bg-white hover:bg-indigo-50' : 'bg-gray-50 hover:bg-indigo-50'
-                          } ${isToday ? 'bg-blue-50 border-blue-200' : ''} ${daySessions.length > 0 ? 'bg-blue-50' : ''} hover:border-indigo-300`}
-                          title={`${day.getMonth() + 1}/${day.getDate()} のKPTを作成`}
+                          className={`text-sm ${
+                            isCurrentMonth ? 'text-gray-900' : 'text-gray-400'
+                          } ${isToday ? 'font-bold text-blue-600' : ''}`}
                         >
-                          <div
-                            className={`text-sm ${
-                              isCurrentMonth ? 'text-gray-900' : 'text-gray-400'
-                            } ${isToday ? 'font-bold text-blue-600' : ''}`}
-                          >
-                            {day.getDate()}
-                          </div>
-                          
-                          {/* セッション表示 */}
-                          <div className='mt-1 space-y-1'>
-                            {daySessions.slice(0, 2).map(session => (
-                              <div
-                                key={session.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  router.push(`/dashboard/kpt/${session.id}`);
-                                }}
-                                className={`text-xs p-1 rounded cursor-pointer hover:opacity-75 transition-opacity duration-200 ${getStatusColor(session.status)}`}
-                                title={`${session.title} - クリックして詳細表示`}
-                              >
-                                <div className='truncate'>{session.title}</div>
-                              </div>
-                            ))}
-                            {daySessions.length > 2 && (
-                              <div className='text-xs text-gray-500 p-1'>
-                                +{daySessions.length - 2}個
-                              </div>
-                            )}
-                            
-                            {/* 新規作成ヒント（セッションがない場合） */}
-                            {daySessions.length === 0 && isCurrentMonth && (
-                              <div className='text-xs text-indigo-600 opacity-0 hover:opacity-100 transition-opacity duration-200 p-1'>
-                                + KPT作成
-                              </div>
-                            )}
-                          </div>
+                          {day.getDate()}
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* セッション一覧（テーブル形式） */}
-                <div className='bg-white rounded-lg shadow'>
-                  <div className='p-4 sm:p-6'>
-                    <h3 className='text-lg font-semibold text-gray-900 mb-4'>
-                      セッション一覧 ({sessions.length}件)
-                    </h3>
-                    
-                    {sessions.length === 0 ? (
-                      <div className='text-center py-8'>
-                        <p className='text-gray-500 mb-4'>まだKPTセッションが作成されていません。</p>
-                        <div className='space-y-2'>
-                          <button
-                            onClick={handleTodayCreate}
-                            className='block mx-auto bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700'
-                          >
-                            📅 今日のKPTセッションを作成
-                          </button>
-                          <Link
-                            href='/dashboard/kpt/new'
-                            className='block mx-auto text-indigo-600 hover:text-indigo-900 text-sm'
-                          >
-                            または任意の日付で作成
-                          </Link>
+                        {/* セッション表示 */}
+                        <div className='mt-1 space-y-1'>
+                          {daySessions.slice(0, 2).map(session => (
+                            <div
+                              key={session.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/dashboard/kpt/${session.id}`);
+                              }}
+                              className={`text-xs p-1 rounded cursor-pointer hover:opacity-75 transition-opacity duration-200 ${getStatusColor(session.status)}`}
+                              title={`${session.title} - クリックして詳細表示`}
+                            >
+                              <div className='truncate'>{session.title}</div>
+                            </div>
+                          ))}
+                          {daySessions.length > 2 && (
+                            <div className='text-xs text-gray-500 p-1'>
+                              +{daySessions.length - 2}個
+                            </div>
+                          )}
+                          {/* 新規作成ヒント（セッションがない場合） */}
+                          {daySessions.length === 0 && isCurrentMonth && (
+                            <div className='text-xs text-indigo-600 opacity-0 hover:opacity-100 transition-opacity duration-200 p-1'>
+                              + KPT作成
+                            </div>
+                          )}
                         </div>
                       </div>
-                    ) : (
-                      <div className='space-y-4'>
-                        {sessions.map(session => (
-                          <div
-                            key={session.id}
-                            className='bg-white rounded-lg shadow-md border border-gray-200 p-6 cursor-pointer hover:shadow-lg hover:border-indigo-300 transition-all duration-200'
-                            onClick={() => router.push(`/dashboard/kpt/${session.id}`)}
-                          >
-                            <div className='flex justify-between items-start'>
-                              <div className='flex-1 min-w-0'>
-                                <h3 className='text-lg font-semibold text-gray-900 mb-2'>
-                                  {session.title}
-                                </h3>
-                                {session.description && (
-                                  <p className='text-sm text-gray-600 mb-3 line-clamp-2'>
-                                    {session.description}
-                                  </p>
-                                )}
-                              </div>
-                              <div className='ml-4 flex-shrink-0'>
-                                <span className='text-sm text-gray-500'>
-                                  {session.session_date}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                    );
+                  })}
                 </div>
               </div>
-            )}
 
-            {/* タイムラインタブ */}
-            {activeTab === 'timeline' && (
-              <div className='space-y-6'>
-                <div className='bg-white rounded-lg shadow p-4 sm:p-6'>
-                  <h3 className='text-lg font-medium text-gray-900 mb-4'>成長タイムライン</h3>
-                  <div className='space-y-4'>
-                    {timelineData.length > 0 ? (
-                      timelineData.map((item, index) => (
-                        <div key={index} className='flex items-start space-x-4 p-4 border border-gray-200 rounded-lg'>
-                          <div className='flex-shrink-0'>
-                            <div className={`w-3 h-3 rounded-full ${item.type === 'kpt_session' ? 'bg-blue-500' : 'bg-green-500'}`}></div>
-                          </div>
-                          <div className='flex-1'>
-                            <div className='flex items-center justify-between'>
-                              <h4 className='text-sm font-medium text-gray-900'>{item.title}</h4>
-                              <span className='text-xs text-gray-500'>{formatDateDisplay(item.date)}</span>
-                            </div>
-                            {item.description && (
-                              <p className='text-sm text-gray-600 mt-1'>{item.description}</p>
-                            )}
-                            <div className='flex items-center space-x-4 mt-2 flex-wrap'>
-                              {item.status && (
-                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
-                                  {item.status}
-                                </span>
-                              )}
-                              {item.items_count !== undefined && (
-                                <span className='text-xs text-gray-500'>アイテム: {item.items_count}</span>
-                              )}
-                              {item.progress_rate !== undefined && (
-                                <span className='text-xs text-gray-500'>進捗: {item.progress_rate}%</span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p className='text-gray-500 text-center py-8'>タイムラインデータがありません</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 分析タブ */}
-            {activeTab === 'analytics' && (
-              <div className='space-y-6'>
-                {personalStats && (
-                  <>
-                    {/* 統計サマリー */}
-                    <div className='bg-white rounded-lg shadow p-4 sm:p-6'>
-                      <h3 className='text-lg font-medium text-gray-900 mb-4'>個人統計</h3>
-                      <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-                        <div className='text-center'>
-                          <div className='text-2xl font-bold text-indigo-600'>{personalStats.total_sessions}</div>
-                          <div className='text-sm text-gray-500'>総セッション数</div>
-                        </div>
-                        <div className='text-center'>
-                          <div className='text-2xl font-bold text-green-600'>{personalStats.total_items}</div>
-                          <div className='text-sm text-gray-500'>総アイテム数</div>
-                        </div>
-                        <div className='text-center'>
-                          <div className='text-2xl font-bold text-blue-600'>{personalStats.completion_rate}%</div>
-                          <div className='text-sm text-gray-500'>完了率</div>
-                        </div>
-                        <div className='text-center'>
-                          <div className='text-2xl font-bold text-purple-600'>{personalStats.current_streak}</div>
-                          <div className='text-sm text-gray-500'>現在の連続日数</div>
-                        </div>
+              {/* セッション一覧（テーブル形式） */}
+              <div className='bg-white rounded-lg shadow'>
+                <div className='p-4 sm:p-6'>
+                  <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+                    セッション一覧 ({sessions.length}件)
+                  </h3>
+                  {sessions.length === 0 ? (
+                    <div className='text-center py-8'>
+                      <p className='text-gray-500 mb-4'>まだKPTセッションが作成されていません。</p>
+                      <div className='space-y-2'>
+                        <button
+                          onClick={handleTodayCreate}
+                          className='block mx-auto bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700'
+                        >
+                          📅 今日のKPTセッションを作成
+                        </button>
+                        <Link
+                          href='/dashboard/kpt/new'
+                          className='block mx-auto text-indigo-600 hover:text-indigo-900 text-sm'
+                        >
+                          または任意の日付で作成
+                        </Link>
                       </div>
                     </div>
-
-                    {/* 人気タグ */}
-                    {personalStats.popular_tags.length > 0 && (
-                      <div className='bg-white rounded-lg shadow p-4 sm:p-6'>
-                        <h3 className='text-lg font-medium text-gray-900 mb-4'>よく使うタグ</h3>
-                        <div className='flex flex-wrap gap-2'>
-                          {personalStats.popular_tags.map((tag, index) => (
-                            <span
-                              key={index}
-                              className='inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800'
-                            >
-                              {tag.tag} ({tag.count})
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 最近の成果 */}
-                    {personalStats.recent_achievements.length > 0 && (
-                      <div className='bg-white rounded-lg shadow p-4 sm:p-6'>
-                        <h3 className='text-lg font-medium text-gray-900 mb-4'>最近の成果</h3>
-                        <div className='space-y-3'>
-                          {personalStats.recent_achievements.map((achievement, index) => (
-                            <div key={index} className='flex items-start space-x-3 p-3 bg-gray-50 rounded-lg'>
-                              <div className='flex-shrink-0'>
-                                <div className='w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center'>
-                                  🏆
-                                </div>
-                              </div>
-                              <div className='flex-1'>
-                                <h4 className='text-sm font-medium text-gray-900'>{achievement.title}</h4>
-                                <p className='text-sm text-gray-600'>{achievement.description}</p>
-                                <span className='text-xs text-gray-500'>{formatDateDisplay(achievement.date)}</span>
-                              </div>
+                  ) : (
+                    <div className='space-y-4'>
+                      {sessions.map(session => (
+                        <div
+                          key={session.id}
+                          className='bg-white rounded-lg shadow-md border border-gray-200 p-6 cursor-pointer hover:shadow-lg hover:border-indigo-300 transition-all duration-200'
+                          onClick={() => router.push(`/dashboard/kpt/${session.id}`)}
+                        >
+                          <div className='flex justify-between items-start'>
+                            <div className='flex-1 min-w-0'>
+                              <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+                                {session.title}
+                              </h3>
+                              {session.description && (
+                                <p className='text-sm text-gray-600 mb-3 line-clamp-2'>
+                                  {session.description}
+                                </p>
+                              )}
                             </div>
-                          ))}
+                            <div className='ml-4 flex-shrink-0'>
+                              <span className='text-sm text-gray-500'>
+                                {session.session_date}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+              {/* Add pagination controls in the UI */}
+              <div className='flex justify-between items-center mt-4'>
+                <button
+                  onClick={() => {
+                    if (currentPage > 1) {
+                      setCurrentPage(currentPage - 1);
+                      fetchSessions(currentPage - 1);
+                    }
+                  }}
+                  disabled={currentPage === 1}
+                  className='px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50'
+                >
+                  前のページ
+                </button>
+                <span className='text-sm text-gray-700'>ページ {currentPage} / {totalPages}</span>
+                <button
+                  onClick={() => {
+                    if (currentPage < totalPages) {
+                      setCurrentPage(currentPage + 1);
+                      fetchSessions(currentPage + 1);
+                    }
+                  }}
+                  disabled={currentPage === totalPages}
+                  className='px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50'
+                >
+                  次のページ
+                </button>
+              </div>
+            </div>
           </>
         )}
       </main>
