@@ -16,8 +16,8 @@ const TrendAnalysisCard = () => {
               />
               <FeatureCard
                 icon={<RealTimeSyncIcon />}
-                title='プロジェクト同期'
-                description='複数のプロジェクトを管理し、開発の進捗と学びを一元化して追跡できます。'
+                title='アクションプランの生成'
+                description='AIによるアクションプランの生成をサポートします。'
               />
               <FeatureCard
                 icon={<ProgressManagementIcon />}

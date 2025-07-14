@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import AuthenticatedHeader from '../../../../components/ui/layout/header/AuthenticatedHeader';
+import { Line } from 'react-chartjs-2';
 
 interface WeeklyData {
   weekNumber: number;
@@ -67,6 +68,22 @@ interface KptItem {
   created_at: string;
   updated_at: string;
 }
+
+const ProgressChart = ({ data }: { data: { date: string; progress: number }[] }) => {
+  const chartData = {
+    labels: data.map((item: { date: string }) => item.date),
+    datasets: [
+      {
+        label: 'Progress',
+        data: data.map((item: { progress: number }) => item.progress),
+        borderColor: 'rgba(75,192,192,1)',
+        backgroundColor: 'rgba(75,192,192,0.2)',
+      },
+    ],
+  };
+
+  return <Line data={chartData} />;
+};
 
 const WeeklyReportPage: React.FC = () => {
   const [weeklyData, setWeeklyData] = useState<WeeklyData | null>(null);
@@ -400,6 +417,9 @@ const WeeklyReportPage: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* ProgressChartコンポーネントをレンダリング */}
+        <ProgressChart data={goals.map(goal => ({ date: goal.created_at || '', progress: goal.progress }))} />
 
         {weeklyData ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -9,6 +9,10 @@ import type { AppError } from '@/types';
 export function formatJapaneseDate(date: string | Date, includeTime: boolean = false): string {
   const targetDate = typeof date === 'string' ? new Date(date) : date;
 
+  if (!(targetDate instanceof Date) || isNaN(targetDate.getTime())) {
+    return '無効な日付'; // Return a default message for invalid dates
+  }
+
   const year = targetDate.getFullYear();
   const month = targetDate.getMonth() + 1;
   const day = targetDate.getDate();

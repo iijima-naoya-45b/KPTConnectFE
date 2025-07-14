@@ -193,50 +193,6 @@ export const onboardingSteps: OnboardingStepData[] = [
     ),
   },
   {
-    id: 5,
-    title: 'GitHub Issueの作成方法',
-    description: 'GitHubでIssueを作成する手順を紹介します',
-    content: (
-      <div className='space-y-6 flex flex-col justify-center h-full'>
-        <div className='text-center'>
-          <h3 className='text-xl font-bold text-gray-900 mb-4'>GitHub Issue作成ガイド</h3>
-          <ol className='list-decimal pl-6 text-left max-w-lg mx-auto space-y-2'>
-            <li>GitHubにログインし、対象リポジトリのページにアクセスします。</li>
-            <li>上部メニューから「<span className='font-semibold'>Issues</span>」タブをクリックします。</li>
-            <li>「<span className='font-semibold'>New issue</span>」ボタンをクリックします。</li>
-            <li>タイトルと内容（詳細・再現手順など）を入力します。</li>
-            <li>必要に応じてラベルや担当者を設定します。</li>
-            <li>「<span className='font-semibold'>Submit new issue</span>」ボタンをクリックして作成完了です。</li>
-            <li>作成したIssueのURLをコピーし、KPTアプリで紐づけに利用できます。</li>
-          </ol>
-          <div className='flex justify-center mt-6'>
-            <svg width='320' height='80' viewBox='0 0 320 80' fill='none' xmlns='http://www.w3.org/2000/svg'>
-              <rect x='10' y='20' width='60' height='40' rx='8' fill='#6366F1' />
-              <text x='40' y='45' textAnchor='middle' fill='white' fontSize='14'>Repo</text>
-              <rect x='90' y='20' width='60' height='40' rx='8' fill='#10B981' />
-              <text x='120' y='45' textAnchor='middle' fill='white' fontSize='14'>Issues</text>
-              <rect x='170' y='20' width='60' height='40' rx='8' fill='#F59E0B' />
-              <text x='200' y='45' textAnchor='middle' fill='white' fontSize='14'>New</text>
-              <rect x='250' y='20' width='60' height='40' rx='8' fill='#EF4444' />
-              <text x='280' y='45' textAnchor='middle' fill='white' fontSize='14'>作成</text>
-              <line x1='70' y1='40' x2='90' y2='40' stroke='#888' strokeWidth='2' markerEnd='url(#arrow)' />
-              <line x1='150' y1='40' x2='170' y2='40' stroke='#888' strokeWidth='2' markerEnd='url(#arrow)' />
-              <line x1='230' y1='40' x2='250' y2='40' stroke='#888' strokeWidth='2' markerEnd='url(#arrow)' />
-              <defs>
-                <marker id='arrow' markerWidth='8' markerHeight='8' refX='6' refY='4' orient='auto' markerUnits='strokeWidth'>
-                  <path d='M0,0 L8,4 L0,8 L2,4 Z' fill='#888' />
-                </marker>
-              </defs>
-            </svg>
-          </div>
-        </div>
-        <div className='text-gray-600 text-center mt-4'>
-          Issueはバグ報告・要望・質問など、どんな内容でもOKです。迷ったらまず簡単な内容から作成してみましょう。
-        </div>
-      </div>
-    ),
-  },
-  {
     id: 6,
     title: '毎日のKPTで成長を記録',
     description: '一日の終わりにKPTを記入し、日々の成長や課題を可視化しましょう',

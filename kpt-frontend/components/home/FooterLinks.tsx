@@ -30,11 +30,6 @@ const FooterLinks = () => {
                     利用規約
                   </Button>
                 </Link>
-                <Link href='/feedback'>
-                  <Button variant='outline' className='text-sm'>
-                    フィードバック
-                  </Button>
-                </Link>
               </div>
             </div>
           </div>

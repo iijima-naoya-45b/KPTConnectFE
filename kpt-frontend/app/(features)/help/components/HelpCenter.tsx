@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs/tabs';
 import { Button } from '@/components/ui/button/button';
-import { Mail, MessageCircle, BookOpen, HelpCircle, Users, Shield, Edit, History, ChevronDown, ChevronUp } from 'lucide-react';
+import { Mail, MessageCircle, BookOpen, HelpCircle, Users, Edit, History, ChevronDown, ChevronUp } from 'lucide-react';
 
 // シンプルなアコーディオンコンポーネント
 const AccordionItem = ({ title, children, isOpen, onToggle }: { 
@@ -180,32 +180,6 @@ const HelpCenter = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <AccordionItem
-                  title={
-                    <div className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
-                      KPTの記録は誰でも見られますか？
-                    </div>
-                  }
-                  isOpen={openAccordion === 'privacy'}
-                  onToggle={() => toggleAccordion('privacy')}
-                >
-                  <div className="space-y-2">
-                    <p>デフォルトではプライベートに設定されています。必要に応じて共有設定を変更できます。</p>
-                    <div className="bg-blue-50 p-3 rounded-lg">
-                      <p className="text-sm text-blue-800">
-                        <strong>プライベート設定：</strong>自分だけが閲覧・編集可能
-                      </p>
-                      <p className="text-sm text-blue-800">
-                        <strong>チーム共有：</strong>チームメンバー全員が閲覧可能
-                      </p>
-                      <p className="text-sm text-blue-800">
-                        <strong>公開設定：</strong>組織全体で閲覧可能
-                      </p>
-                    </div>
-                  </div>
-                </AccordionItem>
-
                 <AccordionItem
                   title={
                     <div className="flex items-center gap-2">

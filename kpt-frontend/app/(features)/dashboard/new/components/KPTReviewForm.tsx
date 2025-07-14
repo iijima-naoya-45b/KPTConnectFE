@@ -78,7 +78,7 @@ const KPTReviewForm: React.FC<KPTReviewFormProps> = ({
             value={title}
             onChange={e => setTitle(e.target.value)}
             className='mt-1'
-            placeholder='例：6月12日の振り返り'
+            placeholder='例：01月01日の振り返り'
             required
           />
         </div>

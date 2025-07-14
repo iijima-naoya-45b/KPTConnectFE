@@ -18,30 +18,31 @@ const NotificationsPage: React.FC = () => {
 
     const modalContent = [
         {
-            title: 'Slackページにアクセス',
-            description: 'Slackの公式サイトにアクセスし、ワークスペースを作成する準備をします。',
-            image: 'https://placehold.jp/150x150.png',
-        },
-        {
-            title: 'Slackにサインイン',
-            description: '既存のSlackアカウントでサインインし、アプリを作成するワークスペースを選択します。',
-            image: 'https://placehold.jp/150x150.png',
-        },
-        {
             title: '新しいアプリの作成',
-            description: '「Create New App」ボタンをクリックし、「From scratch」を選択します。アプリの名前とワークスペースを指定して新しいアプリを作成します。',
-            image: 'https://placehold.jp/150x150.png',
+            description: '「Create New App」ボタンをクリックします。',
+            image: '/images/slack1.png',
+        },
+        {
+            title: 'From scratchでアプリを作成',
+            description: '「From scratch」を選択します。workSpaceは使用したいものを選択します。',
+            image: '/images/slack2.png',
         },
         {
             title: 'アプリの設定',
-            description: 'アプリの設定ページで、必要な機能や権限を設定します。「OAuth & Permissions」セクションで、必要なスコープを追加し、Slack APIと連携する準備を整えます。',
-            image: 'https://placehold.jp/150x150.png',
+            description: 'アプリの設定ページで、必要な機能や権限を設定準備をします。',
+            image: '/images/slack3.png',
+        },
+        {
+            title: 'Scopesの設定',
+            description: 'incoming-webhookを追加します。',
+            image: '/images/slack4.png',
         },
         {
             title: 'URLの発行',
-            description: '「Install App to Workspace」ボタンをクリックし、アプリをワークスペースにインストールします。インストール後、OAuthトークンが発行されます。このトークンを使用して、Slack APIと連携することができます。',
-            image: 'https://placehold.jp/150x150.png',
+            description: '「Install App to Workspace」ボタンを押下し連携後、Copyで貼り付けすれば連携完了です。',
+            image: '/images/slack5.png',
         },
+        
     ];
 
     return (
@@ -71,7 +72,14 @@ const NotificationsPage: React.FC = () => {
             {showIntegrationModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-xl max-w-3xl w-full p-8">
-                        <Image src={modalContent[modalStep].image} alt="Placeholder" className="mb-6 w-full rounded" width={150} height={150} />
+                        <Image
+                            src={modalContent[modalStep].image}
+                            alt="Placeholder"
+                            layout="responsive"
+                            width={100}
+                            height={80} // 以前は100
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
                         <h2 className="text-2xl font-bold text-gray-900 mb-6">{modalContent[modalStep].title}</h2>
                         <p className="text-lg text-gray-700 mb-6">
                             {modalContent[modalStep].description}
