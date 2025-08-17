@@ -3,6 +3,15 @@
 ## ■サービスURL 
 https://www.kpt-connect.biz/
 
+### repository
+`Next：`https://github.com/iijima-naoya-45b/KPTConnectFE
+
+※画面などのポイントは上記をご覧ください。
+
+`Rails：`https://github.com/iijima-naoya-45b/KPTConnectBE
+
+※処理などのポイントは上記をご覧ください。
+
 ## ■サービス概要
 「KPT」と呼ばれる週毎での振り返りができるサービスとなっております。
 
